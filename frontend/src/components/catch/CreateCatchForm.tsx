@@ -2,21 +2,7 @@ import { ChronoUnit, DateTimeFormatter, LocalDateTime } from "@js-joda/core";
 import { useFormik } from "formik";
 import { useEffect } from "react";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
-
-type Catch = {
-  catched_at: string;
-  place: {
-    latitude: string;
-    longitude: string;
-  };
-  fish: {
-    species: string;
-  };
-  method: {
-    type: string;
-    details: string;
-  };
-};
+import { Catch } from "./model";
 
 type CreateCatchFormProps = {
   onSubmit: (value: Catch) => void;
@@ -36,6 +22,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
     },
     onSubmit: (values) =>
       onSubmit({
+        id: values.catched_at,
         catched_at: values.catched_at,
         place: {
           latitude: values.place_latitude,
