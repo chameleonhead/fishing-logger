@@ -1,6 +1,6 @@
-
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../src/index.css"
+import "leaflet/dist/leaflet.css";
+import "../src/index.css";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -10,4 +10,4 @@ export const parameters = {
       date: /Date$/,
     },
   },
-}
+};

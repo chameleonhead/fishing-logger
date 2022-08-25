@@ -34,4 +34,6 @@ npx sb init --builder @storybook/builder-vite
 npm install bootstrap reactstrap --force
 npm install formik yup
 npm install @js-joda/core
+npm install react react-dom leaflet
+npm install -D @types/leaflet
 ```
