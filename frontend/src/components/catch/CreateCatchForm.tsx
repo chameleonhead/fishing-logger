@@ -2,6 +2,7 @@ import { ChronoUnit, DateTimeFormatter, LocalDateTime } from "@js-joda/core";
 import { useFormik } from "formik";
 import { useEffect } from "react";
 import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
+import { PlaceInput } from "../map/PlaceInput";
 import { Catch } from "./model";
 
 type CreateCatchFormProps = {
@@ -14,9 +15,16 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
       catched_at: DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(
         LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)
       ),
-      place_latitude: "",
-      place_longitude: "",
-      fish_species: "",
+      place: {
+        isValid: true,
+        latitude: undefined as number | undefined,
+        longitude: undefined as number | undefined,
+      },
+      fishes: [
+        {
+          species: "",
+        },
+      ],
       method_type: "",
       method_details: "",
     },
@@ -25,12 +33,10 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
         id: values.catched_at,
         catched_at: values.catched_at,
         place: {
-          latitude: values.place_latitude,
-          longitude: values.place_longitude,
+          latitude: values.place.latitude,
+          longitude: values.place.longitude,
         },
-        fish: {
-          species: values.fish_species,
-        },
+        fishes: values.fishes,
         method: {
           type: values.method_type,
           details: values.method_details,
@@ -41,14 +47,11 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
     navigator.geolocation.getCurrentPosition((position) => {
       formik.setValues({
         ...formik.values,
-        place_latitude:
-          position.coords.latitude > 0
-            ? position.coords.latitude + "N"
-            : position.coords.latitude + "S",
-        place_longitude:
-          position.coords.longitude > 0
-            ? position.coords.longitude + "E"
-            : position.coords.longitude + "W",
+        place: {
+          isValid: true,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        },
       });
     });
   }, []);
@@ -67,41 +70,23 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           onBlur={formik.handleBlur}
         />
       </FormGroup>
-      <Row>
-        <Col md={6}>
-          <FormGroup>
-            <Label for="place_latitude">緯度</Label>
-            <Input
-              id="place_latitude"
-              name="place_latitude"
-              placeholder="35.65809922N"
-              type="text"
-              value={formik.values.place_latitude}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-          </FormGroup>
-        </Col>
-        <Col md={6}>
-          <FormGroup>
-            <Label for="place_longitude">経度</Label>
-            <Input
-              id="place_longitude"
-              name="place_longitude"
-              placeholder="139.74135747E"
-              type="text"
-              value={formik.values.place_longitude}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-          </FormGroup>
-        </Col>
-      </Row>
+      <PlaceInput
+        value={{
+          isValid: true,
+          latitude: formik.values.place.latitude,
+          longitude: formik.values.place.longitude,
+        }}
+        onChange={(value) => {
+          if (value.isValid) {
+            formik.setValues({ ...formik.values, place: value });
+          }
+        }}
+      />
       <FormGroup>
-        <Label for="fish_species">魚種</Label>
+        <Label for="fishes0_species">魚種</Label>
         <Input
-          id="fish_species"
-          name="fish.species"
+          id="fishes0_species"
+          name="fishes[0].species"
           placeholder="オオモンハタ"
           type="text"
         />
