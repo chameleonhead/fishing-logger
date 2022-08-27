@@ -117,9 +117,13 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           </FormGroup>
         </Col>
       </Row>
-      <Button color="primary" block>登録</Button>
+      <Button color="primary" block>
+        登録
+      </Button>
     </Form>
   );
 };
 
-export default CreateCatchForm;
+export default function () {
+  return <CreateCatchForm onSubmit={(value) => alert(value)} />;
+}

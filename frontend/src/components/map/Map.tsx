@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { CSSProperties, useEffect } from "react";
 import { MapContainer, Marker, TileLayer, useMapEvent } from "react-leaflet";
 
 type MapProps = {
+  style: CSSProperties;
   position: { lat: number; lng: number } | undefined;
   onPositionChange: (latLng: { lat: number; lng: number }) => void;
 };
@@ -19,9 +20,12 @@ const MapEventHandler = ({ position, onPositionChange }: MapProps) => {
 };
 
 export const Map = (props: MapProps) => {
-  const { position } = props;
+  const { position, style } = props;
   return (
-    <div className="w-100 vh-100">
+    <div
+      className="w-100"
+      style={{ minHeight: "100px", height: "100px", ...style }}
+    >
       <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
         <MapEventHandler {...props} />
         <TileLayer

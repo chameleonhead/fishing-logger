@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { Map } from "./Map";
 
 export default {
+  title: "components/map/Map",
   component: Map,
 } as ComponentMeta<typeof Map>;
 

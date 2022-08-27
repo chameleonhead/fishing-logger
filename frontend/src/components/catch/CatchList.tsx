@@ -17,7 +17,7 @@ export const CatchList = ({ data }: CatchListProps) => {
         return (
           <ListGroupItem key={item.id}>
             <ListGroupItemHeading>{item.catched_at}</ListGroupItemHeading>
-            <ListGroupItemText>{item.fish.species}</ListGroupItemText>
+            <ListGroupItemText>{item.fishes[0].species}</ListGroupItemText>
           </ListGroupItem>
         );
       })}

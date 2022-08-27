@@ -108,32 +108,37 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
     []
   );
   useEffect(() => {
-    if (value.latitude !== state.latitude && value.longitude !== state.longitude) {
-        setState(calculateState(value.latitude, value.longitude));
+    if (
+      value.latitude !== state.latitude &&
+      value.longitude !== state.longitude
+    ) {
+      setState(calculateState(value.latitude, value.longitude));
     }
   }, [value.latitude, value.longitude]);
 
-  console.log(state);
   return (
     <div>
-      <Map
-        position={
-          state.isValidLatitude && state.isValidLongitude
-            ? { lat: state.latitude!, lng: state.longitude! }
-            : undefined
-        }
-        onPositionChange={(position) => {
-          const newState = calculateState(position.lat, position.lng);
-          setState(newState);
-          if (onChange) {
-            onChange({
-              isValid: newState.isValidLatitude && newState.isValidLongitude,
-              latitude: newState.latitude,
-              longitude: newState.longitude,
-            });
+      <div className="mb-1">
+        <Map
+          style={{ height: "300px" }}
+          position={
+            state.isValidLatitude && state.isValidLongitude
+              ? { lat: state.latitude!, lng: state.longitude! }
+              : undefined
           }
-        }}
-      />
+          onPositionChange={(position) => {
+            const newState = calculateState(position.lat, position.lng);
+            setState(newState);
+            if (onChange) {
+              onChange({
+                isValid: newState.isValidLatitude && newState.isValidLongitude,
+                latitude: newState.latitude,
+                longitude: newState.longitude,
+              });
+            }
+          }}
+        />
+      </div>
       <Row>
         <Col md={6}>
           <FormGroup>

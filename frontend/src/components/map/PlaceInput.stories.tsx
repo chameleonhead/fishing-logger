@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { PlaceInput } from "./PlaceInput";
 
 export default {
+  title: "components/map/PlaceInput",
   component: PlaceInput,
 } as ComponentMeta<typeof PlaceInput>;
 
