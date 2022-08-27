@@ -1,7 +1,13 @@
-import { ChronoUnit, DateTimeFormatter, LocalDateTime } from "@js-joda/core";
+import {
+  ChronoUnit,
+  DateTimeFormatter,
+  LocalDateTime,
+  Temporal,
+} from "@js-joda/core";
 import { useFormik } from "formik";
 import { Fragment, useEffect } from "react";
 import {
+  Badge,
   Button,
   ButtonGroup,
   Col,
@@ -11,7 +17,8 @@ import {
   Label,
   Row,
 } from "reactstrap";
-import { PlaceInput } from "../map/PlaceInput";
+import { DateTimeInput } from "../inputs/DateTimeInput";
+import { PlaceInput } from "../inputs/PlaceInput";
 import { Catch } from "./model";
 
 type CreateCatchFormProps = {
@@ -21,14 +28,20 @@ type CreateCatchFormProps = {
 export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
   const formik = useFormik({
     initialValues: {
-      catched_at: DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(
-        LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)
-      ),
+      catched_at: LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES) as
+        | LocalDateTime
+        | null
+        | undefined,
       place: {
-        isValid: true,
-        latitude: 35.65809922 as number | undefined,
-        longitude: 139.74135747 as number | undefined,
-      },
+        latitude: 35.65809922,
+        longitude: 139.74135747,
+      } as
+        | {
+            latitude: number;
+            longitude: number;
+          }
+        | null
+        | undefined,
       fishes: [
         {
           species: "",
@@ -39,12 +52,11 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
     },
     onSubmit: (values) =>
       onSubmit({
-        id: values.catched_at,
-        catched_at: values.catched_at,
-        place: {
-          latitude: values.place.latitude,
-          longitude: values.place.longitude,
-        },
+        id: DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(values.catched_at!),
+        catched_at: DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(
+          values.catched_at!
+        ),
+        place: values.place,
         fishes: values.fishes,
         method: {
           type: values.method_type,
@@ -57,7 +69,6 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
       formik.setValues({
         ...formik.values,
         place: {
-          isValid: true,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         },
@@ -67,28 +78,27 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
   return (
     <Form onSubmit={formik.handleSubmit}>
       <FormGroup>
-        <Label for="catched_at">日時</Label>
-        <Input
-          id="catched_at"
-          name="catched_at"
-          placeholder=""
-          type="datetime-local"
-          pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
-          value={formik.values.catched_at}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
+        <Label for="catched_at">
+          日時{" "}
+          <Badge
+            color="primary"
+            block
+            onClick={() =>
+              formik.setValues({
+                ...formik.values,
+                catched_at: LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
+              })
+            }
+          >
+            現在
+          </Badge>
+        </Label>
+        <DateTimeInput id="catched_at" value={formik.values.catched_at} />
       </FormGroup>
       <PlaceInput
-        value={{
-          isValid: true,
-          latitude: formik.values.place.latitude,
-          longitude: formik.values.place.longitude,
-        }}
+        value={formik.values.place}
         onChange={(value) => {
-          if (value.isValid) {
-            formik.setValues({ ...formik.values, place: value });
-          }
+          formik.setValues({ ...formik.values, place: value });
         }}
       />
       <FormGroup>
