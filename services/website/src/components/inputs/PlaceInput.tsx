@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Row, Col, FormGroup, Label, Input } from "reactstrap";
 import Map from "../map/Map";
+
+const PRECISION = 8;
 
 type InvalidValue = null;
 
@@ -67,8 +69,9 @@ function tryParse(
     return null;
   } else {
     return {
-      latitude: latitudeNumber,
-      longitude: longitudeNumber,
+      latitude: Math.round(latitudeNumber * 10 ** PRECISION) / 10 ** PRECISION,
+      longitude:
+        Math.round(longitudeNumber * 10 ** PRECISION) / 10 ** PRECISION,
     };
   }
 }
@@ -102,8 +105,10 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
           }
           onPositionChange={(position) => {
             const newValue = {
-              latitude: position.lat,
-              longitude: position.lng,
+              latitude:
+                Math.round(position.lat * 10 ** PRECISION) / 10 ** PRECISION,
+              longitude:
+                Math.round(position.lng * 10 ** PRECISION) / 10 ** PRECISION,
             };
             setState(valueToState(newValue));
             if (onChange) {

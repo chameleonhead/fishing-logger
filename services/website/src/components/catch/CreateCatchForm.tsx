@@ -69,8 +69,8 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
       formik.setValues({
         ...formik.values,
         place: {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
+          latitude: Math.round(position.coords.latitude * 10 ** 8) / 10 ** 8,
+          longitude: Math.round(position.coords.longitude * 10 ** 8) / 10 ** 8,
         },
       });
     });
@@ -78,8 +78,8 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
   return (
     <Form onSubmit={formik.handleSubmit}>
       <FormGroup>
-        <Label for="catched_at">
-          日時{" "}
+        <div>
+          <Label for="catched_at">日時</Label>{" "}
           <Badge
             color="primary"
             block
@@ -92,7 +92,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           >
             現在
           </Badge>
-        </Label>
+        </div>
         <DateTimeInput id="catched_at" value={formik.values.catched_at} />
       </FormGroup>
       <PlaceInput
