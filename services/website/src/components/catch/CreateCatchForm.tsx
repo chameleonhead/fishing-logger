@@ -1,21 +1,14 @@
-import {
-  ChronoUnit,
-  DateTimeFormatter,
-  LocalDateTime,
-  Temporal,
-} from "@js-joda/core";
+import { ChronoUnit, DateTimeFormatter, LocalDateTime } from "@js-joda/core";
 import { useFormik } from "formik";
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import {
   Badge,
   Button,
   ButtonGroup,
-  Col,
   Form,
   FormGroup,
   Input,
   Label,
-  Row,
 } from "reactstrap";
 import { DateTimeInput } from "../inputs/DateTimeInput";
 import { PlaceInput } from "../inputs/PlaceInput";
@@ -39,11 +32,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           }
         | null
         | undefined,
-      fishes: [
-        {
-          species: "",
-        },
-      ],
+      fishes_species: [""],
       method_type: "",
       method_details: "",
     },
@@ -54,7 +43,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           values.catched_at!
         ),
         place: values.place,
-        fishes: values.fishes,
+        fishes: values.fishes_species.map((value, i) => ({ species: value })),
         method: {
           type: values.method_type,
           details: values.method_details,
@@ -87,12 +76,15 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
         }}
       />
       <FormGroup>
-        <Label for="fishes0_species">魚種</Label>
+        <Label for="fishes_species0">魚種</Label>
         <Input
-          id="fishes0_species"
-          name="fishes[0].species"
+          id="fishes_species0"
+          name="fishes_species[0]"
           placeholder="オオモンハタ"
           type="text"
+          value={formik.values.fishes_species[0]}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         />
       </FormGroup>
       <FormGroup>
@@ -106,8 +98,10 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
                     type="radio"
                     id={"method_type" + i}
                     className="btn-check"
-                    name="method.type"
+                    name="method_type"
                     value={item}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                   />
                   <Label
                     for={"method_type" + i}
@@ -125,9 +119,12 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
         <Label for="method_details">備考</Label>
         <Input
           id="method_details"
-          name="method.details"
+          name="method_details"
           placeholder="仕掛けの詳細を記載"
           type="text"
+          value={formik.values.method_details}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         />
       </FormGroup>
       <Button color="primary" block>
