@@ -1,7 +1,16 @@
 import { ChronoUnit, DateTimeFormatter, LocalDateTime } from "@js-joda/core";
 import { useFormik } from "formik";
-import { useEffect } from "react";
-import { Button, Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
+import { Fragment, useEffect } from "react";
+import {
+  Button,
+  ButtonGroup,
+  Col,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+} from "reactstrap";
 import { PlaceInput } from "../map/PlaceInput";
 import { Catch } from "./model";
 
@@ -91,32 +100,41 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           type="text"
         />
       </FormGroup>
-      <Row>
-        <Col md="3">
-          <FormGroup>
-            <Label for="method_type">仕掛け</Label>
-            <Input id="method_type" name="method.type" type="select">
-              <option value="">選択してください</option>
-              <option value="徒手">徒手</option>
-              <option value="刺突">刺突</option>
-              <option value="網">網</option>
-              <option value="釣">釣</option>
-              <option value="その他">その他</option>
-            </Input>
-          </FormGroup>
-        </Col>
-        <Col>
-          <FormGroup>
-            <Label for="method_details">備考</Label>
-            <Input
-              id="method_details"
-              name="method.details"
-              placeholder="仕掛けの詳細を記載"
-              type="text"
-            />
-          </FormGroup>
-        </Col>
-      </Row>
+      <FormGroup>
+        <Label>仕掛け</Label>
+        <div>
+          <ButtonGroup className="w-100">
+            {["徒手", "刺突", "網", "釣", "その他"].map((item, i) => {
+              return (
+                <Fragment key={i}>
+                  <Input
+                    type="radio"
+                    id={"method_type" + i}
+                    className="btn-check"
+                    name="method.type"
+                    value={item}
+                  />
+                  <Label
+                    for={"method_type" + i}
+                    className="btn btn-outline-primary"
+                  >
+                    {item}
+                  </Label>
+                </Fragment>
+              );
+            })}
+          </ButtonGroup>
+        </div>
+      </FormGroup>
+      <FormGroup>
+        <Label for="method_details">備考</Label>
+        <Input
+          id="method_details"
+          name="method.details"
+          placeholder="仕掛けの詳細を記載"
+          type="text"
+        />
+      </FormGroup>
       <Button color="primary" block>
         登録
       </Button>
@@ -125,5 +143,5 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
 };
 
 export default function () {
-  return <CreateCatchForm onSubmit={(value) => alert(value)} />;
+  return <CreateCatchForm onSubmit={(value) => alert(JSON.stringify(value))} />;
 }
