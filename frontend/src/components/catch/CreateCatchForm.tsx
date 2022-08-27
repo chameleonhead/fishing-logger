@@ -1,7 +1,7 @@
 import { ChronoUnit, DateTimeFormatter, LocalDateTime } from "@js-joda/core";
 import { useFormik } from "formik";
 import { useEffect } from "react";
-import { Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
+import { Button, Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import { PlaceInput } from "../map/PlaceInput";
 import { Catch } from "./model";
 
@@ -117,6 +117,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           </FormGroup>
         </Col>
       </Row>
+      <Button color="primary" block>登録</Button>
     </Form>
   );
 };

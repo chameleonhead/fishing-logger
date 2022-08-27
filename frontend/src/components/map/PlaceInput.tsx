@@ -40,7 +40,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
       longitudeInput: string | number | undefined
     ) => {
       let newState = { ...state };
-      if (typeof latitudeInput === "undefined" || latitudeInput === "") {
+      if (typeof latitudeInput === "undefined") {
         newState.isValidLatitude = true;
         newState.latitude = undefined;
         newState.latitudeText = "";
@@ -48,7 +48,11 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         newState.isValidLatitude = true;
         newState.latitude = latitudeInput;
         newState.latitudeText =
-          latitudeInput > 0 ? latitudeInput + "N" : -latitudeInput + "S";
+          latitudeInput === 0
+            ? "0"
+            : latitudeInput > 0
+            ? latitudeInput + "N"
+            : -latitudeInput + "S";
       } else if (latitudeInput.match(/^-?\d+(\.\d+)?$/)) {
         const numberLatitude = Number(latitudeInput);
         newState.isValidLatitude = true;
@@ -68,7 +72,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         newState.latitudeText = latitudeInput;
       }
 
-      if (typeof longitudeInput === "undefined" || longitudeInput === "") {
+      if (typeof longitudeInput === "undefined") {
         newState.isValidLongitude = true;
         newState.longitude = undefined;
         newState.longitudeText = "";
@@ -76,7 +80,11 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         newState.isValidLongitude = true;
         newState.longitude = longitudeInput;
         newState.longitudeText =
-          longitudeInput > 0 ? longitudeInput + "E" : -longitudeInput + "W";
+          longitudeInput === 0
+            ? "0"
+            : longitudeInput > 0
+            ? longitudeInput + "E"
+            : -longitudeInput + "W";
       } else if (longitudeInput.match(/^-?\d+(\.\d+)?$/)) {
         const numberLongitude = Number(longitudeInput);
         newState.isValidLongitude = true;
@@ -100,15 +108,18 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
     []
   );
   useEffect(() => {
-    setState(calculateState(value.latitude, value.longitude));
-  }, [value]);
+    if (value.latitude !== state.latitude && value.longitude !== state.longitude) {
+        setState(calculateState(value.latitude, value.longitude));
+    }
+  }, [value.latitude, value.longitude]);
 
+  console.log(state);
   return (
     <div>
       <Map
         position={
-          state.latitude && state.longitude
-            ? { lat: state.latitude, lng: state.longitude }
+          state.isValidLatitude && state.isValidLongitude
+            ? { lat: state.latitude!, lng: state.longitude! }
             : undefined
         }
         onPositionChange={(position) => {
