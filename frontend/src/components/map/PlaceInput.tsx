@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Row, Col, FormGroup, Label, Input } from "reactstrap";
 import Map from "./Map";
 
@@ -11,10 +11,9 @@ type Place = {
 type PlaceInputProps = {
   value: Place;
   onChange?: (value: Place) => void;
-  onBlur?: () => void;
 };
 
-export const PlaceInput = ({ value, onChange, onBlur }: PlaceInputProps) => {
+export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
   const [state, setState] = useState({
     isValidLatitude: true,
     isValidLongitude: true,
@@ -35,121 +34,151 @@ export const PlaceInput = ({ value, onChange, onBlur }: PlaceInputProps) => {
       ? value.longitude + "E"
       : -value.longitude + "W",
   });
-  const setLatitude = useCallback((value: string | number | undefined) => {
-    if (typeof value === "undefined" || value === "") {
-      setState({
-        ...state,
-        isValidLatitude: true,
-        latitude: undefined,
-        latitudeText: "",
-      });
-      return;
-    }
-    if (typeof value === "number") {
-      setState({
-        ...state,
-        isValidLatitude: true,
-        latitude: value,
-        latitudeText: value > 0 ? value + "N" : -value + "S",
-      });
-      return;
-    }
-    if (value.match(/^-?\d+(\.\d+)?$/)) {
-      const numberValue = Number(value);
-      setState({
-        ...state,
-        isValidLatitude: true,
-        latitude: numberValue,
-        latitudeText: value,
-      });
-      return;
-    }
-    if (value.match(/^\d+(\.\d+)?[NS]$/)) {
-      const numberValue = Number(value.substring(0, value.length - 1));
-      const lastString = value.substring(value.length - 1);
-      setState({
-        ...state,
-        isValidLatitude: true,
-        latitude: lastString === "N" ? numberValue : -numberValue,
-        latitudeText: value,
-      });
-      return;
-    }
-    setState({ ...state, isValidLatitude: false, latitudeText: value });
-  }, []);
+  const calculateState = useCallback(
+    (
+      latitudeInput: string | number | undefined,
+      longitudeInput: string | number | undefined
+    ) => {
+      let newState = { ...state };
+      if (typeof latitudeInput === "undefined" || latitudeInput === "") {
+        newState.isValidLatitude = true;
+        newState.latitude = undefined;
+        newState.latitudeText = "";
+      } else if (typeof latitudeInput === "number") {
+        newState.isValidLatitude = true;
+        newState.latitude = latitudeInput;
+        newState.latitudeText =
+          latitudeInput > 0 ? latitudeInput + "N" : -latitudeInput + "S";
+      } else if (latitudeInput.match(/^-?\d+(\.\d+)?$/)) {
+        const numberLatitude = Number(latitudeInput);
+        newState.isValidLatitude = true;
+        newState.latitude = numberLatitude;
+        newState.latitudeText = latitudeInput;
+      } else if (latitudeInput.match(/^\d+(\.\d+)?[NS]$/)) {
+        const numberLatitude = Number(
+          latitudeInput.substring(0, latitudeInput.length - 1)
+        );
+        const lastString = latitudeInput.substring(latitudeInput.length - 1);
+        newState.isValidLatitude = true;
+        newState.latitude =
+          lastString === "N" ? numberLatitude : -numberLatitude;
+        newState.latitudeText = latitudeInput;
+      } else {
+        newState.isValidLatitude = false;
+        newState.latitudeText = latitudeInput;
+      }
 
-  const setLongitude = useCallback((value: string | number | undefined) => {
-    if (typeof value === "undefined" || value === "") {
-      setState({
-        ...state,
-        isValidLongitude: true,
-        longitude: undefined,
-        longitudeText: "",
-      });
-      return;
-    }
-    if (typeof value === "number") {
-      setState({
-        ...state,
-        isValidLongitude: true,
-        longitude: value,
-        longitudeText: value > 0 ? value + "E" : -value + "W",
-      });
-      return;
-    }
-    if (value.match(/^-?\d+(\.\d+)?$/)) {
-      const numberValue = Number(value);
-      setState({
-        ...state,
-        isValidLongitude: true,
-        longitude: numberValue,
-        longitudeText: value,
-      });
-      return;
-    }
-    if (value.match(/^\d+(\.\d+)?[EW]$/)) {
-      const numberValue = Number(value.substring(0, value.length - 1));
-      const lastString = value.substring(value.length - 1);
-      setState({
-        ...state,
-        isValidLongitude: true,
-        longitude: lastString === "E" ? numberValue : -numberValue,
-        longitudeText: value,
-      });
-      return;
-    }
-    setState({ ...state, isValidLongitude: false, longitudeText: value });
-  }, []);
+      if (typeof longitudeInput === "undefined" || longitudeInput === "") {
+        newState.isValidLongitude = true;
+        newState.longitude = undefined;
+        newState.longitudeText = "";
+      } else if (typeof longitudeInput === "number") {
+        newState.isValidLongitude = true;
+        newState.longitude = longitudeInput;
+        newState.longitudeText =
+          longitudeInput > 0 ? longitudeInput + "E" : -longitudeInput + "W";
+      } else if (longitudeInput.match(/^-?\d+(\.\d+)?$/)) {
+        const numberLongitude = Number(longitudeInput);
+        newState.isValidLongitude = true;
+        newState.longitude = numberLongitude;
+        newState.longitudeText = longitudeInput;
+      } else if (longitudeInput.match(/^\d+(\.\d+)?[NS]$/)) {
+        const numberLatitude = Number(
+          longitudeInput.substring(0, longitudeInput.length - 1)
+        );
+        const lastString = longitudeInput.substring(longitudeInput.length - 1);
+        newState.isValidLongitude = true;
+        newState.longitude =
+          lastString === "E" ? numberLatitude : -numberLatitude;
+        newState.longitudeText = longitudeInput;
+      } else {
+        newState.isValidLongitude = false;
+        newState.longitudeText = longitudeInput;
+      }
+      return newState;
+    },
+    []
+  );
+  useEffect(() => {
+    setState(calculateState(value.latitude, value.longitude));
+  }, [value]);
+
   return (
-    <Row>
-      <Col md={6}>
-        <FormGroup>
-          <Label for="place_latitude">緯度</Label>
-          <Input
-            id="place_latitude"
-            name="place_latitude"
-            placeholder="35.65809922N"
-            type="text"
-            value={state.latitudeText}
-            onChange={(e) => setLatitude(e.target.value)}
-            onBlur={onBlur}
-          />
-        </FormGroup>
-      </Col>
-      <Col md={6}>
-        <FormGroup>
-          <Label for="place_longitude">経度</Label>
-          <Input
-            id="place_longitude"
-            name="place_longitude"
-            placeholder="139.74135747E"
-            type="text"
-            value={state.longitudeText}
-            onChange={(e) => setLongitude(e.target.value)}
-            onBlur={onBlur}
-          />
-        </FormGroup>
-      </Col>
-    </Row>
+    <div>
+      <Map
+        position={
+          state.latitude && state.longitude
+            ? { lat: state.latitude, lng: state.longitude }
+            : undefined
+        }
+        onPositionChange={(position) => {
+          const newState = calculateState(position.lat, position.lng);
+          setState(newState);
+          if (onChange) {
+            onChange({
+              isValid: newState.isValidLatitude && newState.isValidLongitude,
+              latitude: newState.latitude,
+              longitude: newState.longitude,
+            });
+          }
+        }}
+      />
+      <Row>
+        <Col md={6}>
+          <FormGroup>
+            <Label for="place_latitude">緯度</Label>
+            <Input
+              id="place_latitude"
+              name="place_latitude"
+              placeholder="35.65809922N"
+              type="text"
+              value={state.latitudeText}
+              onChange={(e) => {
+                const newState = calculateState(
+                  e.target.value,
+                  state.longitudeText
+                );
+                setState(newState);
+                if (onChange) {
+                  onChange({
+                    isValid:
+                      newState.isValidLatitude && newState.isValidLongitude,
+                    latitude: newState.latitude,
+                    longitude: newState.longitude,
+                  });
+                }
+              }}
+            />
+          </FormGroup>
+        </Col>
+        <Col md={6}>
+          <FormGroup>
+            <Label for="place_longitude">経度</Label>
+            <Input
+              id="place_longitude"
+              name="place_longitude"
+              placeholder="139.74135747E"
+              type="text"
+              value={state.longitudeText}
+              onChange={(e) => {
+                const newState = calculateState(
+                  state.latitudeText,
+                  e.target.value
+                );
+                setState(newState);
+                if (onChange) {
+                  onChange({
+                    isValid:
+                      newState.isValidLatitude && newState.isValidLongitude,
+                    latitude: newState.latitude,
+                    longitude: newState.longitude,
+                  });
+                }
+              }}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
+    </div>
   );
 };

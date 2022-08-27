@@ -10,5 +10,5 @@ const Template: ComponentStory<typeof Map> = (args) => <Map {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  position: [35.65809922, 139.74135747],
+  position: { lat: 35.65809922, lng: 139.74135747 },
 };

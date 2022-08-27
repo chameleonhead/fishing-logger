@@ -1,20 +1,20 @@
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  useMapEvent,
-} from "react-leaflet";
+import { useEffect } from "react";
+import { MapContainer, Marker, TileLayer, useMapEvent } from "react-leaflet";
 
 type MapProps = {
-  position: [number, number];
-  onPositionChange: (latLng: [number, number]) => void;
+  position: { lat: number; lng: number } | undefined;
+  onPositionChange: (latLng: { lat: number; lng: number }) => void;
 };
 
 const MapEventHandler = ({ position, onPositionChange }: MapProps) => {
   const map = useMapEvent("click", (e) => {
-    onPositionChange([e.latlng.lat, e.latlng.lng]);
+    onPositionChange({ lat: e.latlng.lat, lng: e.latlng.lng });
   });
+  useEffect(() => {
+    if (position && !map.getBounds().contains(position)) {
+      map.setView(position);
+    }
+  }, [position?.lat, position?.lng]);
   return null;
 };
 
@@ -28,11 +28,7 @@ export const Map = (props: MapProps) => {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={position}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
+        {position && <Marker position={position} />}
       </MapContainer>
     </div>
   );

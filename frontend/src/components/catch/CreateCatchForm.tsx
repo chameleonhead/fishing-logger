@@ -17,8 +17,8 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
       ),
       place: {
         isValid: true,
-        latitude: undefined as number | undefined,
-        longitude: undefined as number | undefined,
+        latitude: 35.65809922 as number | undefined,
+        longitude: 139.74135747 as number | undefined,
       },
       fishes: [
         {
