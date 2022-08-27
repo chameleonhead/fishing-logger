@@ -1,0 +1,11 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "services/*"
+  ],
+  "devDependencies": {
+    "lerna": "^5.4.3",
+    "nx": "^14.5.10"
+  }
+}
