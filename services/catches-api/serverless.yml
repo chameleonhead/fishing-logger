@@ -1,4 +1,4 @@
-service: catch-api
+service: catches-api
 
 provider:
   name: aws
@@ -23,46 +23,46 @@ provider:
 
 functions:
   create:
-    handler: todos/create.create
+    handler: catches/create.create
     events:
       - httpApi:
-          path: /todos
+          path: /catches
           method: post
 
   list:
-    handler: todos/list.list
+    handler: catches/list.list
     events:
       - httpApi:
-          path: /todos
+          path: /catches
           method: get
 
   get:
-    handler: todos/get.get
+    handler: catches/get.get
     events:
       - httpApi:
-          path: /todos/{id}
+          path: /catches/{id}
           method: get
 
   update:
-    handler: todos/update.update
+    handler: catches/update.update
     events:
       - httpApi:
-          path: /todos/{id}
+          path: /catches/{id}
           method: put
 
 resources:
   Resources:
-    TodosDynamoDbTable:
+    CatchesDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
           -
-            AttributeName: id
+            AttributeName: pk
             AttributeType: S
         KeySchema:
           -
-            AttributeName: id
+            AttributeName: pk
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
