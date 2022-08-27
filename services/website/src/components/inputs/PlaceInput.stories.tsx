@@ -15,3 +15,8 @@ export const Default = Template.bind({});
 Default.args = {
   value: { latitude: 35.65809922, longitude: 139.74135747 },
 };
+
+export const withoutValue = Template.bind({});
+withoutValue.args = {
+  value: undefined,
+};

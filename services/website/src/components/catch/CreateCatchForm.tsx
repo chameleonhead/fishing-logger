@@ -32,10 +32,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
         | LocalDateTime
         | null
         | undefined,
-      place: {
-        latitude: 35.65809922,
-        longitude: 139.74135747,
-      } as
+      place: undefined as
         | {
             latitude: number;
             longitude: number;
@@ -64,17 +61,6 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
         },
       } as Catch),
   });
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      formik.setValues({
-        ...formik.values,
-        place: {
-          latitude: Math.round(position.coords.latitude * 10 ** 8) / 10 ** 8,
-          longitude: Math.round(position.coords.longitude * 10 ** 8) / 10 ** 8,
-        },
-      });
-    });
-  }, []);
   return (
     <Form onSubmit={formik.handleSubmit}>
       <FormGroup>
@@ -82,7 +68,6 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           <Label for="catched_at">日時</Label>{" "}
           <Badge
             color="primary"
-            block
             onClick={() =>
               formik.setValues({
                 ...formik.values,

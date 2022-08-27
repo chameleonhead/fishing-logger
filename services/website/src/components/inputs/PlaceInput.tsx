@@ -3,6 +3,7 @@ import { Row, Col, FormGroup, Label, Input } from "reactstrap";
 import Map from "../map/Map";
 
 const PRECISION = 8;
+const DEFAULT_VALUE = { latitude: 35.65809922, longitude: 139.74135747 };
 
 type InvalidValue = null;
 
@@ -77,7 +78,32 @@ function tryParse(
 }
 
 export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
-  const [state, setState] = useState(valueToState(value));
+  const [state, setState] = useState(valueToState(value || DEFAULT_VALUE));
+  useEffect(() => {
+    if (!value) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const newValue = {
+            latitude:
+              Math.round(position.coords.latitude * 10 ** PRECISION) /
+              10 ** PRECISION,
+            longitude:
+              Math.round(position.coords.longitude * 10 ** PRECISION) /
+              10 ** PRECISION,
+          };
+          setState(valueToState(newValue));
+          if (onChange) {
+            onChange(newValue);
+          }
+        },
+        () => {
+          if (onChange) {
+            onChange(DEFAULT_VALUE);
+          }
+        }
+      );
+    }
+  }, []);
   useEffect(() => {
     if (value !== (null as InvalidValue)) {
       const newValue = valueToState(value);
@@ -101,7 +127,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
             typeof state.latitude !== "undefined" &&
             typeof state.longitude !== "undefined"
               ? { lat: state.latitude!, lng: state.longitude! }
-              : undefined
+              : { lat: DEFAULT_VALUE.latitude, lng: DEFAULT_VALUE.longitude }
           }
           onPositionChange={(position) => {
             const newValue = {
