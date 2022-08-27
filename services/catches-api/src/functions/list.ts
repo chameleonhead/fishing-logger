@@ -1,13 +1,13 @@
-'use strict';
+import AWS from "aws-sdk";
 
-import { DynamoDB } from 'aws-sdk'
+const { DynamoDB } = AWS;
 
-const dynamoDb = new DynamoDB.DocumentClient()
+const dynamoDb = new DynamoDB.DocumentClient();
 const params = {
   TableName: process.env.DYNAMODB_TABLE,
 };
 
-module.exports.list = (event, context, callback) => {
+export const list = (event, context, callback) => {
   // fetch all todos from the database
   // For production workloads you should design your tables and indexes so that your applications can use Query instead of Scan.
   dynamoDb.scan(params, (error, result) => {
@@ -16,8 +16,8 @@ module.exports.list = (event, context, callback) => {
       console.error(error);
       callback(null, {
         statusCode: error.statusCode || 501,
-        headers: { 'Content-Type': 'text/plain' },
-        body: 'Couldn\'t fetch the todo items.',
+        headers: { "Content-Type": "text/plain" },
+        body: "Couldn't fetch the todo items.",
       });
       return;
     }

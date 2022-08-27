@@ -1,4 +1,5 @@
 service: website
+frameworkVersion: '3'
 
 plugins:
   - serverless-single-page-app-plugin

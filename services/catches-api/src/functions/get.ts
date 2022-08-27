@@ -1,11 +1,10 @@
-'use strict';
+import AWS from "aws-sdk";
 
-import { DynamoDB } from 'aws-sdk'
+const { DynamoDB } = AWS;
 
-const dynamoDb = new DynamoDB.DocumentClient()
+const dynamoDb = new DynamoDB.DocumentClient();
 
-
-module.exports.get = (event, context, callback) => {
+export const get = (event, context, callback) => {
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Key: {
@@ -20,8 +19,8 @@ module.exports.get = (event, context, callback) => {
       console.error(error);
       callback(null, {
         statusCode: error.statusCode || 501,
-        headers: { 'Content-Type': 'text/plain' },
-        body: 'Couldn\'t fetch the todo item.',
+        headers: { "Content-Type": "text/plain" },
+        body: "Couldn't fetch the todo item.",
       });
       return;
     }
