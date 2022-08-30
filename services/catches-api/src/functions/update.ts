@@ -9,12 +9,12 @@ export const update = (event, context, callback) => {
   const data = JSON.parse(event.body);
 
   // validation
-  if (typeof data.text !== "string" || typeof data.checked !== "boolean") {
+  if (typeof event.pathParameters.id !== "undefined") {
     console.error("Validation Failed");
     callback(null, {
       statusCode: 400,
       headers: { "Content-Type": "text/plain" },
-      body: "Couldn't update the todo item.",
+      body: "Couldn't update the catch item.",
     });
     return;
   }
@@ -24,20 +24,23 @@ export const update = (event, context, callback) => {
     Key: {
       id: event.pathParameters.id,
     },
-    ExpressionAttributeNames: {
-      "#todo_text": "text",
-    },
     ExpressionAttributeValues: {
-      ":text": data.text,
-      ":checked": data.checked,
+      ...Object.keys(data).reduce((prev, current) => {
+        prev[":" + current] = data[current];
+        return prev;
+      }, {}),
       ":updatedAt": timestamp,
     },
     UpdateExpression:
-      "SET #todo_text = :text, checked = :checked, updatedAt = :updatedAt",
+      "SET " +
+      Object.keys(data)
+        .map((key) => `${key} = :${key}`)
+        .join(",") +
+      ", updatedAt = :updatedAt",
     ReturnValues: "ALL_NEW",
   };
 
-  // update the todo in the database
+  // update the catch in the database
   dynamoDb.update(params, (error, result) => {
     // handle potential errors
     if (error) {
@@ -45,7 +48,7 @@ export const update = (event, context, callback) => {
       callback(null, {
         statusCode: error.statusCode || 501,
         headers: { "Content-Type": "text/plain" },
-        body: "Couldn't fetch the todo item.",
+        body: "Couldn't fetch the catch item.",
       });
       return;
     }

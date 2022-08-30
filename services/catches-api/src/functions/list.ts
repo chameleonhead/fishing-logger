@@ -8,8 +8,7 @@ const params = {
 };
 
 export const list = (event, context, callback) => {
-  // fetch all todos from the database
-  // For production workloads you should design your tables and indexes so that your applications can use Query instead of Scan.
+  // fetch all catches from the database
   dynamoDb.scan(params, (error, result) => {
     // handle potential errors
     if (error) {
@@ -17,7 +16,7 @@ export const list = (event, context, callback) => {
       callback(null, {
         statusCode: error.statusCode || 501,
         headers: { "Content-Type": "text/plain" },
-        body: "Couldn't fetch the todo items.",
+        body: "Couldn't fetch the catch items.",
       });
       return;
     }
