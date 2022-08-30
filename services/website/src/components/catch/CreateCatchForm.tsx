@@ -134,14 +134,27 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
   );
 };
 
-export default function () {
+export default function ({ onSuccess }: { onSuccess: () => void }) {
   return (
     <CreateCatchForm
       onSubmit={async (value) => {
-        fetch(import.meta.env.VITE_API_URL + "/catches", {
-          method: "POST",
-          body: JSON.stringify(value),
-        });
+        try {
+          const result = await fetch(
+            import.meta.env.VITE_API_URL + "/catches",
+            {
+              method: "POST",
+              body: JSON.stringify(value),
+            }
+          );
+          if (result.ok) {
+            alert("登録しました。");
+            onSuccess();
+          } else {
+            alert("登録できませんでした。");
+          }
+        } catch (e) {
+          alert(e);
+        }
       }}
     />
   );
