@@ -8,7 +8,9 @@
     "build": "tsc",
     "test": "exit 0",
     "watch": "tsc -w",
-    "deploy": "serverless deploy"
+    "deploy": "serverless deploy",
+    "deploy:staging": "serverless deploy --stage staging",
+    "deploy:prod": "serverless deploy --stage prod"
   },
   "keywords": [],
   "author": "",

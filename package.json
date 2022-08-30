@@ -10,7 +10,13 @@
     "build:website": "cd services/website && npm run build",
     "deploy": "npm run deploy:catches-api && npm run deploy:website",
     "deploy:catches-api": "cd services/catches-api && npm run deploy",
-    "deploy:website": "cd services/website && npm run deploy"
+    "deploy:website": "cd services/website && npm run deploy",
+    "deploy:staging": "npm run deploy:staging:catches-api && npm run deploy:staging:website",
+    "deploy:staging:catches-api": "cd services/catches-api && npm run deploy:staging",
+    "deploy:staging:website": "cd services/website && npm run deploy:staging",
+    "deploy:prod": "npm run deploy:prod:catches-api && npm run deploy:prod:website",
+    "deploy:prod:catches-api": "cd services/catches-api && npm run deploy:prod",
+    "deploy:prod:website": "cd services/website && npm run deploy:prod"
   },
   "workspaces": [
     "services/*"
