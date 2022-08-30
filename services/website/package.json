@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "publish": "npm run build && serverless syncToS3 && serverless invalidateCloudFrontCache"
+    "deploy": "npm run build && serverless deploy && serverless syncToS3 && serverless invalidateCloudFrontCache"
   },
   "dependencies": {
     "@js-joda/core": "^5.3.1",

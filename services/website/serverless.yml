@@ -2,7 +2,7 @@ service: website
 frameworkVersion: '3'
 
 plugins:
-  - serverless-single-page-app-plugin
+  - ./serverless-single-page-app-plugin
 
 custom:
   s3Bucket: fishing-logger-website-${sls:stage}

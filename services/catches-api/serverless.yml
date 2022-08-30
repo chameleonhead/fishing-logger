@@ -10,7 +10,7 @@ provider:
   runtime: nodejs16.x
   lambdaHashingVersion: "20201221"
   environment:
-    DYNAMODB_TABLE: fishing-logger-${self:service}-${sls:stage}
+    DYNAMODB_TABLE: ${self:service}-${sls:stage}
   httpApi:
     cors: true
   iam:

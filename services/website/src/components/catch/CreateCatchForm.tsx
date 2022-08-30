@@ -1,4 +1,4 @@
-import { ChronoUnit, DateTimeFormatter, LocalDateTime } from "@js-joda/core";
+import { ChronoUnit, LocalDateTime, ZoneId } from "@js-joda/core";
 import { useFormik } from "formik";
 import { Fragment } from "react";
 import {
@@ -38,10 +38,10 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
     },
     onSubmit: (values) =>
       onSubmit({
-        id: DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(values.catched_at!),
-        catched_at: DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(
-          values.catched_at!
-        ),
+        catched_at: values
+          .catched_at!.atZone(ZoneId.SYSTEM)
+          .toInstant()
+          .toString(),
         place: values.place,
         fishes: values.fishes_species.map((value, i) => ({ species: value })),
         method: {
@@ -135,5 +135,14 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
 };
 
 export default function () {
-  return <CreateCatchForm onSubmit={(value) => alert(JSON.stringify(value))} />;
+  return (
+    <CreateCatchForm
+      onSubmit={async (value) => {
+        fetch(import.meta.env.VITE_API_URL + "/catches", {
+          method: "POST",
+          body: JSON.stringify(value),
+        });
+      }}
+    />
+  );
 }
