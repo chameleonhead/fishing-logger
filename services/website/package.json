@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "test": "exit 0",
     "preview": "vite preview",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "deploy": "npm run build && serverless deploy && serverless syncToS3 && serverless invalidateCloudFrontCache"
+    "deploy": "serverless deploy && serverless syncToS3 && serverless invalidateCloudFrontCache"
   },
   "dependencies": {
     "@js-joda/core": "^5.3.1",

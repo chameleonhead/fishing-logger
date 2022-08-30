@@ -1,6 +1,17 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "test": "npm run test:catches-api && npm run test:website",
+    "test:catches-api": "cd services/catches-api && npm test",
+    "test:website": "cd services/website && npm test",
+    "build": "npm run build:catches-api && npm run build:website",
+    "build:catches-api": "cd services/catches-api && npm run build",
+    "build:website": "cd services/website && npm run build",
+    "deploy": "npm run deploy:catches-api && npm run deploy:website",
+    "deploy:catches-api": "cd services/catches-api && npm run deploy",
+    "deploy:website": "cd services/website && npm run deploy"
+  },
   "workspaces": [
     "services/*"
   ],
