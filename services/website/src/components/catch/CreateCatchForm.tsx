@@ -1,11 +1,13 @@
 import { ChronoUnit, LocalDateTime, ZoneId } from "@js-joda/core";
 import { useFormik } from "formik";
+import * as Yup from "yup";
 import { Fragment } from "react";
 import {
   Badge,
   Button,
   ButtonGroup,
   Form,
+  FormFeedback,
   FormGroup,
   Input,
   Label,
@@ -38,7 +40,18 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
       method_type: "",
       method_details: "",
     },
-    onSubmit: (values) =>
+    validationSchema: Yup.object({
+      catched_at: Yup.object()
+        .nullable()
+        .test("null-check", "不正な値です。", (value) => value !== null)
+        .required("必ず入力してください。"),
+      fishes_species: Yup.array()
+        .of(Yup.string().required("必ず入力してください。"))
+        .min(1, "Must be less than 1")
+        .required("必ず入力してください。"),
+      method_type: Yup.string().required("必ず入力してください。"),
+    }),
+    onSubmit: (values) => {
       onSubmit({
         catched_at: values
           .catched_at!.atZone(ZoneId.SYSTEM)
@@ -58,7 +71,8 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           type: values.method_type,
           details: !values.method_details ? undefined : values.method_details,
         },
-      } as Catch),
+      } as Catch);
+    },
   });
   return (
     <Form onSubmit={formik.handleSubmit}>
@@ -77,7 +91,19 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
             現在
           </Badge>
         </div>
-        <DateTimeInput id="catched_at" value={formik.values.catched_at} />
+        <DateTimeInput
+          id="catched_at"
+          value={formik.values.catched_at}
+          onChange={(value) =>
+            formik.setValues({ ...formik.values, catched_at: value })
+          }
+          invalid={!!formik.errors.catched_at}
+        />
+        {formik.errors.catched_at && (
+          <FormFeedback className="d-block">
+            {formik.errors.catched_at}
+          </FormFeedback>
+        )}
       </FormGroup>
       <PlaceInput
         value={formik.values.place}
@@ -95,7 +121,13 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           value={formik.values.fishes_species[0]}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          invalid={
+            !!formik.errors.fishes_species && formik.touched.fishes_species
+          }
         />
+        {formik.errors.fishes_species && formik.touched.fishes_species && (
+          <FormFeedback>{formik.errors.fishes_species}</FormFeedback>
+        )}
       </FormGroup>
       <FormGroup>
         <Label for="fishes_sizeText0">サイズ</Label>
@@ -124,10 +156,15 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
                     value={item}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
+                    invalid={!!formik.errors.method_type}
                   />
                   <Label
                     for={"method_type" + i}
-                    className="btn btn-outline-primary"
+                    className={
+                      formik.errors.method_type && formik.touched.method_type
+                        ? "btn btn-outline-danger"
+                        : "btn btn-outline-primary"
+                    }
                   >
                     {item}
                   </Label>
@@ -135,6 +172,11 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
               );
             })}
           </ButtonGroup>
+          {formik.errors.method_type && formik.touched.method_type && (
+            <FormFeedback className="d-block">
+              {formik.errors.method_type}
+            </FormFeedback>
+          )}
         </div>
       </FormGroup>
       <FormGroup>

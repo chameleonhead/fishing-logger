@@ -16,3 +16,9 @@ export const Default = Template.bind({});
 Default.args = {
   value: LocalDateTime.now(),
 };
+
+export const withError = Template.bind({});
+withError.args = {
+  ...Default.args,
+  invalid: true,
+};
