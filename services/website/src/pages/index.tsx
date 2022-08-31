@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Container, Navbar, NavbarBrand } from "reactstrap";
 import CreateCatchForm from "../components/catch/CreateCatchForm";
-import { Catch } from "../components/catch/model";
+import { Catch } from "../components/catch/models";
 
 type IndexPageProps = {
   data: Catch[];

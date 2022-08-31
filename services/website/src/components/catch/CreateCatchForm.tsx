@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 import { DateTimeInput } from "../inputs/DateTimeInput";
 import { PlaceInput } from "../inputs/PlaceInput";
-import { Catch } from "./model";
+import { Catch } from "./models";
 
 type CreateCatchFormProps = {
   onSubmit: (value: Catch) => void;
@@ -33,6 +33,8 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
         | null
         | undefined,
       fishes_species: [""],
+      fishes_sizeText: [""],
+      fishes_count: [""],
       method_type: "",
       method_details: "",
     },
@@ -43,10 +45,18 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           .toInstant()
           .toString(),
         place: values.place,
-        fishes: values.fishes_species.map((value, i) => ({ species: value })),
+        fishes: values.fishes_species
+          .filter((value) => !value)
+          .map((value, i) => ({
+            species: value,
+            sizeText: !values.fishes_sizeText
+              ? undefined
+              : values.fishes_sizeText[i],
+            count: 1,
+          })),
         method: {
           type: values.method_type,
-          details: values.method_details,
+          details: !values.method_details ? undefined : values.method_details,
         },
       } as Catch),
   });
@@ -80,9 +90,21 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
         <Input
           id="fishes_species0"
           name="fishes_species[0]"
-          placeholder="オオモンハタ"
+          placeholder="例) オオモンハタ"
           type="text"
           value={formik.values.fishes_species[0]}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label for="fishes_sizeText0">サイズ</Label>
+        <Input
+          id="fishes_sizeText0"
+          name="fishes_sizeText[0]"
+          placeholder="例) 50cm"
+          type="text"
+          value={formik.values.fishes_sizeText[0]}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
@@ -127,7 +149,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           onBlur={formik.handleBlur}
         />
       </FormGroup>
-      <Button color="primary" block>
+      <Button type="submit" color="primary" block>
         登録
       </Button>
     </Form>

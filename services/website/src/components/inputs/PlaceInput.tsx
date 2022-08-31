@@ -150,7 +150,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
             <Input
               id="place_latitude"
               name="place_latitude"
-              placeholder="35.65809922N"
+              placeholder="例) 35.65809922N"
               type="text"
               value={state.latitudeText}
               onChange={(e) => {
@@ -173,7 +173,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
             <Input
               id="place_longitude"
               name="place_longitude"
-              placeholder="139.74135747E"
+              placeholder="例) 139.74135747E"
               type="text"
               value={state.longitudeText}
               onChange={(e) => {
