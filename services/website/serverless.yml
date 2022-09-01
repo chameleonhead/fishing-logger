@@ -44,6 +44,7 @@ resources:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
+          Comment: ${sls:stage}-fishing-logger-website
           Origins:
             - Id: WebApp
               ## An identifier for the origin which must be unique within the distribution
