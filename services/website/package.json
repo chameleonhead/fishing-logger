@@ -11,8 +11,8 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "deploy": "serverless deploy && serverless syncToS3 && serverless invalidateCloudFrontCache",
-    "deploy:staging": "serverless deploy --stage staging && serverless syncToS3 && serverless invalidateCloudFrontCache",
-    "deploy:prod": "serverless deploy --stage prod && serverless syncToS3 && serverless invalidateCloudFrontCache"
+    "deploy:staging": "serverless deploy --stage staging && serverless syncToS3 --stage staging && serverless invalidateCloudFrontCache --stage staging",
+    "deploy:prod": "serverless deploy --stage prod && serverless syncToS3 --stage prod && serverless invalidateCloudFrontCache --stage prod"
   },
   "dependencies": {
     "@js-joda/core": "^5.3.1",
