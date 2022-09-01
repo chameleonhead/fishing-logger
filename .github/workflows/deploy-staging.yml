@@ -3,7 +3,7 @@ name: Deploy serverless
 on:
   push:
     branches:
-      - main
+      - staging
 
 jobs:
   build:
@@ -35,6 +35,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - run: npm run deploy:prod
+      - run: npm run deploy:staging
         env:
-          API_GATEWAY_DOMAIN_NAME: ${{ secrets.API_GATEWAY_DOMAIN_NAME }}
+          API_GATEWAY_DOMAIN_NAME: ${{ secrets.API_GATEWAY_DOMAIN_NAME_STAGING }}

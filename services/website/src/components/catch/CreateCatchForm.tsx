@@ -1,18 +1,20 @@
 import { ChronoUnit, LocalDateTime, ZoneId } from "@js-joda/core";
 import { useFormik } from "formik";
+import * as Yup from "yup";
 import { Fragment } from "react";
 import {
   Badge,
   Button,
   ButtonGroup,
   Form,
+  FormFeedback,
   FormGroup,
   Input,
   Label,
 } from "reactstrap";
 import { DateTimeInput } from "../inputs/DateTimeInput";
 import { PlaceInput } from "../inputs/PlaceInput";
-import { Catch } from "./model";
+import { Catch } from "./models";
 
 type CreateCatchFormProps = {
   onSubmit: (value: Catch) => void;
@@ -33,22 +35,44 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
         | null
         | undefined,
       fishes_species: [""],
+      fishes_sizeText: [""],
+      fishes_count: [""],
       method_type: "",
       method_details: "",
     },
-    onSubmit: (values) =>
+    validationSchema: Yup.object({
+      catched_at: Yup.object()
+        .nullable()
+        .test("null-check", "不正な値です。", (value) => value !== null)
+        .required("必ず入力してください。"),
+      fishes_species: Yup.array()
+        .of(Yup.string().required("必ず入力してください。"))
+        .min(1, "Must be less than 1")
+        .required("必ず入力してください。"),
+      method_type: Yup.string().required("必ず入力してください。"),
+    }),
+    onSubmit: (values) => {
       onSubmit({
         catched_at: values
           .catched_at!.atZone(ZoneId.SYSTEM)
           .toInstant()
           .toString(),
         place: values.place,
-        fishes: values.fishes_species.map((value, i) => ({ species: value })),
+        fishes: values.fishes_species
+          .filter((value) => !value)
+          .map((value, i) => ({
+            species: value,
+            sizeText: !values.fishes_sizeText
+              ? undefined
+              : values.fishes_sizeText[i],
+            count: 1,
+          })),
         method: {
           type: values.method_type,
-          details: values.method_details,
+          details: !values.method_details ? undefined : values.method_details,
         },
-      } as Catch),
+      } as Catch);
+    },
   });
   return (
     <Form onSubmit={formik.handleSubmit}>
@@ -67,7 +91,19 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
             現在
           </Badge>
         </div>
-        <DateTimeInput id="catched_at" value={formik.values.catched_at} />
+        <DateTimeInput
+          id="catched_at"
+          value={formik.values.catched_at}
+          onChange={(value) =>
+            formik.setValues({ ...formik.values, catched_at: value })
+          }
+          invalid={!!formik.errors.catched_at}
+        />
+        {formik.errors.catched_at && (
+          <FormFeedback className="d-block">
+            {formik.errors.catched_at}
+          </FormFeedback>
+        )}
       </FormGroup>
       <PlaceInput
         value={formik.values.place}
@@ -80,9 +116,33 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
         <Input
           id="fishes_species0"
           name="fishes_species[0]"
-          placeholder="オオモンハタ"
+          placeholder="例) オオモンハタ"
           type="text"
           value={formik.values.fishes_species[0]}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          invalid={
+            !!formik.errors.fishes_species &&
+            !!formik.errors.fishes_species[0] &&
+            !!formik.touched.fishes_species &&
+            (formik.touched.fishes_species as any)[0]
+          }
+        />
+        {formik.errors.fishes_species &&
+          formik.errors.fishes_species[0] &&
+          formik.touched.fishes_species &&
+          (formik.touched.fishes_species as any)[0] && (
+            <FormFeedback>{formik.errors.fishes_species[0]}</FormFeedback>
+          )}
+      </FormGroup>
+      <FormGroup>
+        <Label for="fishes_sizeText0">サイズ</Label>
+        <Input
+          id="fishes_sizeText0"
+          name="fishes_sizeText[0]"
+          placeholder="例) 50cm"
+          type="text"
+          value={formik.values.fishes_sizeText[0]}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
@@ -102,10 +162,15 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
                     value={item}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
+                    invalid={!!formik.errors.method_type}
                   />
                   <Label
                     for={"method_type" + i}
-                    className="btn btn-outline-primary"
+                    className={
+                      formik.errors.method_type && formik.touched.method_type
+                        ? "btn btn-outline-danger"
+                        : "btn btn-outline-primary"
+                    }
                   >
                     {item}
                   </Label>
@@ -113,6 +178,11 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
               );
             })}
           </ButtonGroup>
+          {formik.errors.method_type && formik.touched.method_type && (
+            <FormFeedback className="d-block">
+              {formik.errors.method_type}
+            </FormFeedback>
+          )}
         </div>
       </FormGroup>
       <FormGroup>
@@ -127,7 +197,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           onBlur={formik.handleBlur}
         />
       </FormGroup>
-      <Button color="primary" block>
+      <Button type="submit" color="primary" block>
         登録
       </Button>
     </Form>
@@ -139,13 +209,10 @@ export default function ({ onSuccess }: { onSuccess: () => void }) {
     <CreateCatchForm
       onSubmit={async (value) => {
         try {
-          const result = await fetch(
-            import.meta.env.VITE_API_URL + "/catches",
-            {
-              method: "POST",
-              body: JSON.stringify(value),
-            }
-          );
+          const result = await fetch("/api/catches", {
+            method: "POST",
+            body: JSON.stringify(value),
+          });
           if (result.ok) {
             alert("登録しました。");
             onSuccess();
