@@ -1,7 +1,10 @@
 service: website
-frameworkVersion: '3'
+frameworkVersion: "3"
+
+useDotenv: true
 
 plugins:
+  - serverless-dotenv-plugin
   - ./serverless-single-page-app-plugin
 
 custom:
@@ -34,7 +37,7 @@ resources:
               Effect: Allow
               Principal: "*"
               Action:
-              - s3:GetObject
+                - s3:GetObject
               Resource: arn:aws:s3:::${self:custom.s3Bucket}/*
     ## Specifying the CloudFront Distribution to server your Web Application
     WebAppCloudFrontDistribution:
@@ -42,9 +45,9 @@ resources:
       Properties:
         DistributionConfig:
           Origins:
-            - DomainName: ${self:custom.s3Bucket}.s3.amazonaws.com
+            - Id: WebApp
               ## An identifier for the origin which must be unique within the distribution
-              Id: WebApp
+              DomainName: ${self:custom.s3Bucket}.s3.amazonaws.com
               CustomOriginConfig:
                 HTTPPort: 80
                 HTTPSPort: 443
@@ -52,7 +55,15 @@ resources:
               ## In case you want to restrict the bucket access use S3OriginConfig and remove CustomOriginConfig
               # S3OriginConfig:
               #   OriginAccessIdentity: origin-access-identity/cloudfront/E127EXAMPLE51Z
-          Enabled: 'true'
+            - Id: CatchesApi
+              ## An identifier for the origin which must be unique within the distribution
+              DomainName: ${env:API_GATEWAY_DOMAIN_NAME}
+              OriginPath: /api
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: https-only
+          Enabled: "true"
           ## Uncomment the following section in case you are using a custom domain
           # Aliases:
           # - mysite.example.com
@@ -64,6 +75,9 @@ resources:
               ResponseCode: 200
               ResponsePagePath: /index.html
           DefaultCacheBehavior:
+            ## The origin id defined above
+            TargetOriginId: WebApp
+            Compress: true
             AllowedMethods:
               - DELETE
               - GET
@@ -72,18 +86,36 @@ resources:
               - PATCH
               - POST
               - PUT
-            ## The origin id defined above
-            TargetOriginId: WebApp
-            ## Defining if and how the QueryString and Cookies are forwarded to the origin which in this case is S3
-            ForwardedValues:
-              QueryString: 'false'
-              Cookies:
-                Forward: none
+            # CachingOptimized
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+            # UserAgentRefererHeaders
+            OriginRequestPolicyId: acba4595-bd28-49b8-b9fe-13317c0390fa
             ## The protocol that users can use to access the files in the origin. To allow HTTP use `allow-all`
             ViewerProtocolPolicy: redirect-to-https
+          CacheBehaviors:
+            - PathPattern: /api/*
+              TargetOriginId: CatchesApi
+              Compress: false
+              ViewerProtocolPolicy: redirect-to-https
+              AllowedMethods:
+                - DELETE
+                - GET
+                - HEAD
+                - OPTIONS
+                - PATCH
+                - POST
+                - PUT
+              # CachingDisabled
+              CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+              # UserAgentRefererHeaders
+              OriginRequestPolicyId: acba4595-bd28-49b8-b9fe-13317c0390fa
+              # # AllViewer prevent wrong host header to send to api gateway
+              # TODO: create custom origin request policy
+              # OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
           ## The certificate to use when viewers use HTTPS to request objects.
           ViewerCertificate:
-            CloudFrontDefaultCertificate: 'true'
+            CloudFrontDefaultCertificate: "true"
+          HttpVersion: http2
           ## Uncomment the following section in case you want to enable logging for CloudFront requests
           # Logging:
           #   IncludeCookies: 'false'
@@ -94,4 +126,4 @@ resources:
   Outputs:
     WebAppCloudFrontDistributionOutput:
       Value:
-        'Fn::GetAtt': [ WebAppCloudFrontDistribution, DomainName ]
+        "Fn::GetAtt": [WebAppCloudFrontDistribution, DomainName]

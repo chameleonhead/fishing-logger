@@ -27,8 +27,6 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm run build
-        env:
-          VITE_API_URL: ${{ secrets.API_GATEWAY_URL }}
       - name: Install serverless
         run: npm install -g serverless
       - name: Configure AWS Credentials
@@ -38,3 +36,5 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - run: npm run deploy:prod
+        env:
+          API_GATEWAY_DOMAIN_NAME: ${{ secrets.API_GATEWAY_DOMAIN_NAME }}

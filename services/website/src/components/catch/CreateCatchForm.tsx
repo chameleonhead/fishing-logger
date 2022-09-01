@@ -122,12 +122,18 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           invalid={
-            !!formik.errors.fishes_species && formik.touched.fishes_species
+            !!formik.errors.fishes_species &&
+            !!formik.errors.fishes_species[0] &&
+            !!formik.touched.fishes_species &&
+            (formik.touched.fishes_species as any)[0]
           }
         />
-        {formik.errors.fishes_species && formik.touched.fishes_species && (
-          <FormFeedback>{formik.errors.fishes_species}</FormFeedback>
-        )}
+        {formik.errors.fishes_species &&
+          formik.errors.fishes_species[0] &&
+          formik.touched.fishes_species &&
+          (formik.touched.fishes_species as any)[0] && (
+            <FormFeedback>{formik.errors.fishes_species[0]}</FormFeedback>
+          )}
       </FormGroup>
       <FormGroup>
         <Label for="fishes_sizeText0">サイズ</Label>
@@ -203,13 +209,10 @@ export default function ({ onSuccess }: { onSuccess: () => void }) {
     <CreateCatchForm
       onSubmit={async (value) => {
         try {
-          const result = await fetch(
-            import.meta.env.VITE_API_URL + "/catches",
-            {
-              method: "POST",
-              body: JSON.stringify(value),
-            }
-          );
+          const result = await fetch("/api/catches", {
+            method: "POST",
+            body: JSON.stringify(value),
+          });
           if (result.ok) {
             alert("登録しました。");
             onSuccess();
