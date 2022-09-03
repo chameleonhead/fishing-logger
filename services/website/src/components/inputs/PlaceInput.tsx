@@ -3,7 +3,6 @@ import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import Map from "../map/Map";
 
 const PRECISION = 8;
-const DEFAULT_VALUE = { latitude: 35.65809922, longitude: 139.74135747 };
 
 type InvalidValue = null;
 
@@ -124,7 +123,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
             typeof state.latitude !== "undefined" &&
             typeof state.longitude !== "undefined"
               ? { lat: state.latitude!, lng: state.longitude! }
-              : { lat: DEFAULT_VALUE.latitude, lng: DEFAULT_VALUE.longitude }
+              : undefined
           }
           onPositionChange={(position) => {
             const newValue = {

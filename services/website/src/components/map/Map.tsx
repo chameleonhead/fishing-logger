@@ -10,7 +10,9 @@ import {
 import { createControlComponent } from "react-leaflet/node_modules/@react-leaflet/core";
 import { Control, DomEvent, DomUtil, Map as LfMap } from "leaflet";
 
-export const CurrentLocationController = createControlComponent(
+const DEFAULT_POSITION = { lat: 35.65809922, lng: 139.74135747 };
+
+const CurrentLocationController = createControlComponent(
   function createZoomControl(props) {
     const notTrackingContent =
       '<div class="leaflet-bar"><a href="#" title="Current Location" class="text-body" role="button" aria-label="Current Location" aria-disabled="false"><span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bullseye" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 13A5 5 0 1 1 8 3a5 5 0 0 1 0 10zm0 1A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M9.5 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg></span></a></div>';
@@ -27,6 +29,7 @@ export const CurrentLocationController = createControlComponent(
       },
       map: null as unknown as LfMap,
       container: null as unknown as HTMLElement,
+      observer: null as unknown as MutationObserver,
       trackLocation: false,
       watchId: NaN,
       onClick: function (e: Event) {
@@ -39,12 +42,10 @@ export const CurrentLocationController = createControlComponent(
             this.onWatchPosition.bind(this),
             this.onWatchError.bind(this)
           );
-          console.log("tracking");
         } else {
           this.trackLocation = false;
           this.container.innerHTML = notTrackingContent;
           navigator.geolocation.clearWatch(this.watchId!);
-          console.log("not-tracking");
         }
       },
       onWatchPosition: function (position: GeolocationPosition) {
@@ -52,10 +53,13 @@ export const CurrentLocationController = createControlComponent(
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
-        console.log(position);
       },
       onWatchError: function (error: GeolocationPositionError) {
-        console.log(error);
+        if (error.code == GeolocationPositionError.PERMISSION_DENIED) {
+          this.trackLocation = false;
+          this.container.innerHTML = notTrackingContent;
+          navigator.geolocation.clearWatch(this.watchId!);
+        }
       },
       onAdd: function (map: LfMap) {
         this.map = map;
@@ -89,6 +93,7 @@ export const CurrentLocationController = createControlComponent(
       onRemove: function (map: LfMap) {
         DomEvent.off(this.container!, "click", this.onClick, this.container);
         if (this.trackLocation) {
+          this.trackLocation = false;
           navigator.geolocation.clearWatch(this.watchId!);
         }
       },
@@ -123,7 +128,7 @@ export const Map = (props: MapProps) => {
       style={{ minHeight: "100px", height: "100px", ...style }}
     >
       <MapContainer
-        center={position}
+        center={position || DEFAULT_POSITION}
         zoom={13}
         scrollWheelZoom={true}
         zoomControl={false}
