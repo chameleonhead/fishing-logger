@@ -59,7 +59,6 @@ resources:
             - Id: CatchesApi
               ## An identifier for the origin which must be unique within the distribution
               DomainName: ${env:API_GATEWAY_DOMAIN_NAME}
-              OriginPath: /api
               CustomOriginConfig:
                 HTTPPort: 80
                 HTTPSPort: 443
