@@ -103,14 +103,16 @@ const CurrentLocationController = createControlComponent(
 );
 
 type MapProps = {
-  style: CSSProperties;
+  style?: CSSProperties;
   position: { lat: number; lng: number } | undefined;
-  onPositionChange: (latLng: { lat: number; lng: number }) => void;
+  onPositionChange?: (latLng: { lat: number; lng: number }) => void;
+  currentLocationControl?: boolean;
 };
 
 const MapEventHandler = ({ position, onPositionChange }: MapProps) => {
   const map = useMapEvent("click", (e) => {
-    onPositionChange({ lat: e.latlng.lat, lng: e.latlng.lng });
+    onPositionChange &&
+      onPositionChange({ lat: e.latlng.lat, lng: e.latlng.lng });
   });
   useEffect(() => {
     if (position && !map.getBounds().contains(position)) {
@@ -121,7 +123,7 @@ const MapEventHandler = ({ position, onPositionChange }: MapProps) => {
 };
 
 export const Map = (props: MapProps) => {
-  const { position, style } = props;
+  const { position, style, currentLocationControl = true } = props;
   return (
     <div
       className="w-100"
@@ -141,7 +143,7 @@ export const Map = (props: MapProps) => {
         {position && <Marker position={position} />}
         <ZoomControl />
         <ScaleControl />
-        <CurrentLocationController />
+        {currentLocationControl ? <CurrentLocationController /> : null}
       </MapContainer>
     </div>
   );

@@ -1,17 +1,16 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container } from "reactstrap";
 import CreateCatchForm from "../../components/catch/CreateCatchForm";
 
 type CreatePageProps = {};
 
 export const CreatePage = ({}: CreatePageProps) => {
-  const [state, setState] = useState({ formKey: 0 });
+  const navigate = useNavigate();
   return (
     <Container fluid>
       <div className="my-3">
         <CreateCatchForm
-          key={state.formKey}
-          onSuccess={() => setState({ formKey: state.formKey + 1 })}
+          onSuccess={(value) => navigate(`/catches/${value.id}`)}
         />
       </div>
     </Container>

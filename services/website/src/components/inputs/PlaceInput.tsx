@@ -190,6 +190,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
           <FormGroup>
             <Label for="place_latitude">現在地</Label>
             <Button
+              className="px-0"
               type="button"
               color="primary"
               block

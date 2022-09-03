@@ -1,7 +1,7 @@
-import { ChronoUnit, LocalDateTime, ZoneId } from "@js-joda/core";
+import { ChronoUnit, Instant, LocalDateTime, ZoneId } from "@js-joda/core";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   Badge,
   Button,
@@ -16,29 +16,29 @@ import { DateTimeInput } from "../inputs/DateTimeInput";
 import { PlaceInput } from "../inputs/PlaceInput";
 import { Catch } from "./models";
 
-type CreateCatchFormProps = {
-  onSubmit: (value: Catch) => void;
+type EditCatchFormProps = {
+  data: Catch;
+  onSubmit: (value: Partial<Catch>) => void;
 };
 
-export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
+export const EditCatchForm = ({ data, onSubmit }: EditCatchFormProps) => {
   const formik = useFormik({
     initialValues: {
-      catched_at: LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES) as
-        | LocalDateTime
-        | null
-        | undefined,
-      place: undefined as
+      catched_at: LocalDateTime.from(
+        Instant.parse(data.catched_at).atZone(ZoneId.SYSTEM)
+      ) as LocalDateTime | null | undefined,
+      place: data.place as
         | {
             latitude: number;
             longitude: number;
           }
         | null
         | undefined,
-      fishes_species: [""],
-      fishes_sizeText: [""],
-      fishes_count: [""],
-      method_type: "",
-      method_details: "",
+      fishes_species: data.fishes.map((fish) => fish.species),
+      fishes_sizeText: data.fishes.map((fish) => fish.sizeText || ""),
+      fishes_count: data.fishes.map((fish) => fish.count),
+      method_type: data.method.type,
+      method_details: data.method.details || "",
     },
     validationSchema: Yup.object({
       catched_at: Yup.object()
@@ -53,6 +53,8 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
     }),
     onSubmit: (values) => {
       onSubmit({
+        ...data,
+        id: data.id,
         catched_at: values
           .catched_at!.atZone(ZoneId.SYSTEM)
           .toInstant()
@@ -62,10 +64,8 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           .filter((value) => !!value)
           .map((value, i) => ({
             species: value,
-            sizeText: !values.fishes_sizeText
-              ? undefined
-              : values.fishes_sizeText[i],
-            count: 1,
+            sizeText: values.fishes_sizeText[i] || undefined,
+            count: Number(values.fishes_count[i] || undefined),
           })),
         method: {
           type: values.method_type,
@@ -163,6 +163,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     invalid={!!formik.errors.method_type}
+                    checked={formik.values.method_type === item}
                   />
                   <Label
                     for={"method_type" + i}
@@ -204,24 +205,45 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
   );
 };
 
-export default function ({ onSuccess }: { onSuccess: (value: Catch) => void }) {
-  return (
-    <CreateCatchForm
-      onSubmit={async (value) => {
-        try {
-          const result = await fetch("/api/catches", {
-            method: "POST",
-            body: JSON.stringify(value),
-          });
-          if (result.ok) {
-            onSuccess(await result.json());
-          } else {
-            alert("登録できませんでした。");
+export default function ({
+  id,
+  onSuccess,
+}: {
+  id: string;
+  onSuccess: (value: Catch) => void;
+}) {
+  const [data, setData] = useState(undefined);
+  useEffect(() => {
+    (async () => {
+      const result = await fetch(`/api/catches/${id}`, {
+        method: "GET",
+      });
+      if (result.ok) {
+        setData(await result.json());
+      }
+    })();
+  }, []);
+  if (data) {
+    return (
+      <EditCatchForm
+        data={data}
+        onSubmit={async (value) => {
+          try {
+            const result = await fetch(`/api/catches/${id}`, {
+              method: "PUT",
+              body: JSON.stringify(value),
+            });
+            if (result.ok) {
+              onSuccess(await result.json());
+            } else {
+              alert("登録できませんでした。");
+            }
+          } catch (e) {
+            alert(e);
           }
-        } catch (e) {
-          alert(e);
-        }
-      }}
-    />
-  );
+        }}
+      />
+    );
+  }
+  return <div>Loading...</div>;
 }

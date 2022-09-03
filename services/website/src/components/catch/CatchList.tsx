@@ -20,7 +20,6 @@ export const CatchList = ({ data }: CatchListProps) => {
   return (
     <ListGroup>
       {data.map((item) => {
-        console.log(item);
         return (
           <ListGroupItem
             key={item.id}
