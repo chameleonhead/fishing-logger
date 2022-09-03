@@ -42,6 +42,24 @@ Default.args = {
       },
       fishes: [
         {
+          species: "タコ",
+          sizeText: "20cm",
+          count: 1,
+        },
+      ],
+      method: {
+        type: "刺突",
+      },
+    },
+    {
+      id: "3",
+      catched_at: "2022-08-22T02:20:00Z",
+      place: {
+        latitude: 35.65809922,
+        longitude: 139.74135747,
+      },
+      fishes: [
+        {
           species: "スズキ",
           count: 1,
         },
