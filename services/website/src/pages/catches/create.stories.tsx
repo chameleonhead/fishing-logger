@@ -1,12 +1,12 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
-import Layout from "../components/common/Layout";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import Layout from "../../components/common/Layout";
 
-import { IndexPage } from "./index";
+import { CreatePage } from "./create";
 
 export default {
-  title: "pages/IndexPage",
-  component: IndexPage,
+  title: "pages/catches/CreatePage",
+  component: CreatePage,
   decorators: [
     (story) => (
       <MemoryRouter>
@@ -18,10 +18,10 @@ export default {
       </MemoryRouter>
     ),
   ],
-} as ComponentMeta<typeof IndexPage>;
+} as ComponentMeta<typeof CreatePage>;
 
-const Template: ComponentStory<typeof IndexPage> = (args) => (
-  <IndexPage {...args} />
+const Template: ComponentStory<typeof CreatePage> = (args) => (
+  <CreatePage {...args} />
 );
 
 export const Default = Template.bind({});

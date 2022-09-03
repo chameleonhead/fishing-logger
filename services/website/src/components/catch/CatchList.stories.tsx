@@ -1,10 +1,12 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { MemoryRouter } from "react-router-dom";
 
 import { CatchList } from "./CatchList";
 
 export default {
   title: "components/catch/CatchList",
   component: CatchList,
+  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as ComponentMeta<typeof CatchList>;
 
 const Template: ComponentStory<typeof CatchList> = (args) => (
@@ -35,6 +37,24 @@ Default.args = {
     },
     {
       id: "2",
+      catched_at: "2022-08-22T02:20:00Z",
+      place: {
+        latitude: 35.65809922,
+        longitude: 139.74135747,
+      },
+      fishes: [
+        {
+          species: "タコ",
+          sizeText: "20cm",
+          count: 1,
+        },
+      ],
+      method: {
+        type: "刺突",
+      },
+    },
+    {
+      id: "3",
       catched_at: "2022-08-22T02:20:00Z",
       place: {
         latitude: 35.65809922,
