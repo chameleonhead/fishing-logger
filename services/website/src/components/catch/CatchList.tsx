@@ -1,4 +1,5 @@
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
+import { useEffect, useState } from "react";
 import {
   Badge,
   Col,
@@ -18,14 +19,15 @@ export const CatchList = ({ data }: CatchListProps) => {
   return (
     <ListGroup>
       {data.map((item) => {
+        console.log(item);
         return (
           <ListGroupItem key={item.id}>
             <Row>
-                <Col>
-                  <Badge color="primary" className="me-2 mb-2">
-                    {item.method.type}
-                  </Badge>
-                </Col>
+              <Col>
+                <Badge color="primary" className="me-2 mb-2">
+                  {item.method.type}
+                </Badge>
+              </Col>
               <Col className="text-end">
                 <small>
                   {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
@@ -60,4 +62,17 @@ export const CatchList = ({ data }: CatchListProps) => {
   );
 };
 
-export default CatchList;
+export default function () {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    (async () => {
+      const result = await fetch("/api/catches", {
+        method: "GET",
+      });
+      if (result.ok) {
+        setData(await result.json());
+      }
+    })();
+  }, []);
+  return <CatchList data={data} />;
+}

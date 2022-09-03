@@ -59,7 +59,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           .toString(),
         place: values.place,
         fishes: values.fishes_species
-          .filter((value) => !value)
+          .filter((value) => !!value)
           .map((value, i) => ({
             species: value,
             sizeText: !values.fishes_sizeText

@@ -11,7 +11,9 @@ export default {
     (story) => (
       <MemoryRouter>
         <Routes>
-          <Route element={<Layout />}> {story()}</Route>
+          <Route path="*" element={<Layout />}>
+            <Route path="*" element={story()} />
+          </Route>
         </Routes>
       </MemoryRouter>
     ),
