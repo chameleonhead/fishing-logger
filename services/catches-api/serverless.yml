@@ -34,28 +34,28 @@ functions:
     handler: src/functions/create.create
     events:
       - httpApi:
-          path: /catches
+          path: /api/catches
           method: post
 
   list:
     handler: src/functions/list.list
     events:
       - httpApi:
-          path: /catches
+          path: /api/catches
           method: get
 
   get:
     handler: src/functions/get.get
     events:
       - httpApi:
-          path: /catches/{id}
+          path: /api/catches/{id}
           method: get
 
   update:
     handler: src/functions/update.update
     events:
       - httpApi:
-          path: /catches/{id}
+          path: /api/catches/{id}
           method: put
 
 resources:
