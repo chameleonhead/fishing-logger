@@ -9,7 +9,7 @@ export const update = (event, context, callback) => {
   const data = JSON.parse(event.body);
 
   // validation
-  if (typeof event.pathParameters.id !== "undefined") {
+  if (typeof event.pathParameters.id === "undefined") {
     console.error("Validation Failed");
     callback(null, {
       statusCode: 400,
@@ -19,23 +19,31 @@ export const update = (event, context, callback) => {
     return;
   }
 
+  const entries = Object.entries(data)
+    .filter(([key]) => !["id", "createdAt", "updatedAt"].includes(key))
+    .map(([key, value], i) => ({ attr: `#attr${i}`, key, value }));
+
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Key: {
       id: event.pathParameters.id,
     },
+    ExpressionAttributeNames: {
+      ...entries.reduce((prev, { attr, key }) => {
+        prev[attr] = key;
+        return prev;
+      }, {}),
+    },
     ExpressionAttributeValues: {
-      ...Object.keys(data).reduce((prev, current) => {
-        prev[":" + current] = data[current];
+      ...entries.reduce((prev, { key, value }) => {
+        prev[":" + key] = value;
         return prev;
       }, {}),
       ":updatedAt": timestamp,
     },
     UpdateExpression:
       "SET " +
-      Object.keys(data)
-        .map((key) => `${key} = :${key}`)
-        .join(",") +
+      entries.map(({ attr, key }) => `${attr} = :${key}`).join(",") +
       ", updatedAt = :updatedAt",
     ReturnValues: "ALL_NEW",
   };
