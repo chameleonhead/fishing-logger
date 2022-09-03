@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Row, Col, FormGroup, Label, Input } from "reactstrap";
+import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import Map from "../map/Map";
 
 const PRECISION = 8;
@@ -78,30 +78,27 @@ function tryParse(
 }
 
 export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
-  const [state, setState] = useState(valueToState(value || DEFAULT_VALUE));
+  const [state, setState] = useState(valueToState(value));
+
+  const handleFetchCurrentLocation = () =>
+    navigator.geolocation.getCurrentPosition((position) => {
+      const newValue = {
+        latitude:
+          Math.round(position.coords.latitude * 10 ** PRECISION) /
+          10 ** PRECISION,
+        longitude:
+          Math.round(position.coords.longitude * 10 ** PRECISION) /
+          10 ** PRECISION,
+      };
+      setState(valueToState(newValue));
+      if (onChange) {
+        onChange(newValue);
+      }
+    });
+
   useEffect(() => {
     if (!value) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const newValue = {
-            latitude:
-              Math.round(position.coords.latitude * 10 ** PRECISION) /
-              10 ** PRECISION,
-            longitude:
-              Math.round(position.coords.longitude * 10 ** PRECISION) /
-              10 ** PRECISION,
-          };
-          setState(valueToState(newValue));
-          if (onChange) {
-            onChange(newValue);
-          }
-        },
-        () => {
-          if (onChange) {
-            onChange(DEFAULT_VALUE);
-          }
-        }
-      );
+      handleFetchCurrentLocation();
     }
   }, []);
   useEffect(() => {
@@ -144,7 +141,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         />
       </div>
       <Row>
-        <Col md={6}>
+        <Col md={5}>
           <FormGroup>
             <Label for="place_latitude">緯度</Label>
             <Input
@@ -167,7 +164,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
             />
           </FormGroup>
         </Col>
-        <Col md={6}>
+        <Col md={5}>
           <FormGroup>
             <Label for="place_longitude">経度</Label>
             <Input
@@ -188,6 +185,19 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
                 }
               }}
             />
+          </FormGroup>
+        </Col>
+        <Col md={2}>
+          <FormGroup>
+            <Label for="place_latitude">現在地</Label>
+            <Button
+              type="button"
+              color="primary"
+              block
+              onClick={handleFetchCurrentLocation}
+            >
+              取得
+            </Button>
           </FormGroup>
         </Col>
       </Row>
