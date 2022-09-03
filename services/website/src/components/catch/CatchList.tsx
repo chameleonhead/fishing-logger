@@ -1,5 +1,6 @@
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { useEffect, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import {
   Badge,
   Col,
@@ -21,7 +22,12 @@ export const CatchList = ({ data }: CatchListProps) => {
       {data.map((item) => {
         console.log(item);
         return (
-          <ListGroupItem key={item.id}>
+          <ListGroupItem
+            key={item.id}
+            action
+            tag={RouterLink}
+            to={`/catches/${item.id}`}
+          >
             <Row>
               <Col>
                 <Badge color="primary" className="me-2 mb-2">

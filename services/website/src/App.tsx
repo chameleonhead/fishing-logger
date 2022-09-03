@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./components/common/Layout";
 import IndexPage from "./pages/index";
 import CatchesIndexPage from "./pages/catches/index";
+import CatchesDetailsPage from "./pages/catches/details";
 import CatchesCreatePage from "./pages/catches/create";
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route path="/" element={<IndexPage />} />
         <Route path="catches" element={<CatchesIndexPage />} />
+        <Route path="catches/:id" element={<CatchesDetailsPage />} />
         <Route path="catches/create" element={<CatchesCreatePage />} />
       </Route>
     </Routes>

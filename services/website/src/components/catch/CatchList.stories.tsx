@@ -1,10 +1,12 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { MemoryRouter } from "react-router-dom";
 
 import { CatchList } from "./CatchList";
 
 export default {
   title: "components/catch/CatchList",
   component: CatchList,
+  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as ComponentMeta<typeof CatchList>;
 
 const Template: ComponentStory<typeof CatchList> = (args) => (
