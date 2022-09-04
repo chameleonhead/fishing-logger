@@ -10,7 +10,7 @@ describe("create function", () => {
     process.env = { ...OLD_ENV };
   });
 
-  it("create new record", () => {
+  it("should call put of dynamodb documentclient api", () => {
     process.env.DYNAMODB_TABLE = "catches-api-test";
     const data = {
       catched_at: "2022-09-04T18:05:02Z",
