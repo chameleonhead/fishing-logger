@@ -1,16 +1,17 @@
 import * as uuid from "uuid";
+import AWS, { AWSError } from "aws-sdk";
+import { PutItemOutput } from "aws-sdk/clients/dynamodb";
 
-import AWS from "aws-sdk";
-
-const { DynamoDB } = AWS;
-
-const dynamoDb = new DynamoDB.DocumentClient();
-
-export const create = (event, context, callback) => {
+export const create: AWSLambda.APIGatewayProxyHandlerV2 = (
+  event,
+  context,
+  callback
+) => {
+  const dynamoDb = new AWS.DynamoDB.DocumentClient();
   const timestamp = new Date().getTime();
-  const data = JSON.parse(event.body);
+  const data = JSON.parse(event.body!);
   const params = {
-    TableName: process.env.DYNAMODB_TABLE,
+    TableName: process.env.DYNAMODB_TABLE!,
     Item: {
       ...data,
       id: uuid.v4(),
@@ -20,7 +21,7 @@ export const create = (event, context, callback) => {
   };
 
   // write the catch to the database
-  dynamoDb.put(params, (error, result) => {
+  dynamoDb.put(params, (error: AWSError, result: PutItemOutput) => {
     // handle potential errors
     if (error) {
       console.error(error);

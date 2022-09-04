@@ -4,9 +4,20 @@ frameworkVersion: "3"
 useDotenv: true
 
 plugins:
+  - serverless-webpack
   - serverless-dotenv-plugin
-  - serverless-plugin-common-excludes # this should go before serverless-plugin-include-dependencies
-  - serverless-plugin-include-dependencies
+
+custom:
+  webpack:
+    includeModules:
+      forceExclude:
+        - aws-sdk
+      nodeModulesRelativeDir: '../../'
+    packagerOptions:
+      lockFile: '../../package-lock.json'
+
+package:
+  individually: true
 
 provider:
   name: aws

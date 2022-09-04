@@ -1,19 +1,21 @@
-import AWS from "aws-sdk";
+import AWS, { AWSError } from "aws-sdk";
+import { GetItemOutput } from "aws-sdk/clients/dynamodb";
 
-const { DynamoDB } = AWS;
-
-const dynamoDb = new DynamoDB.DocumentClient();
-
-export const get = (event, context, callback) => {
+export const get: AWSLambda.APIGatewayProxyHandlerV2 = (
+  event,
+  context,
+  callback
+) => {
+  const dynamoDb = new AWS.DynamoDB.DocumentClient();
   const params = {
-    TableName: process.env.DYNAMODB_TABLE,
+    TableName: process.env.DYNAMODB_TABLE!,
     Key: {
-      id: event.pathParameters.id,
+      id: event.pathParameters!.id,
     },
   };
 
   // fetch catch from the database
-  dynamoDb.get(params, (error, result) => {
+  dynamoDb.get(params, (error: AWSError, result: GetItemOutput) => {
     // handle potential errors
     if (error) {
       console.error(error);
