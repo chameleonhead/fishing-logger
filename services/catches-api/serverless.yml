@@ -4,9 +4,11 @@ frameworkVersion: "3"
 useDotenv: true
 
 plugins:
+  - serverless-webpack
   - serverless-dotenv-plugin
-  - serverless-plugin-common-excludes # this should go before serverless-plugin-include-dependencies
-  - serverless-plugin-include-dependencies
+
+package:
+  individually: true
 
 provider:
   name: aws

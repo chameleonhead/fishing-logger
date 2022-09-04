@@ -6,11 +6,15 @@ const { DynamoDB } = AWS;
 
 const dynamoDb = new DynamoDB.DocumentClient();
 
-export const create = (event, context, callback) => {
+export const create: AWSLambda.APIGatewayProxyHandlerV2 = (
+  event,
+  context,
+  callback
+) => {
   const timestamp = new Date().getTime();
-  const data = JSON.parse(event.body);
+  const data = JSON.parse(event.body!);
   const params = {
-    TableName: process.env.DYNAMODB_TABLE,
+    TableName: process.env.DYNAMODB_TABLE!,
     Item: {
       ...data,
       id: uuid.v4(),

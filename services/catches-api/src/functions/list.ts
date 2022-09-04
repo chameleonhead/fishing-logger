@@ -4,10 +4,14 @@ const { DynamoDB } = AWS;
 
 const dynamoDb = new DynamoDB.DocumentClient();
 const params = {
-  TableName: process.env.DYNAMODB_TABLE,
+  TableName: process.env.DYNAMODB_TABLE!,
 };
 
-export const list = (event, context, callback) => {
+export const list: AWSLambda.APIGatewayProxyHandlerV2 = (
+  event,
+  context,
+  callback
+) => {
   // fetch all catches from the database
   dynamoDb.scan(params, (error, result) => {
     // handle potential errors
