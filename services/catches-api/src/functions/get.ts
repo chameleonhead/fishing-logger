@@ -1,14 +1,12 @@
-import AWS from "aws-sdk";
-
-const { DynamoDB } = AWS;
-
-const dynamoDb = new DynamoDB.DocumentClient();
+import AWS, { AWSError } from "aws-sdk";
+import { GetItemOutput } from "aws-sdk/clients/dynamodb";
 
 export const get: AWSLambda.APIGatewayProxyHandlerV2 = (
   event,
   context,
   callback
 ) => {
+  const dynamoDb = new AWS.DynamoDB.DocumentClient();
   const params = {
     TableName: process.env.DYNAMODB_TABLE!,
     Key: {
@@ -17,7 +15,7 @@ export const get: AWSLambda.APIGatewayProxyHandlerV2 = (
   };
 
   // fetch catch from the database
-  dynamoDb.get(params, (error, result) => {
+  dynamoDb.get(params, (error: AWSError, result: GetItemOutput) => {
     // handle potential errors
     if (error) {
       console.error(error);

@@ -1,14 +1,12 @@
-import AWS from "aws-sdk";
-
-const { DynamoDB } = AWS;
-
-const dynamoDb = new DynamoDB.DocumentClient();
+import AWS, { AWSError } from "aws-sdk";
+import { UpdateItemOutput } from "aws-sdk/clients/dynamodb";
 
 export const update: AWSLambda.APIGatewayProxyHandlerV2 = (
   event,
   context,
   callback
 ) => {
+  const dynamoDb = new AWS.DynamoDB.DocumentClient();
   const timestamp = new Date().getTime();
   const data = JSON.parse(event.body!);
 
@@ -53,7 +51,7 @@ export const update: AWSLambda.APIGatewayProxyHandlerV2 = (
   };
 
   // update the catch in the database
-  dynamoDb.update(params, (error, result) => {
+  dynamoDb.update(params, (error: AWSError, result: UpdateItemOutput) => {
     // handle potential errors
     if (error) {
       console.error(error);
