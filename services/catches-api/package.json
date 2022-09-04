@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc --noEmit",
     "test": "jest",
     "deploy": "serverless deploy",
     "deploy:staging": "serverless deploy --stage staging",
@@ -18,7 +19,6 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.102",
-    "@types/aws-sdk": "^2.7.0",
     "@types/jest": "^28.1.8",
     "@types/uuid": "^8.3.4",
     "jest": "^28.1.3",
