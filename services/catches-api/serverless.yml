@@ -12,6 +12,9 @@ custom:
     includeModules:
       forceExclude:
         - aws-sdk
+      nodeModulesRelativeDir: '../../'
+    packagerOptions:
+      lockFile: '../../package-lock.json'
 
 package:
   individually: true
