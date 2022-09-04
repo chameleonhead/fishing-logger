@@ -45,7 +45,7 @@ export const update: AWSLambda.APIGatewayProxyHandlerV2 = (
     },
     UpdateExpression:
       "SET " +
-      entries.map(({ attr, key }) => `${attr} = :${key}`).join(",") +
+      entries.map(({ attr, key }) => `${attr} = :${key}`).join(", ") +
       ", updatedAt = :updatedAt",
     ReturnValues: "ALL_NEW",
   };
