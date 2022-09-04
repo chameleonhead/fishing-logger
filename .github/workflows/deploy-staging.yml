@@ -1,6 +1,13 @@
 name: Deploy serverless
 
 on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - staging
   push:
     branches:
       - staging
@@ -19,6 +26,7 @@ jobs:
   publish:
     needs: build
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
