@@ -1,8 +1,7 @@
 {
   "name": "catches-api",
+  "private": true,
   "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "build": "tsc --noEmit",
     "test": "jest",
@@ -10,9 +9,6 @@
     "deploy:staging": "serverless deploy --stage staging",
     "deploy:prod": "serverless deploy --stage prod"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1209.0",
     "uuid": "^8.3.2"
