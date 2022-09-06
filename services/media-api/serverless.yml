@@ -1,0 +1,96 @@
+service: media-api
+frameworkVersion: "3"
+
+useDotenv: true
+
+plugins:
+  - serverless-webpack
+  - serverless-dotenv-plugin
+
+custom:
+  webpack:
+    includeModules:
+      forceExclude:
+        - aws-sdk
+      nodeModulesRelativeDir: "../../"
+    packagerOptions:
+      lockFile: "../../package-lock.json"
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  lambdaHashingVersion: "20201221"
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${sls:stage}
+    S3_BUCKET: fishing-logger-media-${sls:stage}
+  httpApi:
+    cors: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+        - Effect: Allow
+          Action:
+            - s3:AbortMultipartUpload
+            - s3:ListBucketMultipartUploads
+            - s3:ListMultipartUploadParts
+            - s3:DeleteObject
+            - s3:DeleteObjectVersion
+            - s3:GetObject
+            - s3:GetObjectAttributes
+            - s3:GetObjectVersion
+            - s3:GetObjectVersionAttributes
+            - s3:PutObject
+          Resource: "arn:aws:s3:::bucket-name/${self:provider.environment.S3_BUCKET}"
+
+functions:
+  initiate-upload:
+    handler: src/functions/initiate-upload.initiateUpload
+    events:
+      - httpApi:
+          path: /api/media/initiate-upload
+          method: post
+
+  # get:
+  #   handler: src/functions/get.get
+  #   events:
+  #     - httpApi:
+  #         path: /api/media/{id}
+  #         method: get
+
+  # file:
+  #   handler: src/functions/file.file
+  #   events:
+  #     - httpApi:
+  #         path: /api/media/{id}/file
+  #         method: get
+
+resources:
+  Resources:
+    CatchesDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+    MediaS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.S3_BUCKET}

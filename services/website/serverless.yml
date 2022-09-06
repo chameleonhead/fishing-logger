@@ -7,12 +7,11 @@ plugins:
   - serverless-dotenv-plugin
   - ./serverless-single-page-app-plugin
 
-custom:
-  s3Bucket: fishing-logger-website-${sls:stage}
-
 provider:
   name: aws
   runtime: nodejs16.x
+  environment:
+    S3_BUCKET: fishing-logger-website-${sls:stage}
 
 resources:
   Resources:
@@ -20,7 +19,7 @@ resources:
     WebAppS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.s3Bucket}
+        BucketName: ${self:provider.environment.S3_BUCKET}
         AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
@@ -38,7 +37,7 @@ resources:
               Principal: "*"
               Action:
                 - s3:GetObject
-              Resource: arn:aws:s3:::${self:custom.s3Bucket}/*
+              Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*
     ## Specifying the CloudFront Distribution to server your Web Application
     WebAppCloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
@@ -48,7 +47,7 @@ resources:
           Origins:
             - Id: WebApp
               ## An identifier for the origin which must be unique within the distribution
-              DomainName: ${self:custom.s3Bucket}.s3.amazonaws.com
+              DomainName: ${self:provider.environment.S3_BUCKET}.s3.amazonaws.com
               CustomOriginConfig:
                 HTTPPort: 80
                 HTTPSPort: 443
