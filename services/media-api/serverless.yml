@@ -63,6 +63,17 @@ functions:
           path: /api/media/initiate-upload
           method: post
 
+  on-upload-completed:
+    handler: src/functions/on-upload-completed.onUploadCompleted
+    events:
+      - s3:
+          bucket: ${self:provider.environment.S3_BUCKET}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploads/
+          existing: true
+          forceDeploy: true
+
   # get:
   #   handler: src/functions/get.get
   #   events:
@@ -79,7 +90,7 @@ functions:
 
 resources:
   Resources:
-    CatchesDynamoDbTable:
+    MediaDynamoDbTable:
       Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:

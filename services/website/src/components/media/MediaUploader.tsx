@@ -146,7 +146,12 @@ async function uploadFile(
   onProgress(1);
   const initiateResult = await fetch("/api/media/initiate-upload", {
     method: "POST",
-    body: "{}",
+    body: JSON.stringify({
+      name: file.name,
+      contentType: file.type,
+      lastModified: file.lastModified,
+      size: file.size,
+    }),
   });
   onProgress(10);
   if (!initiateResult.ok) {
