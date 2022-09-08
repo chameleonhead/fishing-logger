@@ -2,11 +2,13 @@ import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { useEffect, useState } from "react";
 import { Badge, Button, Col, ListGroup, ListGroupItem, Row } from "reactstrap";
 import Map from "../map/Map";
+import MediaUploader from "../media/MediaUploader";
 import { Catch } from "./models";
 
 type CatchDetailsProps = {
   data: Catch;
   onEditRequested?: () => void;
+  onRequestReload?: () => void;
 };
 
 export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
@@ -95,18 +97,27 @@ export default function ({
   onEditRequested: () => void;
 }) {
   const [data, setData] = useState(undefined);
+  const [requestReload, setRequestReload] = useState(true);
   useEffect(() => {
-    (async () => {
-      const result = await fetch(`/api/catches/${id}`, {
-        method: "GET",
-      });
-      if (result.ok) {
-        setData(await result.json());
-      }
-    })();
-  }, []);
+    setRequestReload(false);
+    if (requestReload) {
+      (async () => {
+        const result = await fetch(`/api/catches/${id}`, {
+          method: "GET",
+        });
+        if (result.ok) {
+          setData(await result.json());
+        }
+      })();
+    }
+  }, [requestReload]);
   if (data) {
-    return <CatchDetails data={data} onEditRequested={onEditRequested} />;
+    return (
+      <>
+        <CatchDetails data={data} onEditRequested={onEditRequested} />
+        <MediaUploader onSuccess={() => setRequestReload(true)} />
+      </>
+    );
   }
   return <div>Loading...</div>;
 }
