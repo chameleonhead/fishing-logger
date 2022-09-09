@@ -7,6 +7,7 @@
     "test:catches-api": "cd services/catches-api && npm test",
     "test:media-api": "cd services/media-api && npm test",
     "test:website": "cd services/website && npm test",
+    "build": "npm run build:apigw && npm run build:catches-api && npm run build:media-api && npm run build:website",
     "build:apigw": "cd services/apigw && npm run build",
     "build:catches-api": "cd services/catches-api && npm run build",
     "build:media-api": "cd services/media-api && npm run build",
