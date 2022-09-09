@@ -1,0 +1,15 @@
+services:
+  apigw:
+    path: services/apigw
+  catches-api:
+    path: services/catches-api
+    dependsOn:
+      - apigw
+  media-api:
+    path: services/media-api
+    dependsOn:
+      - apigw
+  website:
+    path: services/website
+    dependsOn:
+      - apigw

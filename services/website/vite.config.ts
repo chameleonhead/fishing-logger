@@ -1,13 +1,13 @@
-import { defineConfig } from "vite";
+import { defineConfig, splitVendorChunkPlugin } from "vite";
 import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), splitVendorChunkPlugin()],
   server: {
     proxy: {
       "/api": {
-        target: "https://9gvmx4p0y3.execute-api.us-east-1.amazonaws.com",
+        target: "https://7i11vuoghc.execute-api.ap-northeast-1.amazonaws.com",
         changeOrigin: true,
       },
     },

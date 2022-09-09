@@ -2,26 +2,25 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "test": "npm run test:catches-api && npm run test:website",
+    "test": "npm run test:apigw && npm run test:catches-api && npm run test:media-api && npm run test:website",
+    "test:apigw": "cd services/apigw && npm test",
     "test:catches-api": "cd services/catches-api && npm test",
+    "test:media-api": "cd services/media-api && npm test",
     "test:website": "cd services/website && npm test",
-    "build": "npm run build:catches-api && npm run build:website",
+    "build": "npm run build:apigw && npm run build:catches-api && npm run build:media-api && npm run build:website",
+    "build:apigw": "cd services/apigw && npm run build",
     "build:catches-api": "cd services/catches-api && npm run build",
+    "build:media-api": "cd services/media-api && npm run build",
     "build:website": "cd services/website && npm run build",
-    "deploy": "npm run deploy:catches-api && npm run deploy:website",
-    "deploy:catches-api": "cd services/catches-api && npm run deploy",
-    "deploy:website": "cd services/website && npm run deploy",
-    "deploy:staging": "npm run deploy:staging:catches-api && npm run deploy:staging:website",
-    "deploy:staging:catches-api": "cd services/catches-api && npm run deploy:staging",
-    "deploy:staging:website": "cd services/website && npm run deploy:staging",
-    "deploy:prod": "npm run deploy:prod:catches-api && npm run deploy:prod:website",
-    "deploy:prod:catches-api": "cd services/catches-api && npm run deploy:prod",
-    "deploy:prod:website": "cd services/website && npm run deploy:prod"
+    "deploy": "serverless deploy && cd services/website && npm run deploy",
+    "deploy:staging": "serverless deploy --stage staging && cd services/website && npm run deploy:staging",
+    "deploy:prod": "serverless deploy --stage prod && cd services/website && npm run deploy:prod"
   },
   "workspaces": [
     "services/*"
   ],
   "devDependencies": {
+    "@serverless/compose": "^1.3.0",
     "lerna": "^5.4.3",
     "nx": "^14.5.10"
   }

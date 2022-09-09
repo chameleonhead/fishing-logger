@@ -1,0 +1,16 @@
+{
+  "name": "fishing-logger-apigw",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "exit 0",
+    "test": "exit 0",
+    "deploy": "serverless deploy",
+    "deploy:staging": "serverless deploy --stage staging",
+    "deploy:prod": "serverless deploy --stage prod"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "serverless": "^3.22.0"
+  }
+}

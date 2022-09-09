@@ -1,6 +1,6 @@
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { useEffect, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, Navigate } from "react-router-dom";
 import {
   Badge,
   Col,
@@ -17,6 +17,9 @@ type CatchListProps = {
 };
 
 export const CatchList = ({ data }: CatchListProps) => {
+  if (data.length == 0) {
+    return <Navigate to="/catches/create" />;
+  }
   return (
     <ListGroup>
       {data.map((item) => {
@@ -68,7 +71,7 @@ export const CatchList = ({ data }: CatchListProps) => {
 };
 
 export default function () {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(undefined as Catch[] | undefined);
   useEffect(() => {
     (async () => {
       const result = await fetch("/api/catches", {
@@ -79,5 +82,8 @@ export default function () {
       }
     })();
   }, []);
-  return <CatchList data={data} />;
+  if (data) {
+    return <CatchList data={data} />;
+  }
+  return <div>Loading...</div>;
 }

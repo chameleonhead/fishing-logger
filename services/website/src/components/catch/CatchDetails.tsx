@@ -2,11 +2,14 @@ import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { useEffect, useState } from "react";
 import { Badge, Button, Col, ListGroup, ListGroupItem, Row } from "reactstrap";
 import Map from "../map/Map";
+import MediaThumbnail from "../media/MediaThumbnail";
+import MediaUploader from "../media/MediaUploader";
 import { Catch } from "./models";
 
 type CatchDetailsProps = {
   data: Catch;
   onEditRequested?: () => void;
+  onRequestReload?: () => void;
 };
 
 export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
@@ -83,6 +86,20 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
           <div>{data.method.details}</div>
         </div>
       )}
+      {data.media && data.media.length > 0 && (
+        <div className="mb-3">
+          <h2>添付ファイル</h2>
+          <ListGroup>
+            {data.media.map((media, i) => {
+              return (
+                <ListGroupItem key={media.id}>
+                  <MediaThumbnail id={media.id} />
+                </ListGroupItem>
+              );
+            })}
+          </ListGroup>
+        </div>
+      )}
     </div>
   );
 };
@@ -95,18 +112,37 @@ export default function ({
   onEditRequested: () => void;
 }) {
   const [data, setData] = useState(undefined);
+  const [requestReload, setRequestReload] = useState(true);
   useEffect(() => {
-    (async () => {
-      const result = await fetch(`/api/catches/${id}`, {
-        method: "GET",
-      });
-      if (result.ok) {
-        setData(await result.json());
-      }
-    })();
-  }, []);
+    setRequestReload(false);
+    if (requestReload) {
+      (async () => {
+        const result = await fetch(`/api/catches/${id}`, {
+          method: "GET",
+        });
+        if (result.ok) {
+          setData(await result.json());
+        }
+      })();
+    }
+  }, [requestReload]);
   if (data) {
-    return <CatchDetails data={data} onEditRequested={onEditRequested} />;
+    return (
+      <>
+        <CatchDetails data={data} onEditRequested={onEditRequested} />
+        <MediaUploader
+          onSuccess={(r) => {
+            (async () => {
+              await fetch(`/api/catches/${id}/media`, {
+                method: "POST",
+                body: JSON.stringify(r),
+              });
+              setRequestReload(true);
+            })();
+          }}
+        />
+      </>
+    );
   }
   return <div>Loading...</div>;
 }

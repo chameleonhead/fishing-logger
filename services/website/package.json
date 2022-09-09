@@ -1,5 +1,5 @@
 {
-  "name": "fishing-logger-frontend",
+  "name": "fishing-logger-website",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -40,7 +40,7 @@
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.0.1",
     "babel-loader": "^8.2.5",
-    "serverless-dotenv-plugin": "^4.0.2",
+    "serverless": "^3.22.0",
     "typescript": "^4.6.4",
     "vite": "^3.0.7"
   }

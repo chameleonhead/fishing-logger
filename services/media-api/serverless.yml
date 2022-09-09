@@ -1,0 +1,120 @@
+service: fishing-logger-media-api
+frameworkVersion: "3"
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpack:
+    includeModules:
+      forceExclude:
+        - aws-sdk
+      nodeModulesRelativeDir: "../../"
+    packagerOptions:
+      lockFile: "../../package-lock.json"
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  region: ap-northeast-1
+  runtime: nodejs16.x
+  lambdaHashingVersion: "20201221"
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${sls:stage}
+    S3_BUCKET: ${self:service}-${sls:stage}
+  httpApi:
+    id: !ImportValue sls-fishing-logger-apigw-${sls:stage}-HttpApiId
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+        - Effect: Allow
+          Action:
+            - s3:AbortMultipartUpload
+            - s3:ListBucketMultipartUploads
+            - s3:ListMultipartUploadParts
+            - s3:DeleteObject
+            - s3:DeleteObjectVersion
+            - s3:GetObject
+            - s3:GetObjectAttributes
+            - s3:GetObjectVersion
+            - s3:GetObjectVersionAttributes
+            - s3:PutObject
+          Resource:
+            - "arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*"
+
+functions:
+  initiate-upload:
+    handler: src/functions/initiate-upload.initiateUpload
+    events:
+      - httpApi:
+          path: /api/media/initiate-upload
+          method: post
+
+  on-upload-completed:
+    handler: src/functions/on-upload-completed.onUploadCompleted
+    events:
+      - s3:
+          bucket: ${self:provider.environment.S3_BUCKET}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploads/
+          existing: true
+          forceDeploy: true
+
+  get:
+    handler: src/functions/get.get
+    events:
+      - httpApi:
+          path: /api/media/{id}
+          method: get
+
+  # file:
+  #   handler: src/functions/file.file
+  #   events:
+  #     - httpApi:
+  #         path: /api/media/{id}/file
+  #         method: get
+
+resources:
+  Resources:
+    MediaDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+    MediaS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.S3_BUCKET}
+        AccessControl: Private
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: True
+          BlockPublicPolicy: True
+          IgnorePublicAcls: True
+          RestrictPublicBuckets: True
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - "*"
+              AllowedMethods:
+                - POST
+              AllowedHeaders:
+                - "*"

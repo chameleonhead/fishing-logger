@@ -1,18 +1,15 @@
-service: website
+service: fishing-logger-website
 frameworkVersion: "3"
 
-useDotenv: true
-
 plugins:
-  - serverless-dotenv-plugin
   - ./serverless-single-page-app-plugin
-
-custom:
-  s3Bucket: fishing-logger-website-${sls:stage}
 
 provider:
   name: aws
+  region: ap-northeast-1
   runtime: nodejs16.x
+  environment:
+    S3_BUCKET: ${self:service}-${sls:stage}
 
 resources:
   Resources:
@@ -20,7 +17,7 @@ resources:
     WebAppS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.s3Bucket}
+        BucketName: ${self:provider.environment.S3_BUCKET}
         AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
@@ -38,17 +35,17 @@ resources:
               Principal: "*"
               Action:
                 - s3:GetObject
-              Resource: arn:aws:s3:::${self:custom.s3Bucket}/*
+              Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*
     ## Specifying the CloudFront Distribution to server your Web Application
     WebAppCloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
-          Comment: ${sls:stage}-fishing-logger-website
+          Comment: ${sls:stage}-${self:service}
           Origins:
             - Id: WebApp
               ## An identifier for the origin which must be unique within the distribution
-              DomainName: ${self:custom.s3Bucket}.s3.amazonaws.com
+              DomainName: ${self:provider.environment.S3_BUCKET}.s3.ap-northeast-1.amazonaws.com
               CustomOriginConfig:
                 HTTPPort: 80
                 HTTPSPort: 443
@@ -56,9 +53,15 @@ resources:
               ## In case you want to restrict the bucket access use S3OriginConfig and remove CustomOriginConfig
               # S3OriginConfig:
               #   OriginAccessIdentity: origin-access-identity/cloudfront/E127EXAMPLE51Z
-            - Id: CatchesApi
+            - Id: Apigw
               ## An identifier for the origin which must be unique within the distribution
-              DomainName: ${env:API_GATEWAY_DOMAIN_NAME}
+              DomainName: !Join
+                - ""
+                - - !ImportValue sls-fishing-logger-apigw-${sls:stage}-HttpApiId
+                  - .execute-api.
+                  - !Ref AWS::Region
+                  - .
+                  - !Ref AWS::URLSuffix
               CustomOriginConfig:
                 HTTPPort: 80
                 HTTPSPort: 443
@@ -94,7 +97,7 @@ resources:
             ViewerProtocolPolicy: redirect-to-https
           CacheBehaviors:
             - PathPattern: /api/*
-              TargetOriginId: CatchesApi
+              TargetOriginId: Apigw
               Compress: false
               ViewerProtocolPolicy: redirect-to-https
               AllowedMethods:
