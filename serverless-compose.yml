@@ -3,13 +3,13 @@ services:
     path: services/apigw
   catches-api:
     path: services/catches-api
-    depends_on:
+    dependsOn:
       - apigw
   media-api:
     path: services/media-api
-    depends_on:
+    dependsOn:
       - apigw
   website:
     path: services/website
-    depends_on:
+    dependsOn:
       - apigw
