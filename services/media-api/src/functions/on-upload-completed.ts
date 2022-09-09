@@ -1,3 +1,4 @@
+import * as uuid from "uuid";
 import AWS from "aws-sdk";
 
 export const onUploadCompleted: AWSLambda.S3Handler = async (
@@ -41,11 +42,39 @@ export const onUploadCompleted: AWSLambda.S3Handler = async (
       }
 
       const Key = "media/" + result.Item.data.id;
+      const item = {
+        ...result.Item.data,
+        Key: Key,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      };
       try {
+        const headObjectResult = await s3
+          .headObject({
+            Bucket: data.s3.bucket.name,
+            Key: data.s3.object.key,
+          })
+          .promise();
+
+        if (typeof item.id !== "string") {
+          item.id = uuid.v4();
+        }
+        if (typeof item.contentType !== "string" || !item.contentType) {
+          item.contentType = "application/octet-stream";
+        }
+        if (typeof item.size !== "number") {
+          item.size = headObjectResult.ContentLength;
+        }
+        if (typeof item.lastModified !== "number") {
+          item.lastModified =
+            headObjectResult.LastModified?.getTime() || Date.now();
+        }
+
         await s3
           .copyObject({
             Bucket: process.env.S3_BUCKET!,
             Key: Key,
+            ContentType: item.contentType,
             CopySource: `/${data.s3.bucket.name}/${data.s3.object.key}`,
           })
           .promise();
@@ -66,12 +95,7 @@ export const onUploadCompleted: AWSLambda.S3Handler = async (
         await dynamoDb
           .put({
             TableName: process.env.DYNAMODB_TABLE!,
-            Item: {
-              ...result.Item.data,
-              Key: Key,
-              createdAt: timestamp,
-              updatedAt: timestamp,
-            },
+            Item: item,
           })
           .promise();
       } catch (error) {
