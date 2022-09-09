@@ -1,0 +1,59 @@
+service: fishing-logger-apigw
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  region: ap-northeast-1
+  httpApi:
+    metrics: true
+    cors: true
+
+resources:
+  Resources:
+    HttpApi:
+      Type: AWS::ApiGatewayV2::Api
+      Properties:
+        Name: ${sls:stage}-${self:service}
+        ProtocolType: HTTP
+        CorsConfiguration:
+          AllowHeaders:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          AllowMethods:
+            - OPTIONS
+            - POST
+            - GET
+          AllowOrigins:
+            - "*"
+    HttpApiStage:
+      Type: AWS::ApiGatewayV2::Stage
+      Properties:
+        ApiId: !Ref HttpApi
+        StageName: $default
+        AutoDeploy: true
+        DefaultRouteSettings:
+          DetailedMetricsEnabled: false
+
+  Outputs:
+    HttpApiId:
+      Description: Id of the HTTP API
+      Value: !Ref HttpApi
+      Export:
+        Name: sls-${self:service}-${sls:stage}-HttpApiId
+    HttpApiUrl:
+      Description: URL of the HTTP API,
+      Value: !Join
+        - ""
+        - - https://
+          - !Ref HttpApi
+          - .execute-api.
+          - !Ref AWS::Region
+          - .
+          - !Ref AWS::URLSuffix
+      Export:
+        Name: sls-${self:service}-${sls:stage}-HttpApiUrl

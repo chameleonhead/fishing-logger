@@ -26,10 +26,10 @@ npm run storybook
 --------
 
 ```
-npm create vite@latest fishing-logger-frontend -- --template react-ts
-mv fishing-logger-frontend/* .
-mv fishing-logger-frontend/.gitignore .
-rmdir fishing-logger-frontend
+npm create vite@latest fishing-logger-website -- --template react-ts
+mv fishing-logger-website/* .
+mv fishing-logger-website/.gitignore .
+rmdir fishing-logger-website
 npx sb init --builder @storybook/builder-vite
 npm install bootstrap reactstrap --force
 npm install formik yup
