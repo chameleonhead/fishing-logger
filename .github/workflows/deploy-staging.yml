@@ -42,5 +42,3 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
       - run: npm run deploy:staging
-        env:
-          API_GATEWAY_DOMAIN_NAME: ${{ secrets.API_GATEWAY_DOMAIN_NAME_STAGING }}
