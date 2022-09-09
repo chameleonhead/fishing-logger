@@ -7,7 +7,7 @@ import {
   useMapEvent,
   ZoomControl,
 } from "react-leaflet";
-import { createControlComponent } from "@react-leaflet/core";
+import { createControlComponent } from "react-leaflet/node_modules/@react-leaflet/core";
 import { Control, DomEvent, DomUtil, Map as LfMap } from "leaflet";
 
 const DEFAULT_POSITION = { lat: 35.65809922, lng: 139.74135747 };

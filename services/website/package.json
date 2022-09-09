@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@js-joda/core": "^5.3.1",
-    "@react-leaflet/core": "^2.0.1",
     "bootstrap": "^5.2.0",
     "formik": "^2.2.9",
     "leaflet": "^1.8.0",
