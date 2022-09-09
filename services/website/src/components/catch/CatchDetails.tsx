@@ -2,6 +2,7 @@ import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { useEffect, useState } from "react";
 import { Badge, Button, Col, ListGroup, ListGroupItem, Row } from "reactstrap";
 import Map from "../map/Map";
+import MediaThumbnail from "../media/MediaThumbnail";
 import MediaUploader from "../media/MediaUploader";
 import { Catch } from "./models";
 
@@ -85,6 +86,20 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
           <div>{data.method.details}</div>
         </div>
       )}
+      {data.media && data.media.length > 0 && (
+        <div className="mb-3">
+          <h2>添付ファイル</h2>
+          <ListGroup>
+            {data.media.map((media, i) => {
+              return (
+                <ListGroupItem key={media.id}>
+                  <MediaThumbnail id={media.id} />
+                </ListGroupItem>
+              );
+            })}
+          </ListGroup>
+        </div>
+      )}
     </div>
   );
 };
@@ -115,7 +130,17 @@ export default function ({
     return (
       <>
         <CatchDetails data={data} onEditRequested={onEditRequested} />
-        <MediaUploader onSuccess={() => setRequestReload(true)} />
+        <MediaUploader
+          onSuccess={(r) => {
+            (async () => {
+              await fetch(`/api/catches/${id}/media`, {
+                method: "POST",
+                body: JSON.stringify(r),
+              });
+              setRequestReload(true);
+            })();
+          }}
+        />
       </>
     );
   }

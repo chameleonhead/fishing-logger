@@ -1,5 +1,4 @@
-import AWS, { AWSError } from "aws-sdk";
-import { ScanOutput } from "aws-sdk/clients/dynamodb";
+import AWS from "aws-sdk";
 
 export const list: AWSLambda.APIGatewayProxyHandlerV2 = (
   event,
@@ -11,7 +10,7 @@ export const list: AWSLambda.APIGatewayProxyHandlerV2 = (
     TableName: process.env.DYNAMODB_TABLE!,
   };
   // fetch all catches from the database
-  dynamoDb.scan(params, (error: AWSError, result: ScanOutput) => {
+  dynamoDb.scan(params, (error, result) => {
     // handle potential errors
     if (error) {
       console.error(error);

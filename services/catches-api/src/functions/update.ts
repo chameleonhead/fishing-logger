@@ -1,5 +1,4 @@
-import AWS, { AWSError } from "aws-sdk";
-import { UpdateItemOutput } from "aws-sdk/clients/dynamodb";
+import AWS from "aws-sdk";
 
 export const update: AWSLambda.APIGatewayProxyHandlerV2 = (
   event,
@@ -51,7 +50,7 @@ export const update: AWSLambda.APIGatewayProxyHandlerV2 = (
   };
 
   // update the catch in the database
-  dynamoDb.update(params, (error: AWSError, result: UpdateItemOutput) => {
+  dynamoDb.update(params, (error, result) => {
     // handle potential errors
     if (error) {
       console.error(error);

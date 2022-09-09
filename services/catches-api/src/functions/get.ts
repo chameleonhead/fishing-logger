@@ -1,5 +1,4 @@
-import AWS, { AWSError } from "aws-sdk";
-import { GetItemOutput } from "aws-sdk/clients/dynamodb";
+import AWS from "aws-sdk";
 
 export const get: AWSLambda.APIGatewayProxyHandlerV2 = (
   event,
@@ -15,7 +14,7 @@ export const get: AWSLambda.APIGatewayProxyHandlerV2 = (
   };
 
   // fetch catch from the database
-  dynamoDb.get(params, (error: AWSError, result: GetItemOutput) => {
+  dynamoDb.get(params, (error, result) => {
     // handle potential errors
     if (error) {
       console.error(error);

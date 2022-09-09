@@ -216,7 +216,7 @@ const reducer = function (
 async function uploadFile(
   file: File,
   onProgress: (progress: number) => void,
-  onSuccess: () => void,
+  onSuccess: (result: { id: string }) => void,
   onError: (err: FileUploadError) => void
 ) {
   try {
@@ -250,7 +250,7 @@ async function uploadFile(
       onError(new Error("File upload failed."));
       return;
     }
-    onSuccess();
+    onSuccess({ id: data.data.id as any });
   } catch (error) {
     console.error(error);
     onError(new Error("File upload failed."));
@@ -258,7 +258,11 @@ async function uploadFile(
   }
 }
 
-export default function ({ onSuccess }: { onSuccess: () => void }) {
+export default function ({
+  onSuccess,
+}: {
+  onSuccess: (result: { id: string }) => void;
+}) {
   const [state, dispatch] = useReducer(reducer, initialValue);
   useEffect(() => {
     let uploadingCount = 0;
@@ -272,12 +276,12 @@ export default function ({ onSuccess }: { onSuccess: () => void }) {
         uploadFile(
           f.target,
           (p) => dispatch(actions.progressFileUpload(f.id, p)),
-          () => {
+          (r) => {
             dispatch(actions.fileUploadSucceeded(f.id));
             setTimeout(() => {
               dispatch(actions.removeFromQueue(f.id));
             }, 1000);
-            onSuccess();
+            onSuccess(r);
           },
           (err) => dispatch(actions.fileUploadFailed(f.id, err))
         );

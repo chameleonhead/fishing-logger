@@ -19,6 +19,7 @@ export type Catch = {
     type: string;
     details?: string;
   };
+  media: { id: string }[];
   weatherInfo?: {
     weather: string;
     pressureHpa?: number;

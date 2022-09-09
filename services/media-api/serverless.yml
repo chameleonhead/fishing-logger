@@ -74,12 +74,12 @@ functions:
           existing: true
           forceDeploy: true
 
-  # get:
-  #   handler: src/functions/get.get
-  #   events:
-  #     - httpApi:
-  #         path: /api/media/{id}
-  #         method: get
+  get:
+    handler: src/functions/get.get
+    events:
+      - httpApi:
+          path: /api/media/{id}
+          method: get
 
   # file:
   #   handler: src/functions/file.file

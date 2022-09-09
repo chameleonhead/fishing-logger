@@ -1,6 +1,5 @@
 import * as uuid from "uuid";
-import AWS, { AWSError } from "aws-sdk";
-import { PutItemOutput } from "aws-sdk/clients/dynamodb";
+import AWS from "aws-sdk";
 
 export const create: AWSLambda.APIGatewayProxyHandlerV2 = (
   event,
@@ -21,7 +20,7 @@ export const create: AWSLambda.APIGatewayProxyHandlerV2 = (
   };
 
   // write the catch to the database
-  dynamoDb.put(params, (error: AWSError, result: PutItemOutput) => {
+  dynamoDb.put(params, (error, result) => {
     // handle potential errors
     if (error) {
       console.error(error);
