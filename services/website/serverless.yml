@@ -45,7 +45,7 @@ resources:
           Origins:
             - Id: WebApp
               ## An identifier for the origin which must be unique within the distribution
-              DomainName: ${self:provider.environment.S3_BUCKET}.s3.amazonaws.com
+              DomainName: ${self:provider.environment.S3_BUCKET}.s3.ap-northeast-1.amazonaws.com
               CustomOriginConfig:
                 HTTPPort: 80
                 HTTPSPort: 443
