@@ -20,6 +20,7 @@ export const get: AWSLambda.APIGatewayProxyHandlerV2 = async (
     const signedUrl = await s3.getSignedUrl("getObject", {
       Bucket: process.env.S3_BUCKET!,
       Key: result.Item?.Key,
+      ResponseContentDisposition: `attachment; filename="${result.Item?.name}"`,
     });
     // create a response
     const response = {
