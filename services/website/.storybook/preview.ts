@@ -1,5 +1,4 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import "leaflet/dist/leaflet.css";
 import "../src/index.css";
 
 export const parameters = {
