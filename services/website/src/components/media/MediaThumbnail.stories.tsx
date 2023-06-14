@@ -33,6 +33,16 @@ withImage.args = {
   },
 };
 
+export const withImageWithPreviewOpen = Template.bind({});
+withImageWithPreviewOpen.args = {
+  data: {
+    ...Default.args.data!,
+    contentType: "image/png",
+    url: sample.image,
+  },
+  isPreviewOpen: true,
+};
+
 export const withAudio = Template.bind({});
 withAudio.args = {
   data: {

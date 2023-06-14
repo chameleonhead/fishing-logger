@@ -33,5 +33,6 @@ Default.args = {
       type: "釣",
       details: "餌釣り（ゴカイ）",
     },
+    media: [{ id: "id1" }],
   },
 };

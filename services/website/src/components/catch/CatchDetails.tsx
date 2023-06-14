@@ -89,15 +89,15 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
       {data.media && data.media.length > 0 && (
         <div className="mb-3">
           <h2>添付ファイル</h2>
-          <ListGroup>
+          <div className="d-flex flex-row">
             {data.media.map((media, i) => {
               return (
-                <ListGroupItem key={media.id}>
+                <div key={media.id} style={{ minWidth: "100px" }}>
                   <MediaThumbnail id={media.id} />
-                </ListGroupItem>
+                </div>
               );
             })}
-          </ListGroup>
+          </div>
         </div>
       )}
     </div>
