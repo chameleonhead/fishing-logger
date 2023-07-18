@@ -111,7 +111,7 @@
 
 #### 要求
 
-`POST /api/ships/{shipId}/renew-iot-config`
+`PUT /api/ships/{shipId}/iot-config`
 
 **Request Parameter**
 

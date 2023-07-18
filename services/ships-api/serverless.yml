@@ -1,0 +1,112 @@
+service: fishing-logger-ships-api
+frameworkVersion: "3"
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpack:
+    includeModules:
+      forceExclude:
+        - aws-sdk
+      nodeModulesRelativeDir: "../../"
+    packagerOptions:
+      lockFile: "../../package-lock.json"
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  region: ap-northeast-1
+  runtime: nodejs16.x
+  lambdaHashingVersion: "20201221"
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${sls:stage}
+  httpApi:
+    id: !ImportValue sls-fishing-logger-apigw-${sls:stage}-HttpApiId
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:provider.environment.DYNAMODB_TABLE}
+        - Effect: Allow
+          Action:
+            - iot:DescribeEndpoint
+          Resource: arn:aws:iot:${aws:region}:${aws:accountId}:*
+
+functions:
+  list:
+    handler: src/functions/list.list
+    events:
+      - httpApi:
+          path: /api/ships
+          method: get
+
+  register:
+    handler: src/functions/register.handler
+    events:
+      - httpApi:
+          path: /api/ships/register
+          method: post
+
+  get:
+    handler: src/functions/get.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}
+          method: get
+
+  get-iot-config:
+    handler: src/functions/get-iot-config.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}/iot-config
+          method: get
+
+  put-iot-config:
+    handler: src/functions/put-iot-config.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}/iot-config
+          method: put
+
+  update:
+    handler: src/functions/update.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}
+          method: put
+
+resources:
+  Resources:
+    shipsDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+    shipsIotCorePolicy:
+      Type: AWS::IoT::Policy
+      Properties: 
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - iot:Connect
+              Resource: 
+                - arn:aws:iot:${aws:region}:${aws:accountId}:client/*
