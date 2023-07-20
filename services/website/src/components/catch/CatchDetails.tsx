@@ -2,9 +2,9 @@ import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { useEffect, useState } from "react";
 import { Badge, Button, Col, ListGroup, ListGroupItem, Row } from "reactstrap";
 import Map from "../map/Map";
-import MediaThumbnail from "../media/MediaThumbnail";
 import MediaUploader from "../media/MediaUploader";
 import { Catch } from "./models";
+import { MediaList } from "../media/MediaList";
 
 type CatchDetailsProps = {
   data: Catch;
@@ -89,15 +89,7 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
       {data.media && data.media.length > 0 && (
         <div className="mb-3">
           <h2>添付ファイル</h2>
-          <div className="d-flex flex-row">
-            {data.media.map((media, i) => {
-              return (
-                <div key={media.id} style={{ minWidth: "100px" }}>
-                  <MediaThumbnail id={media.id} />
-                </div>
-              );
-            })}
-          </div>
+          <MediaList data={data.media} />
         </div>
       )}
     </div>
