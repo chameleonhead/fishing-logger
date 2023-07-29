@@ -8,7 +8,7 @@ type MediaListProps = {
 export const MediaList = ({ data }: MediaListProps) => {
   return (
     <Row>
-      {data.map((media, i) => {
+      {data.map((media) => {
         return (
           <Col key={media.id} xs="12" sm="6" md="4" className="mb-2">
             <MediaThumbnail id={media.id} />

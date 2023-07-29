@@ -1,32 +1,29 @@
+import { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { DynamoDB, PutItemOutput } from "@aws-sdk/client-dynamodb";
+import { S3Client } from "@aws-sdk/client-s3";
+import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import * as uuid from "uuid";
-import AWS from "aws-sdk";
 
-export const initiateUpload: AWSLambda.APIGatewayProxyHandlerV2 = (
+export const initiateUpload: APIGatewayProxyHandlerV2 = (
   event,
   context,
   callback
 ) => {
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
-  const s3 = new AWS.S3();
+  const dynamoDb = new DynamoDB({});
+  const s3 = new S3Client({});
   const timestamp = new Date().getTime();
   const data = JSON.parse(event.body!);
 
   const id = uuid.v4();
   const uploadKey = "uploads/" + id;
-  s3.createPresignedPost(
+  createPresignedPost(
+    s3,
     {
       Bucket: process.env.S3_BUCKET!,
+      Key: uploadKey,
       Fields: {
-        Key: uploadKey,
       },
-    },
-    (error, result) => {
-      // handle potential errors
-      if (error) {
-        console.error(error);
-        callback(new Error("Couldn't start upload."));
-        return;
-      }
+    }).then(result => {
       const params = {
         TableName: process.env.DYNAMODB_TABLE!,
         Item: {
@@ -43,7 +40,7 @@ export const initiateUpload: AWSLambda.APIGatewayProxyHandlerV2 = (
       };
 
       // write the catch to the database
-      dynamoDb.put(params, (error, result) => {
+      dynamoDb.putItem(params as any, (error: any, result: PutItemOutput | undefined) => {
         // handle potential errors
         if (error) {
           console.error(error);
@@ -58,6 +55,9 @@ export const initiateUpload: AWSLambda.APIGatewayProxyHandlerV2 = (
         };
         callback(null, response);
       });
-    }
-  );
+
+    }).catch((error) => {
+      console.error(error);
+      callback(new Error("Couldn't start upload."));
+    });
 };

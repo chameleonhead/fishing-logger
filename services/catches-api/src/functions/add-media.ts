@@ -1,11 +1,12 @@
-import AWS from "aws-sdk";
+import { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { DynamoDB, GetItemCommandOutput, UpdateItemOutput } from "@aws-sdk/client-dynamodb";
 
-export const addMedia: AWSLambda.APIGatewayProxyHandlerV2 = (
+export const addMedia: APIGatewayProxyHandlerV2 = (
   event,
   context,
   callback
 ) => {
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
+  const dynamoDb = new DynamoDB({});
   const timestamp = new Date().getTime();
   const data = JSON.parse(event.body!);
   const params = {
@@ -13,10 +14,10 @@ export const addMedia: AWSLambda.APIGatewayProxyHandlerV2 = (
     Key: {
       id: event.pathParameters!.id,
     },
-  };
+  } as any
 
   // fetch catch from the database
-  dynamoDb.get(params, (error, result) => {
+  dynamoDb.getItem(params, (error: any, result: GetItemCommandOutput | undefined) => {
     // handle potential errors
     if (error) {
       console.error(error);
@@ -34,15 +35,15 @@ export const addMedia: AWSLambda.APIGatewayProxyHandlerV2 = (
         id: event.pathParameters!.id,
       },
       ExpressionAttributeValues: {
-        ":media": (result.Item?.media || []).concat([data]),
+        ":media": (result!.Item?.media.SS || []).concat([data]),
         ":updatedAt": timestamp,
       },
       UpdateExpression: "SET media = :media, updatedAt = :updatedAt",
       ReturnValues: "ALL_NEW",
-    };
+    } as any;
 
     // update the catch in the database
-    dynamoDb.update(params, (error, result) => {
+    dynamoDb.updateItem(params, (error: any, result: UpdateItemOutput | undefined) => {
       // handle potential errors
       if (error) {
         console.error(error);
@@ -57,7 +58,7 @@ export const addMedia: AWSLambda.APIGatewayProxyHandlerV2 = (
       // create a response
       const response = {
         statusCode: 200,
-        body: JSON.stringify(result.Attributes),
+        body: JSON.stringify(result!.Attributes),
       };
       callback(null, response);
     });

@@ -1,33 +1,38 @@
-import AWS from "aws-sdk";
+import { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { S3RequestPresigner, getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-export const get: AWSLambda.APIGatewayProxyHandlerV2 = async (
+export const get: APIGatewayProxyHandlerV2 = async (
   event,
   context
 ) => {
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
-  const s3 = new AWS.S3();
+  const dynamoDb = new DynamoDB({});
   const params = {
     TableName: process.env.DYNAMODB_TABLE!,
     Key: {
-      id: event.pathParameters!.id,
+      id: {
+        S: event.pathParameters!.id!,
+      }
     },
   };
 
   try {
     // fetch media from the database
-    const result = await dynamoDb.get(params).promise();
-
-    const signedUrl = await s3.getSignedUrl("getObject", {
+    const result = await dynamoDb.getItem(params);
+    const s3Client = new S3Client({});
+    const command = new GetObjectCommand({
       Bucket: process.env.S3_BUCKET!,
-      Key: result.Item?.Key,
+      Key: result.Item!.Key!.S,
       ResponseContentDisposition: `attachment; filename="${result.Item?.name}"`,
     });
+    const signedUrl = getSignedUrl(s3Client, command, { expiresIn: 3600 });
     // create a response
     const response = {
       statusCode: 200,
       body: JSON.stringify({
         ...result.Item,
-        lastModified: new Date(result.Item?.lastModified).toISOString(),
+        lastModified: new Date(Number(result.Item!.lastModified!.N)).toISOString(),
         url: signedUrl,
       }),
     };

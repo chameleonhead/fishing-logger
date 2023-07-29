@@ -1,11 +1,12 @@
-import AWS from "aws-sdk";
+import { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { DynamoDB, UpdateItemOutput } from "@aws-sdk/client-dynamodb";
 
-export const update: AWSLambda.APIGatewayProxyHandlerV2 = (
+export const update: APIGatewayProxyHandlerV2 = (
   event,
   context,
   callback
 ) => {
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
+  const dynamoDb = new DynamoDB({});
   const timestamp = new Date().getTime();
   const data = JSON.parse(event.body!);
 
@@ -40,17 +41,17 @@ export const update: AWSLambda.APIGatewayProxyHandlerV2 = (
         prev[":" + key] = value;
         return prev;
       }, {} as any),
-      ":updatedAt": timestamp,
+      ":updatedAt": timestamp
     },
     UpdateExpression:
       "SET " +
       entries.map(({ attr, key }) => `${attr} = :${key}`).join(", ") +
       ", updatedAt = :updatedAt",
     ReturnValues: "ALL_NEW",
-  };
+  } as any;
 
   // update the catch in the database
-  dynamoDb.update(params, (error, result) => {
+  dynamoDb.updateItem(params, (error: any, result: UpdateItemOutput | undefined) => {
     // handle potential errors
     if (error) {
       console.error(error);
@@ -65,7 +66,7 @@ export const update: AWSLambda.APIGatewayProxyHandlerV2 = (
     // create a response
     const response = {
       statusCode: 200,
-      body: JSON.stringify(result.Attributes),
+      body: JSON.stringify(result!.Attributes),
     };
     callback(null, response);
   });

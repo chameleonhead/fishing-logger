@@ -1,12 +1,13 @@
+import { APIGatewayProxyHandlerV2 } from 'aws-lambda'
+import { DynamoDB, PutItemOutput } from '@aws-sdk/client-dynamodb';
 import * as uuid from "uuid";
-import AWS from "aws-sdk";
 
-export const create: AWSLambda.APIGatewayProxyHandlerV2 = (
+export const create: APIGatewayProxyHandlerV2 = (
   event,
   context,
   callback
 ) => {
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
+  const dynamoDb = new DynamoDB({});
   const timestamp = new Date().getTime();
   const data = JSON.parse(event.body!);
   const params = {
@@ -20,7 +21,7 @@ export const create: AWSLambda.APIGatewayProxyHandlerV2 = (
   };
 
   // write the catch to the database
-  dynamoDb.put(params, (error, result) => {
+  dynamoDb.putItem(params, (error: any, result: PutItemOutput | undefined) => {
     // handle potential errors
     if (error) {
       console.error(error);
