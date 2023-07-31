@@ -1,10 +1,17 @@
 version: '3'
 services:
-  node:
-    image: node:18-bookworm
+  serverless:
+    build:
+      context: ./docker/serverless
+    environment:
+      - AWS_ACCESS_KEY_ID=DUMMYKEYID
+      - AWS_SECRET_ACCESS_KEY=DUMMYKEY
+      - AWS_DEFAULT_REGION=local
+      - DYNAMO_ENDPOINT=http://localstack:4566
+    depends_on:
+      - localstack
   localstack:
     image: localstack/localstack
     ports:
-      - "4567-4584:4567-4584"
-      - "8080:8080"
-
+      - 4566:4566
+      - 4510-4559:4510-4559
