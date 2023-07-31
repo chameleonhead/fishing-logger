@@ -1,0 +1,10 @@
+version: '3'
+services:
+  node:
+    image: node:18-bookworm
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4567-4584:4567-4584"
+      - "8080:8080"
+
