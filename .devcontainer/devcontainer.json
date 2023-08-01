@@ -18,8 +18,7 @@
 	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"features": {
-		"ghcr.io/devcontainers/features/git:1": {},
-		"ghcr.io/devcontainers/features/git-lfs:1": {}
+		"ghcr.io/devcontainers/features/git:1": {}
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
@@ -41,5 +40,16 @@
 	// "customizations": {},
 
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	"remoteUser": "node"
+	"remoteUser": "node",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"donjayamanne.git-extension-pack",
+				"mhutchie.git-graph",
+				"GitHub.copilot",
+				"esbenp.prettier-vscode",
+				"ms-azuretools.vscode-docker"
+			]
+		}
+	}
 }

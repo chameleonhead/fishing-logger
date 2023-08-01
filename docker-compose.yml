@@ -6,8 +6,8 @@ services:
     environment:
       - AWS_ACCESS_KEY_ID=DUMMYKEYID
       - AWS_SECRET_ACCESS_KEY=DUMMYKEY
-      - AWS_DEFAULT_REGION=local
-      - DYNAMO_ENDPOINT=http://localstack:4566
+      - AWS_REGION=ap-northeast-1
+      - DYNAMODB_ENDPOINT=http://localstack:4566
     depends_on:
       - localstack
   localstack:
@@ -15,3 +15,8 @@ services:
     ports:
       - 4566:4566
       - 4510-4559:4510-4559
+    environment:
+      - DEBUG=true
+      - DEFAULT_REGION=ap-northeast-1
+      - HOSTNAME=localstack
+      - LOCALSTACK_HOSTNAME=localstack
