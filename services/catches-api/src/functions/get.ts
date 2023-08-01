@@ -1,9 +1,6 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB, GetItemOutput } from "@aws-sdk/client-dynamodb";
-import {
-  convertFromItem,
-  convertToAttributeValue,
-} from "../shared/dynamodb-utils";
+import { convertToAttr, unmarshall } from "@aws-sdk/util-dynamodb";
 
 export const get: APIGatewayProxyHandlerV2 = (event, context, callback) => {
   const dynamoDb = new DynamoDB({
@@ -13,7 +10,7 @@ export const get: APIGatewayProxyHandlerV2 = (event, context, callback) => {
   const params = {
     TableName: process.env.DYNAMODB_TABLE!,
     Key: {
-      id: convertToAttributeValue(event.pathParameters!.id),
+      id: convertToAttr(event.pathParameters!.id),
     },
   } as any;
 
@@ -43,7 +40,7 @@ export const get: APIGatewayProxyHandlerV2 = (event, context, callback) => {
     // create a response
     const response = {
       statusCode: 200,
-      body: JSON.stringify(convertFromItem(result!.Item as any)),
+      body: JSON.stringify(unmarshall(result!.Item as any)),
     };
     callback(null, response);
   });

@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { marshall } from "@aws-sdk/util-dynamodb";
 import { APIGatewayProxyHandlerV2, APIGatewayProxyResultV2 } from "aws-lambda";
-import { convertToItem } from "../src/shared/dynamodb-utils";
 
 export async function ensureTableNoData(dynamoDb: DynamoDB, tableName: string) {
   const table = await dynamoDb
@@ -47,7 +47,7 @@ export async function ensureTableWithData(
     RequestItems: {
       [tableName]: data.map((item) => ({
         PutRequest: {
-          Item: convertToItem(item) as any,
+          Item: marshall(item) as any,
         },
       })),
     },

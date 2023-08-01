@@ -4,11 +4,7 @@ import {
   GetItemCommandOutput,
   UpdateItemOutput,
 } from "@aws-sdk/client-dynamodb";
-import {
-  convertFromAttributeValue,
-  convertFromItem,
-  convertToAttributeValue,
-} from "../shared/dynamodb-utils";
+import { convertToAttr, convertToNative, unmarshall } from "@aws-sdk/util-dynamodb";
 
 export const addMedia: APIGatewayProxyHandlerV2 = (
   event,
@@ -24,7 +20,7 @@ export const addMedia: APIGatewayProxyHandlerV2 = (
   const params = {
     TableName: process.env.DYNAMODB_TABLE!,
     Key: {
-      id: convertToAttributeValue(event.pathParameters!.id),
+      id: convertToAttr(event.pathParameters!.id),
     },
   } as any;
 
@@ -47,15 +43,15 @@ export const addMedia: APIGatewayProxyHandlerV2 = (
         const params = {
           TableName: process.env.DYNAMODB_TABLE!,
           Key: {
-            id: convertToAttributeValue(event.pathParameters!.id),
+            id: convertToAttr(event.pathParameters!.id),
           },
           ExpressionAttributeValues: {
-            ":media": convertToAttributeValue(
-              convertFromAttributeValue(
+            ":media": convertToAttr(
+              convertToNative(
                 (result!.Item?.media as any) || { L: [] },
               ).concat([data]),
             ),
-            ":updated_at": convertToAttributeValue(timestamp),
+            ":updated_at": convertToAttr(timestamp),
           },
           UpdateExpression: "SET media = :media, updated_at = :updated_at",
           ReturnValues: "ALL_NEW",
@@ -79,7 +75,7 @@ export const addMedia: APIGatewayProxyHandlerV2 = (
             // create a response
             const response = {
               statusCode: 200,
-              body: JSON.stringify(convertFromItem(result!.Attributes as any)),
+              body: JSON.stringify(unmarshall(result!.Attributes as any)),
             };
             callback(null, response);
           },

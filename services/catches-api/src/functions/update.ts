@@ -1,9 +1,6 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB, UpdateItemOutput } from "@aws-sdk/client-dynamodb";
-import {
-  convertFromItem,
-  convertToAttributeValue,
-} from "../shared/dynamodb-utils";
+import { convertToAttr, unmarshall } from "@aws-sdk/util-dynamodb";
 
 export const update: APIGatewayProxyHandlerV2 = (event, context, callback) => {
   const dynamoDb = new DynamoDB({
@@ -31,7 +28,7 @@ export const update: APIGatewayProxyHandlerV2 = (event, context, callback) => {
   const params = {
     TableName: process.env.DYNAMODB_TABLE!,
     Key: {
-      id: convertToAttributeValue(event.pathParameters!.id),
+      id: convertToAttr(event.pathParameters!.id),
     },
     ExpressionAttributeNames: {
       ...entries.reduce((prev, { attr, key }) => {
@@ -41,10 +38,10 @@ export const update: APIGatewayProxyHandlerV2 = (event, context, callback) => {
     },
     ExpressionAttributeValues: {
       ...entries.reduce((prev, { key, value }) => {
-        prev[":" + key] = convertToAttributeValue(value);
+        prev[":" + key] = convertToAttr(value);
         return prev;
       }, {} as any),
-      ":updated_at": convertToAttributeValue(timestamp),
+      ":updated_at": convertToAttr(timestamp),
     },
     UpdateExpression:
       "SET " +
@@ -71,7 +68,7 @@ export const update: APIGatewayProxyHandlerV2 = (event, context, callback) => {
       // create a response
       const response = {
         statusCode: 200,
-        body: JSON.stringify(convertFromItem(result!.Attributes as any)),
+        body: JSON.stringify(unmarshall(result!.Attributes as any)),
       };
       callback(null, response);
     },

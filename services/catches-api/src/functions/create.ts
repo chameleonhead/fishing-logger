@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB, PutItemOutput } from "@aws-sdk/client-dynamodb";
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import * as uuid from "uuid";
-import { convertFromItem, convertToItem } from "../shared/dynamodb-utils";
 
 export const create: APIGatewayProxyHandlerV2 = (event, context, callback) => {
   const dynamoDb = new DynamoDB({
@@ -12,7 +12,7 @@ export const create: APIGatewayProxyHandlerV2 = (event, context, callback) => {
   const data = JSON.parse(event.body!);
   const params = {
     TableName: process.env.DYNAMODB_TABLE!,
-    Item: convertToItem({
+    Item: marshall({
       ...data,
       id: uuid.v4(),
       created_at: timestamp,
@@ -34,7 +34,7 @@ export const create: APIGatewayProxyHandlerV2 = (event, context, callback) => {
       // create a response
       const response = {
         statusCode: 200,
-        body: JSON.stringify(convertFromItem(params.Item)),
+        body: JSON.stringify(unmarshall(params.Item)),
       };
       callback(null, response);
     },
