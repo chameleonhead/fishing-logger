@@ -25,7 +25,7 @@ Default.args = {
     fishes: [
       {
         species: "オオモンハタ",
-        sizeText: "20cm",
+        size_text: "20cm",
         count: 1,
       },
     ],

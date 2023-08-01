@@ -11,7 +11,7 @@ export type Catch = {
   fishes: [
     {
       species: string;
-      sizeText?: string;
+      size_text?: string;
       count: number;
     }
   ];
@@ -20,15 +20,15 @@ export type Catch = {
     details?: string;
   };
   media?: { id: string }[];
-  weatherInfo?: {
+  weather_info?: {
     weather: string;
-    pressureHpa?: number;
+    pressure_hpa?: number;
     temperature?: number;
-    waterTemperature?: number;
-    windSpeedMps?: number;
-    windDirection?: string;
+    water_temperature?: number;
+    wind_speed_mps?: number;
+    wind_direction?: string;
     humidity?: number;
-    visibilityKm?: number;
+    visibility_km?: number;
     comment?: string;
   };
 };

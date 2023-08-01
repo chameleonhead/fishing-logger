@@ -26,7 +26,7 @@ Default.args = {
       fishes: [
         {
           species: "オオモンハタ",
-          sizeText: "20cm",
+          size_text: "20cm",
           count: 1,
         },
       ],
@@ -45,7 +45,7 @@ Default.args = {
       fishes: [
         {
           species: "タコ",
-          sizeText: "20cm",
+          size_text: "20cm",
           count: 1,
         },
       ],

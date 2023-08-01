@@ -1,12 +1,12 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB, ScanOutput } from "@aws-sdk/client-dynamodb";
+import { convertFromItem } from "../shared/dynamodb-utils";
 
-export const list: APIGatewayProxyHandlerV2 = (
-  event,
-  context,
-  callback
-) => {
-  const dynamoDb = new DynamoDB({});
+export const list: APIGatewayProxyHandlerV2 = (event, context, callback) => {
+  const dynamoDb = new DynamoDB({
+    endpoint: process.env.DYNAMODB_ENDPOINT,
+    region: process.env.AWS_REGION,
+  });
   const params = {
     TableName: process.env.DYNAMODB_TABLE!,
   };
@@ -26,7 +26,9 @@ export const list: APIGatewayProxyHandlerV2 = (
     // create a response
     const response = {
       statusCode: 200,
-      body: JSON.stringify(result!.Items),
+      body: JSON.stringify({
+        items: result!.Items?.map((item) => convertFromItem(item as any)),
+      }),
     };
     callback(null, response);
   });

@@ -65,9 +65,9 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
                     <div className="d-flex justify-content-between">
                       <div>
                         {fish.species}
-                        {!fish.sizeText ? null : (
+                        {!fish.size_text ? null : (
                           <span className="ms-3 text-muted">
-                            {fish.sizeText}
+                            {fish.size_text}
                           </span>
                         )}
                       </div>
