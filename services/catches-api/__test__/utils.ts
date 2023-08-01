@@ -2,23 +2,21 @@ import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { APIGatewayProxyHandlerV2, APIGatewayProxyResultV2 } from "aws-lambda";
 import { convertToItem } from "../src/shared/dynamodb-utils";
 
-export async function ensureTableNoData(tableName: string) {
-  const dynamoDb = new DynamoDB({
-    endpoint: process.env.DYNAMODB_ENDPOINT,
-    region: process.env.AWS_REGION,
-  });
+export async function ensureTableNoData(dynamoDb: DynamoDB, tableName: string) {
   const table = await dynamoDb
     .describeTable({
       TableName: tableName,
     })
     .catch(() => undefined);
   if (table) {
+    console.log(`Deleting table ${tableName}`);
     await dynamoDb.deleteTable({
       TableName: tableName,
     });
   }
+  console.log(`Creating table ${tableName}`);
   await dynamoDb.createTable({
-    TableName: process.env.DYNAMODB_TABLE,
+    TableName: tableName,
     AttributeDefinitions: [
       {
         AttributeName: "id",
@@ -38,12 +36,13 @@ export async function ensureTableNoData(tableName: string) {
   });
 }
 
-export async function ensureTableWithData(tableName: string, data: any[]) {
-  const dynamoDb = new DynamoDB({
-    endpoint: process.env.DYNAMODB_ENDPOINT,
-    region: process.env.AWS_REGION,
-  });
-  await ensureTableNoData(tableName);
+export async function ensureTableWithData(
+  dynamoDb: DynamoDB,
+  tableName: string,
+  data: any[],
+) {
+  await ensureTableNoData(dynamoDb, tableName);
+  console.log(`Writing data to table ${tableName}`);
   await dynamoDb.batchWriteItem({
     RequestItems: {
       [tableName]: data.map((item) => ({

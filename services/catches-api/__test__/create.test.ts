@@ -1,3 +1,4 @@
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { create } from "../src/functions/create";
 import { ensureTableNoData, request } from "./utils";
 
@@ -15,7 +16,11 @@ describe("create catches", () => {
   });
 
   it("should create a new catch", async () => {
-    await ensureTableNoData(process.env.DYNAMODB_TABLE!);
+    const dynamoDb = new DynamoDB({
+      endpoint: process.env.DYNAMODB_ENDPOINT,
+      region: process.env.AWS_REGION,
+    });
+    await ensureTableNoData(dynamoDb, process.env.DYNAMODB_TABLE!);
     const result = await request(create, {
       body: {
         catched_at: "2022-09-04T18:05:02Z",

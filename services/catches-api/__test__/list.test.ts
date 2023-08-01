@@ -1,3 +1,4 @@
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { list } from "../src/functions/list";
 import { ensureTableWithData, request } from "./utils";
 
@@ -15,7 +16,11 @@ describe("list catches", () => {
   });
 
   it("should list catches", async () => {
-    await ensureTableWithData(process.env.DYNAMODB_TABLE!, [
+    const dynamoDb = new DynamoDB({
+      endpoint: process.env.DYNAMODB_ENDPOINT,
+      region: process.env.AWS_REGION,
+    });
+    await ensureTableWithData(dynamoDb, process.env.DYNAMODB_TABLE!, [
       {
         id: "test1",
         catched_at: "2022-09-04T18:05:02Z",
