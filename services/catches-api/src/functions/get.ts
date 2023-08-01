@@ -1,16 +1,19 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB, GetItemOutput } from "@aws-sdk/client-dynamodb";
+import {
+  convertFromItem,
+  convertToAttributeValue,
+} from "../shared/dynamodb-utils";
 
-export const get: APIGatewayProxyHandlerV2 = (
-  event,
-  context,
-  callback
-) => {
-  const dynamoDb = new DynamoDB({});
+export const get: APIGatewayProxyHandlerV2 = (event, context, callback) => {
+  const dynamoDb = new DynamoDB({
+    endpoint: process.env.DYNAMODB_ENDPOINT,
+    region: process.env.AWS_REGION,
+  });
   const params = {
     TableName: process.env.DYNAMODB_TABLE!,
     Key: {
-      id: event.pathParameters!.id,
+      id: convertToAttributeValue(event.pathParameters!.id),
     },
   } as any;
 
@@ -27,10 +30,20 @@ export const get: APIGatewayProxyHandlerV2 = (
       return;
     }
 
+    if (!result?.Item) {
+      const response = {
+        statusCode: 404,
+        headers: { "Content-Type": "text/plain" },
+        body: "Catch item not found.",
+      };
+      callback(null, response);
+      return;
+    }
+
     // create a response
     const response = {
       statusCode: 200,
-      body: JSON.stringify(result!.Item),
+      body: JSON.stringify(convertFromItem(result!.Item as any)),
     };
     callback(null, response);
   });
