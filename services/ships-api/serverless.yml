@@ -8,7 +8,9 @@ custom:
   webpack:
     includeModules:
       forceExclude:
-        - aws-sdk
+        - "@aws-sdk/client-dynamodb"
+        - "@aws-sdk/util-dynamodb"
+        - "@aws-sdk/client-iot"
       nodeModulesRelativeDir: "../../"
     packagerOptions:
       lockFile: "../../package-lock.json"
