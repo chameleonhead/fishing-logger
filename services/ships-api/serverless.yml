@@ -43,8 +43,18 @@ provider:
           Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:provider.environment.DYNAMODB_TABLE}
         - Effect: Allow
           Action:
-            - iot:DescribeEndpoint
+            - iot:DescribeThing
+            - iot:CreateThing
+            - iot:AddThingToThingGroup
+            - iot:AttachThingPrincipal
+            - iot:AttachPolicy
           Resource: arn:aws:iot:${aws:region}:${aws:accountId}:*
+        - Effect: Allow
+          Action:
+            - iot:DescribeEndpoint
+            - iot:CreateKeysAndCertificate
+            - iot:CreateCertificateFromCsr
+          Resource: "*"
 
 functions:
   create:
@@ -85,10 +95,17 @@ resources:
             - Effect: Allow
               Action:
                 - iot:Connect
+              Resource:
+                - !Join
+                  - ""
+                  - - "arn:aws:iot:${aws:region}:${aws:accountId}:client/$"
+                    - "{iot:Connection.Thing.ThingName}"
+            - Effect: Allow
+              Action:
                 - iot:Publish
                 - iot:Subscribe
               Resource:
-                - arn:aws:iot:${aws:region}:${aws:accountId}:client/*
+                - arn:aws:iot:${aws:region}:${aws:accountId}:topic/*
     shipsIotThingGroup:
       Type: AWS::IoT::ThingGroup
       Properties:
