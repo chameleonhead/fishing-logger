@@ -8,11 +8,12 @@ export async function ensureTableNoData(dynamoDb: DynamoDB, tableName: string) {
       TableName: tableName,
     })
     .catch(() => undefined);
-  if (table) {
+  if (table?.Table) {
     console.log(`Deleting table ${tableName}`);
     await dynamoDb.deleteTable({
       TableName: tableName,
     });
+    console.log(`Deleted table ${tableName}`);
   }
   console.log(`Creating table ${tableName}`);
   await dynamoDb.createTable({
@@ -34,6 +35,7 @@ export async function ensureTableNoData(dynamoDb: DynamoDB, tableName: string) {
       WriteCapacityUnits: 1,
     },
   });
+  console.log(`Created table ${tableName}`);
 }
 
 export async function ensureTableWithData(
