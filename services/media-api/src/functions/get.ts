@@ -30,7 +30,7 @@ export const get: APIGatewayProxyHandlerV2 = async (event, context) => {
       Key: item.key,
       ResponseContentDisposition: `attachment; filename="${item.name}"`,
     });
-    const signedUrl = getSignedUrl(s3Client, command, { expiresIn: 3600 });
+    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
     // create a response
     const response = {
       statusCode: 200,
