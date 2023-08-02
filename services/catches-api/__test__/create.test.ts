@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { create } from "../src/functions/create";
-import { ensureTableNoData, request } from "./utils";
+import { apiEvent, callLambda, ensureTableNoData } from "./utils";
 
 describe("create catches", () => {
   const OLD_ENV = process.env;
@@ -21,7 +21,7 @@ describe("create catches", () => {
       region: process.env.AWS_REGION,
     });
     await ensureTableNoData(dynamoDb, process.env.DYNAMODB_TABLE!);
-    const result = await request(create, {
+    const result = await callLambda(create, apiEvent({
       body: {
         catched_at: "2022-09-04T18:05:02Z",
         place: {
@@ -40,9 +40,13 @@ describe("create catches", () => {
           details: "餌釣り（ゴカイ）",
         },
       },
-    });
+    }));
+
+    if (typeof result !== "object") {
+      fail("result is not an object")
+    }
     expect(result.statusCode).toBe(200);
-    expect(JSON.parse(result.body)).toEqual({
+    expect(JSON.parse(result.body!)).toEqual({
       id: expect.any(String),
       catched_at: "2022-09-04T18:05:02Z",
       place: {

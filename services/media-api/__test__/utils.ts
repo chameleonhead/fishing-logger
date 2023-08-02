@@ -2,11 +2,9 @@ import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { S3 } from "@aws-sdk/client-s3";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import {
-  APIGatewayProxyEvent,
   APIGatewayProxyEventV2,
   Handler,
   S3Event,
-  S3NotificationEvent,
 } from "aws-lambda";
 
 export async function ensureTableNoData(dynamoDb: DynamoDB, tableName: string) {

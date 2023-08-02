@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { list } from "../src/functions/list";
-import { ensureTableWithData, request } from "./utils";
+import { apiEvent, callLambda, ensureTableWithData } from "./utils";
 
 describe("list catches", () => {
   const OLD_ENV = process.env;
@@ -30,9 +30,13 @@ describe("list catches", () => {
         catched_at: "2022-09-04T18:05:03Z",
       },
     ]);
-    const result = await request(list, {});
+    const result = await callLambda(list, apiEvent({}));
+
+    if (typeof result !== "object") {
+      fail("result is not an object")
+    }
     expect(result.statusCode).toBe(200);
-    expect(JSON.parse(result.body)).toEqual({
+    expect(JSON.parse(result.body!)).toEqual({
       items: [
         {
           id: "test1",
