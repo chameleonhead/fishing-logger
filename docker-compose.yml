@@ -1,0 +1,23 @@
+version: '3'
+services:
+  serverless:
+    build:
+      context: ./docker/serverless
+    environment:
+      - AWS_ACCESS_KEY_ID=DUMMYKEYID
+      - AWS_SECRET_ACCESS_KEY=DUMMYKEY
+      - AWS_REGION=ap-northeast-1
+      - DYNAMODB_ENDPOINT=http://localstack:4566
+      - S3_ENDPOINT=http://localstack:4566
+    depends_on:
+      - localstack
+  localstack:
+    image: localstack/localstack
+    ports:
+      - 4566:4566
+      - 4510-4559:4510-4559
+    environment:
+      - DEBUG=true
+      - DEFAULT_REGION=ap-northeast-1
+      - HOSTNAME=localstack
+      - LOCALSTACK_HOSTNAME=localstack

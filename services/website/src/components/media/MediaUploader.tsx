@@ -225,8 +225,8 @@ async function uploadFile(
       method: "POST",
       body: JSON.stringify({
         name: file.name,
-        contentType: file.type,
-        lastModified: file.lastModified,
+        content_type: file.type,
+        last_modified: file.lastModified,
         size: file.size,
       }),
     });

@@ -35,7 +35,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
         | null
         | undefined,
       fishes_species: [""],
-      fishes_sizeText: [""],
+      fishes_size_text: [""],
       fishes_count: [""],
       method_type: "",
       method_details: "",
@@ -62,9 +62,9 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           .filter((value) => !!value)
           .map((value, i) => ({
             species: value,
-            sizeText: !values.fishes_sizeText
+            size_text: !values.fishes_size_text
               ? undefined
-              : values.fishes_sizeText[i],
+              : values.fishes_size_text[i],
             count: 1,
           })),
         method: {
@@ -142,7 +142,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
           name="fishes_sizeText[0]"
           placeholder="例) 50cm"
           type="text"
-          value={formik.values.fishes_sizeText[0]}
+          value={formik.values.fishes_size_text[0]}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />

@@ -50,9 +50,9 @@ export const CatchList = ({ data }: CatchListProps) => {
               <Col>
                 <ListGroupItemHeading className="d-inline">
                   {item.fishes[0].species}
-                  {!item.fishes[0].sizeText ? null : (
+                  {!item.fishes[0].size_text ? null : (
                     <span className="ms-3 text-muted">
-                      {item.fishes[0].sizeText}
+                      {item.fishes[0].size_text}
                     </span>
                   )}
                 </ListGroupItemHeading>
@@ -78,7 +78,7 @@ export default function () {
         method: "GET",
       });
       if (result.ok) {
-        setData(await result.json());
+        setData((await result.json()).items);
       }
     })();
   }, []);

@@ -2,9 +2,9 @@ import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { useEffect, useState } from "react";
 import { Badge, Button, Col, ListGroup, ListGroupItem, Row } from "reactstrap";
 import Map from "../map/Map";
-import MediaThumbnail from "../media/MediaThumbnail";
 import MediaUploader from "../media/MediaUploader";
 import { Catch } from "./models";
+import { MediaList } from "../media/MediaList";
 
 type CatchDetailsProps = {
   data: Catch;
@@ -65,9 +65,9 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
                     <div className="d-flex justify-content-between">
                       <div>
                         {fish.species}
-                        {!fish.sizeText ? null : (
+                        {!fish.size_text ? null : (
                           <span className="ms-3 text-muted">
-                            {fish.sizeText}
+                            {fish.size_text}
                           </span>
                         )}
                       </div>
@@ -89,15 +89,7 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
       {data.media && data.media.length > 0 && (
         <div className="mb-3">
           <h2>添付ファイル</h2>
-          <ListGroup>
-            {data.media.map((media, i) => {
-              return (
-                <ListGroupItem key={media.id}>
-                  <MediaThumbnail id={media.id} />
-                </ListGroupItem>
-              );
-            })}
-          </ListGroup>
+          <MediaList data={data.media} />
         </div>
       )}
     </div>

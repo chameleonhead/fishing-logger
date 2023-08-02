@@ -3,11 +3,9 @@ import {
   NavLink as RouterNavLink,
   Outlet,
 } from "react-router-dom";
-import { Nav, Navbar, NavbarBrand, NavItem, NavLink } from "reactstrap";
+import { Nav, Navbar, NavbarBrand, NavItem } from "reactstrap";
 
-type LayoutProps = {};
-
-export const Layout = ({}: LayoutProps) => {
+export const Layout = () => {
   return (
     <>
       <Navbar color="dark" dark>

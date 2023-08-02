@@ -25,7 +25,7 @@ Default.args = {
     fishes: [
       {
         species: "オオモンハタ",
-        sizeText: "20cm",
+        size_text: "20cm",
         count: 1,
       },
     ],
@@ -33,5 +33,6 @@ Default.args = {
       type: "釣",
       details: "餌釣り（ゴカイ）",
     },
+    media: [{ id: "id1" }],
   },
 };

@@ -25,7 +25,7 @@ export const EditCatchForm = ({ data, onSubmit }: EditCatchFormProps) => {
   const formik = useFormik({
     initialValues: {
       catched_at: LocalDateTime.from(
-        Instant.parse(data.catched_at).atZone(ZoneId.SYSTEM)
+        Instant.parse(data.catched_at).atZone(ZoneId.SYSTEM),
       ) as LocalDateTime | null | undefined,
       place: data.place as
         | {
@@ -35,7 +35,7 @@ export const EditCatchForm = ({ data, onSubmit }: EditCatchFormProps) => {
         | null
         | undefined,
       fishes_species: data.fishes.map((fish) => fish.species),
-      fishes_sizeText: data.fishes.map((fish) => fish.sizeText || ""),
+      fishes_size_text: data.fishes.map((fish) => fish.size_text || ""),
       fishes_count: data.fishes.map((fish) => fish.count),
       method_type: data.method.type,
       method_details: data.method.details || "",
@@ -64,7 +64,7 @@ export const EditCatchForm = ({ data, onSubmit }: EditCatchFormProps) => {
           .filter((value) => !!value)
           .map((value, i) => ({
             species: value,
-            sizeText: values.fishes_sizeText[i] || undefined,
+            size_text: values.fishes_size_text[i] || undefined,
             count: Number(values.fishes_count[i] || undefined),
           })),
         method: {
@@ -136,13 +136,13 @@ export const EditCatchForm = ({ data, onSubmit }: EditCatchFormProps) => {
           )}
       </FormGroup>
       <FormGroup>
-        <Label for="fishes_sizeText0">サイズ</Label>
+        <Label for="fishes_size_text0">サイズ</Label>
         <Input
-          id="fishes_sizeText0"
-          name="fishes_sizeText[0]"
+          id="fishes_size_text0"
+          name="fishes_size_text[0]"
           placeholder="例) 50cm"
           type="text"
-          value={formik.values.fishes_sizeText[0]}
+          value={formik.values.fishes_size_text[0]}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />

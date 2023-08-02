@@ -11,6 +11,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "serverless": "^3.22.0"
+    "serverless": "^3.33.0"
   }
 }
