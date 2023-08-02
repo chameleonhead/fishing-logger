@@ -3,6 +3,7 @@ import { DynamoDB, PutItemOutput } from "@aws-sdk/client-dynamodb";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import * as uuid from "uuid";
+import { marshall } from "@aws-sdk/util-dynamodb";
 
 export const initiateUpload: APIGatewayProxyHandlerV2 = (
   event,
@@ -26,7 +27,7 @@ export const initiateUpload: APIGatewayProxyHandlerV2 = (
     }).then(result => {
       const params = {
         TableName: process.env.DYNAMODB_TABLE!,
-        Item: {
+        Item: marshall({
           id: uploadKey,
           data: {
             ...data,
@@ -34,9 +35,9 @@ export const initiateUpload: APIGatewayProxyHandlerV2 = (
           },
           url: result.url,
           fields: result.fields,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-        },
+          created_at: timestamp,
+          updated_at: timestamp,
+        }),
       };
 
       // write the catch to the database

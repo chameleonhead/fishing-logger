@@ -21,7 +21,7 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = (
   }
 
   const entries = Object.entries(data)
-    .filter(([key]) => !["id", "createdAt", "updatedAt"].includes(key))
+    .filter(([key]) => !["id", "created_at", "updated_at"].includes(key))
     .map(([key, value], i) => ({ attr: `#attr${i}`, key, value }));
 
   const params = {
@@ -40,12 +40,12 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = (
         prev[":" + key] = value;
         return prev;
       }, {} as any),
-      ":updatedAt": timestamp,
+      ":updated_at": timestamp,
     },
     UpdateExpression:
       "SET " +
       entries.map(({ attr, key }) => `${attr} = :${key}`).join(", ") +
-      ", updatedAt = :updatedAt",
+      ", updated_at = :updated_at",
     ReturnValues: "ALL_NEW",
   };
 

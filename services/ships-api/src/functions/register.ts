@@ -14,8 +14,8 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = (
     Item: {
       ...data,
       id: uuid.v4(),
-      createdAt: timestamp,
-      updatedAt: timestamp,
+      created_at: timestamp,
+      updated_at: timestamp,
     },
   };
 

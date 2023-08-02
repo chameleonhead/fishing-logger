@@ -13,8 +13,8 @@ import {
 type Media = {
   id: string;
   name: string;
-  contentType: string;
-  lastModified: string;
+  content_type: string;
+  last_modified: string;
   size: number;
   url: string;
 };
@@ -27,13 +27,13 @@ type MediaThumbnailProps = {
 
 export const MediaThumbnail = (props: MediaThumbnailProps) => {
   const { data } = props;
-  if (data.contentType.startsWith("image/")) {
+  if (data.content_type.startsWith("image/")) {
     return <ImageThumbnail {...props} />;
   }
-  if (data.contentType.startsWith("audio/")) {
+  if (data.content_type.startsWith("audio/")) {
     return <AudioThumbnail {...props} />;
   }
-  if (data.contentType.startsWith("video/")) {
+  if (data.content_type.startsWith("video/")) {
     return <VideoThumbnail {...props} />;
   }
   return (
@@ -159,7 +159,7 @@ export const VideoThumbnail = ({ data }: MediaThumbnailProps) => {
       className="h-100 d-flex align-items-center justify-content-center"
     >
       <video controls>
-        <source src={data.url} type={data.contentType} />
+        <source src={data.url} type={data.content_type} />
         Sorry, your browser doesn't support embedded videos.
       </video>
     </Card>

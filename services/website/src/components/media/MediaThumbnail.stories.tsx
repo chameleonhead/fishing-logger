@@ -17,8 +17,8 @@ Default.args = {
   data: {
     id: "id",
     name: "Filename",
-    contentType: "application/octet-stream",
-    lastModified: "2022-09-09T12:10:13Z",
+    content_type: "application/octet-stream",
+    last_modified: "2022-09-09T12:10:13Z",
     size: 200,
     url: sample.image,
   },
@@ -28,7 +28,7 @@ export const withImage = Template.bind({});
 withImage.args = {
   data: {
     ...Default.args.data!,
-    contentType: "image/png",
+    content_type: "image/png",
     url: sample.image,
   },
 };
@@ -37,7 +37,7 @@ export const withImageWithPreviewOpen = Template.bind({});
 withImageWithPreviewOpen.args = {
   data: {
     ...Default.args.data!,
-    contentType: "image/png",
+    content_type: "image/png",
     url: sample.image,
   },
   isPreviewOpen: true,
@@ -47,7 +47,7 @@ export const withAudio = Template.bind({});
 withAudio.args = {
   data: {
     ...Default.args.data!,
-    contentType: "audio/ogg",
+    content_type: "audio/ogg",
     url: sample.audio,
   },
 };
@@ -56,7 +56,7 @@ export const withVideo = Template.bind({});
 withVideo.args = {
   data: {
     ...Default.args.data!,
-    contentType: "video/mp4",
+    content_type: "video/mp4",
     url: sample.video,
   },
 };

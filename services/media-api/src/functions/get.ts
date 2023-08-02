@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { S3RequestPresigner, getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 export const get: APIGatewayProxyHandlerV2 = async (
   event,
@@ -32,7 +32,7 @@ export const get: APIGatewayProxyHandlerV2 = async (
       statusCode: 200,
       body: JSON.stringify({
         ...result.Item,
-        lastModified: new Date(Number(result.Item!.lastModified!.N)).toISOString(),
+        last_modified: new Date(Number(result.Item!.last_modified!.N)).toISOString(),
         url: signedUrl,
       }),
     };

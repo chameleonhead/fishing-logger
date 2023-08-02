@@ -35,9 +35,9 @@ export const handler: AWSLambda.APIGatewayProxyHandlerV2 = (
       },
       ExpressionAttributeValues: {
         ":media": (result.Item?.media || []).concat([data]),
-        ":updatedAt": timestamp,
+        ":updated_at": timestamp,
       },
-      UpdateExpression: "SET media = :media, updatedAt = :updatedAt",
+      UpdateExpression: "SET media = :media, updated_at = :updated_at",
       ReturnValues: "ALL_NEW",
     };
 

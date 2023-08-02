@@ -46,8 +46,8 @@ export const onUploadCompleted: S3Handler = async (
       const item = {
         ...result.Item.data.M,
         Key: Key,
-        createdAt: timestamp,
-        updatedAt: timestamp,
+        created_at: timestamp,
+        updated_at: timestamp,
       } as any;
       try {
         const headObjectResult = await s3
@@ -59,14 +59,14 @@ export const onUploadCompleted: S3Handler = async (
         if (typeof item.M.id.S !== "string") {
           item.id = uuid.v4();
         }
-        if (typeof item.contentType !== "string" || !item.contentType) {
-          item.contentType = "application/octet-stream";
+        if (typeof item.content_type !== "string" || !item.content_type) {
+          item.content_type = "application/octet-stream";
         }
         if (typeof item.size !== "number") {
           item.size = headObjectResult.ContentLength;
         }
-        if (typeof item.lastModified !== "number") {
-          item.lastModified =
+        if (typeof item.last_modified !== "number") {
+          item.last_modified =
             headObjectResult.LastModified?.getTime() || Date.now();
         }
 
@@ -74,7 +74,7 @@ export const onUploadCompleted: S3Handler = async (
           .copyObject({
             Bucket: process.env.S3_BUCKET!,
             Key: Key,
-            ContentType: item.contentType,
+            ContentType: item.content_type,
             CopySource: `/${data.s3.bucket.name}/${data.s3.object.key}`,
           });
       } catch (error) {
