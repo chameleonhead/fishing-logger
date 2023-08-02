@@ -56,6 +56,7 @@ export const registerIot: APIGatewayProxyHandlerV2 = async (event) => {
         id: convertToAttr(id),
       },
       ExpressionAttributeValues: {
+        ":iot_enabled": convertToAttr(true),
         ":iot_config": convertToAttr({
           csr,
           certificate_arn: certificateArn,
@@ -65,7 +66,7 @@ export const registerIot: APIGatewayProxyHandlerV2 = async (event) => {
         ":updated_at": convertToAttr(timestamp),
       },
       UpdateExpression:
-        "SET iot_config = :iot_config, updated_at = :updated_at",
+        "SET iot_enabled = :iot_enabled, iot_config = :iot_config, updated_at = :updated_at",
       ReturnValues: "ALL_NEW",
     });
 
@@ -89,6 +90,7 @@ export const registerIot: APIGatewayProxyHandlerV2 = async (event) => {
         id: convertToAttr(id),
       },
       ExpressionAttributeValues: {
+        ":iot_enabled": convertToAttr(true),
         ":iot_config": convertToAttr({
           certificate_arn: certificateArn,
           certificate_id: certificateId,
@@ -98,7 +100,7 @@ export const registerIot: APIGatewayProxyHandlerV2 = async (event) => {
         ":updated_at": convertToAttr(timestamp),
       },
       UpdateExpression:
-        "SET iot_config = :iot_config, updated_at = :updated_at",
+        "SET iot_enabled = :iot_enabled, iot_config = :iot_config, updated_at = :updated_at",
       ReturnValues: "ALL_NEW",
     });
 

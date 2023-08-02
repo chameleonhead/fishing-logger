@@ -14,20 +14,22 @@ export const get: APIGatewayProxyHandlerV2 = async (event) => {
     },
   };
 
-  // fetch catch from the database
+  // fetch ship from the database
   const result = await dynamoDb.getItem(params)
 
   if (!result.Item) {
     return {
       statusCode: 404,
       headers: { "Content-Type": "text/plain" },
-      body: "Catch not found.",
+      body: "Ship not found.",
     };
   }
 
   // create a response
+  const ship = unmarshall(result!.Item!);
+  delete ship.iot_config;
   return {
     statusCode: 200,
-    body: JSON.stringify(unmarshall(result!.Item as any)),
+    body: JSON.stringify(ship),
   };
 };

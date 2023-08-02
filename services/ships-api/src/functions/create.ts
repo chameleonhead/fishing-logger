@@ -16,6 +16,7 @@ export const create: APIGatewayProxyHandlerV2 = async (event) => {
     Item: {
       id: convertToAttr(id),
       name: convertToAttr(body.name),
+      iot_enabled: convertToAttr(false),
       created_at: convertToAttr(timestamp),
       updated_at: convertToAttr(timestamp),
     }
