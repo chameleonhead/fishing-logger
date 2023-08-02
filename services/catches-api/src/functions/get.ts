@@ -1,8 +1,8 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { DynamoDB, GetItemOutput } from "@aws-sdk/client-dynamodb";
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { convertToAttr, unmarshall } from "@aws-sdk/util-dynamodb";
 
-export const get: APIGatewayProxyHandlerV2 = (event, context, callback) => {
+export const get: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
@@ -12,36 +12,32 @@ export const get: APIGatewayProxyHandlerV2 = (event, context, callback) => {
     Key: {
       id: convertToAttr(event.pathParameters!.id),
     },
-  } as any;
+  };
 
-  // fetch catch from the database
-  dynamoDb.getItem(params, (error: any, result: GetItemOutput | undefined) => {
-    // handle potential errors
-    if (error) {
-      console.error(error);
-      callback(null, {
-        statusCode: error.statusCode || 501,
-        headers: { "Content-Type": "text/plain" },
-        body: "Couldn't fetch the catch item.",
-      });
-      return;
-    }
+  try {
+    // fetch catch from the database
+    const result = await dynamoDb.getItem(params)
 
-    if (!result?.Item) {
-      const response = {
+    if (!result.Item) {
+      return {
         statusCode: 404,
         headers: { "Content-Type": "text/plain" },
         body: "Catch item not found.",
       };
-      callback(null, response);
-      return;
     }
 
     // create a response
-    const response = {
+    return {
       statusCode: 200,
       body: JSON.stringify(unmarshall(result!.Item as any)),
     };
-    callback(null, response);
-  });
+
+  } catch (error: any) {
+    console.error(error);
+    return {
+      statusCode: error.statusCode || 501,
+      headers: { "Content-Type": "text/plain" },
+      body: "Couldn't fetch the catch item.",
+    };
+  }
 };
