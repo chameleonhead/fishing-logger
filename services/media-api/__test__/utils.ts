@@ -108,8 +108,8 @@ export function callLambda<TRequest, TResponse>(
 export function apiEvent({
   method = "GET",
   path = "/",
-  body = {},
-  pathParameters = {},
+  body = undefined,
+  pathParameters = undefined,
 }: any) {
   return {
     version: "",

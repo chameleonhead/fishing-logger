@@ -23,6 +23,8 @@ provider:
   lambdaHashingVersion: "20201221"
   environment:
     DYNAMODB_TABLE: ${self:service}-${sls:stage}
+    IOT_THING_GROUP_NAME: ${self:service}-${sls:stage}
+    IOT_POLICY_NAME: ${self:service}-${sls:stage}
   httpApi:
     id: !ImportValue sls-fishing-logger-apigw-${sls:stage}-HttpApiId
   iam:
@@ -43,47 +45,19 @@ provider:
           Resource: arn:aws:iot:${aws:region}:${aws:accountId}:*
 
 functions:
-  list:
-    handler: src/functions/list.list
+  create:
+    handler: src/functions/create.create
     events:
       - httpApi:
           path: /api/ships
-          method: get
-
-  register:
-    handler: src/functions/register.handler
-    events:
-      - httpApi:
-          path: /api/ships/register
           method: post
 
-  get:
-    handler: src/functions/get.handler
+  register-iot:
+    handler: src/functions/register-iot.registerIot
     events:
       - httpApi:
-          path: /api/ships/{id}
-          method: get
-
-  get-iot-config:
-    handler: src/functions/get-iot-config.handler
-    events:
-      - httpApi:
-          path: /api/ships/{id}/iot-config
-          method: get
-
-  put-iot-config:
-    handler: src/functions/put-iot-config.handler
-    events:
-      - httpApi:
-          path: /api/ships/{id}/iot-config
-          method: put
-
-  update:
-    handler: src/functions/update.handler
-    events:
-      - httpApi:
-          path: /api/ships/{id}
-          method: put
+          path: /api/ships/{id}/iot/register
+          method: post
 
 resources:
   Resources:
@@ -101,12 +75,19 @@ resources:
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
     shipsIotCorePolicy:
       Type: AWS::IoT::Policy
-      Properties: 
+      Properties:
+        PolicyName: ${self:provider.environment.IOT_POLICY_NAME}
         PolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Action:
                 - iot:Connect
-              Resource: 
+                - iot:Publish
+                - iot:Subscribe
+              Resource:
                 - arn:aws:iot:${aws:region}:${aws:accountId}:client/*
+    shipsIotThingGroup:
+      Type: AWS::IoT::ThingGroup
+      Properties:
+        ThingGroupName: ${self:provider.environment.IOT_THING_GROUP_NAME}
