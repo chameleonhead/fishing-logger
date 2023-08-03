@@ -1,52 +1,51 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { list } from "../src/functions/list";
+import { get } from "../src/functions/get";
 import { apiEvent, callLambda, ensureTableWithData } from "./utils";
 
-describe("list catches", () => {
+describe("get a ship", () => {
   const OLD_ENV = process.env;
 
   beforeEach(async () => {
     jest.resetModules(); // Most important - it clears the cache
     process.env = { ...OLD_ENV }; // Make a copy
-    process.env.DYNAMODB_TABLE = "catches-list";
+    process.env.DYNAMODB_TABLE = "ships-get";
   });
 
   afterAll(() => {
     process.env = OLD_ENV; // Make a copy
   });
 
-  it("should list catches", async () => {
+  it("should get a ship", async () => {
     const dynamoDb = new DynamoDB({
       endpoint: process.env.DYNAMODB_ENDPOINT,
       region: process.env.AWS_REGION,
     });
     await ensureTableWithData(dynamoDb, process.env.DYNAMODB_TABLE!, [
       {
-        id: "test1",
-        catched_at: "2022-09-04T18:05:02Z",
-      },
-      {
-        id: "test2",
-        catched_at: "2022-09-04T18:05:03Z",
+        id: "test",
+        name: "test",
+        iot_enabled: true,
+        iot_config: {
+          certificate_id: "cert_id",
+          certificate_arn: "cert_arn",
+          cerfiticate_pem: "cert_pem",
+        },
       },
     ]);
-    const result = await callLambda(list, apiEvent({}));
+    const result = await callLambda(get, apiEvent({
+      pathParameters: {
+        id: "test",
+      },
+    }));
 
     if (typeof result !== "object") {
       fail("result is not an object")
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({
-      catches: [
-        {
-          id: "test1",
-          catched_at: "2022-09-04T18:05:02Z",
-        },
-        {
-          id: "test2",
-          catched_at: "2022-09-04T18:05:03Z",
-        },
-      ],
+      id: "test",
+      name: "test",
+      iot_enabled: true,
     });
   });
 });

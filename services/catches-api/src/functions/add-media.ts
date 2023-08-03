@@ -1,15 +1,9 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import {
-  DynamoDB,
-  GetItemCommandOutput,
-  UpdateItemOutput,
-} from "@aws-sdk/client-dynamodb";
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { convertToAttr, convertToNative, unmarshall } from "@aws-sdk/util-dynamodb";
 
-export const addMedia: APIGatewayProxyHandlerV2 = (
+export const addMedia: APIGatewayProxyHandlerV2 = async (
   event,
-  context,
-  callback,
 ) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
@@ -22,72 +16,53 @@ export const addMedia: APIGatewayProxyHandlerV2 = (
     Key: {
       id: convertToAttr(event.pathParameters!.id),
     },
-  } as any;
+  };
 
-  // fetch catch from the database
-  dynamoDb.getItem(
-    params,
-    (error: any, result: GetItemCommandOutput | undefined) => {
-      // handle potential errors
-      if (error) {
-        console.error(error);
-        callback(null, {
-          statusCode: error.statusCode || 501,
-          headers: { "Content-Type": "text/plain" },
-          body: "Couldn't fetch the catch item.",
-        });
-        return;
-      }
+  try {
+    // fetch catch from the database
+    const result = await dynamoDb.getItem(params);
 
-      try {
-        const params = {
-          TableName: process.env.DYNAMODB_TABLE!,
-          Key: {
-            id: convertToAttr(event.pathParameters!.id),
-          },
-          ExpressionAttributeValues: {
-            ":media": convertToAttr(
-              convertToNative(
-                (result!.Item?.media as any) || { L: [] },
-              ).concat([data]),
-            ),
-            ":updated_at": convertToAttr(timestamp),
-          },
-          UpdateExpression: "SET media = :media, updated_at = :updated_at",
-          ReturnValues: "ALL_NEW",
-        } as any;
+    try {
+      const params = {
+        TableName: process.env.DYNAMODB_TABLE!,
+        Key: {
+          id: convertToAttr(event.pathParameters!.id),
+        },
+        ExpressionAttributeValues: {
+          ":media": convertToAttr(
+            convertToNative(
+              (result!.Item?.media as any) || { L: [] },
+            ).concat([data]),
+          ),
+          ":updated_at": convertToAttr(timestamp),
+        },
+        UpdateExpression: "SET media = :media, updated_at = :updated_at",
+        ReturnValues: "ALL_NEW",
+      };
 
-        // update the catch in the database
-        dynamoDb.updateItem(
-          params,
-          (error: any, result: UpdateItemOutput | undefined) => {
-            // handle potential errors
-            if (error) {
-              console.error(error);
-              callback(null, {
-                statusCode: error.statusCode || 501,
-                headers: { "Content-Type": "text/plain" },
-                body: "Couldn't update the catch item.",
-              });
-              return;
-            }
+      // update the catch in the database
+      const updateResult = await dynamoDb.updateItem(params)
 
-            // create a response
-            const response = {
-              statusCode: 200,
-              body: JSON.stringify(unmarshall(result!.Attributes as any)),
-            };
-            callback(null, response);
-          },
-        );
-      } catch (error) {
-        console.error(error);
-        callback(null, {
-          statusCode: 501,
-          headers: { "Content-Type": "text/plain" },
-          body: "Couldn't fetch the catch item.",
-        });
-      }
-    },
-  );
+      // create a response
+      return {
+        statusCode: 200,
+        body: JSON.stringify(unmarshall(updateResult!.Attributes as any)),
+      };
+    } catch (error: any) {
+      console.error(error);
+      return {
+        statusCode: error.statusCode || 501,
+        headers: { "Content-Type": "text/plain" },
+        body: "Couldn't update the catch item.",
+      };
+    }
+
+  } catch (error: any) {
+    console.error(error);
+    return {
+      statusCode: error.statusCode || 501,
+      headers: { "Content-Type": "text/plain" },
+      body: "Couldn't fetch the catch item.",
+    };
+  }
 };

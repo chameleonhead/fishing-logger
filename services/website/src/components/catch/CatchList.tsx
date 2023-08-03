@@ -78,7 +78,7 @@ export default function () {
         method: "GET",
       });
       if (result.ok) {
-        setData((await result.json()).items);
+        setData((await result.json()).catches);
       }
     })();
   }, []);

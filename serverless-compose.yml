@@ -9,6 +9,10 @@ services:
     path: services/media-api
     dependsOn:
       - apigw
+  ships-api:
+    path: services/ships-api
+    dependsOn:
+      - apigw
   website:
     path: services/website
     dependsOn:

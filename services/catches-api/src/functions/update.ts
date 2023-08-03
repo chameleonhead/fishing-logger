@@ -1,8 +1,8 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { DynamoDB, UpdateItemOutput } from "@aws-sdk/client-dynamodb";
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { convertToAttr, unmarshall } from "@aws-sdk/util-dynamodb";
 
-export const update: APIGatewayProxyHandlerV2 = (event, context, callback) => {
+export const update: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
@@ -13,12 +13,11 @@ export const update: APIGatewayProxyHandlerV2 = (event, context, callback) => {
   // validation
   if (typeof event.pathParameters!.id === "undefined") {
     console.error("Validation Failed");
-    callback(null, {
+    return {
       statusCode: 400,
       headers: { "Content-Type": "text/plain" },
       body: "Couldn't update the catch item.",
-    });
-    return;
+    };
   }
 
   const entries = Object.entries(data)
@@ -50,27 +49,23 @@ export const update: APIGatewayProxyHandlerV2 = (event, context, callback) => {
     ReturnValues: "ALL_NEW",
   } as any;
 
-  // update the catch in the database
-  dynamoDb.updateItem(
-    params,
-    (error: any, result: UpdateItemOutput | undefined) => {
-      // handle potential errors
-      if (error) {
-        console.error(error);
-        callback(null, {
-          statusCode: error.statusCode || 501,
-          headers: { "Content-Type": "text/plain" },
-          body: "Couldn't fetch the catch item.",
-        });
-        return;
-      }
+  try {
+    // update the catch in the database
+    const result = await dynamoDb.updateItem(params);
 
-      // create a response
-      const response = {
-        statusCode: 200,
-        body: JSON.stringify(unmarshall(result!.Attributes as any)),
-      };
-      callback(null, response);
-    },
-  );
+    // create a response
+    return {
+      statusCode: 200,
+      body: JSON.stringify(unmarshall(result.Attributes!)),
+    };
+
+  } catch (error: any) {
+    console.error(error);
+    return {
+      statusCode: error.statusCode || 501,
+      headers: { "Content-Type": "text/plain" },
+      body: "Couldn't fetch the catch item.",
+    };
+
+  }
 };

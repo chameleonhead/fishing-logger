@@ -10,7 +10,6 @@ import {
 import fetch from "node-fetch";
 import { onUploadCompleted } from "../src/functions/on-upload-completed";
 import { get } from "../src/functions/get";
-import { convertToAttr } from "@aws-sdk/util-dynamodb";
 import { S3 } from "@aws-sdk/client-s3";
 import FormData from "form-data";
 

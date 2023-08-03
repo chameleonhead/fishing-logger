@@ -2,7 +2,7 @@ import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { convertToAttr, unmarshall } from "@aws-sdk/util-dynamodb";
 
-export const get: APIGatewayProxyHandlerV2 = async (event) => {
+export const deleteShip: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
@@ -27,9 +27,19 @@ export const get: APIGatewayProxyHandlerV2 = async (event) => {
 
   // create a response
   const ship = unmarshall(result!.Item!);
-  delete ship.iot_config;
+
+  if (typeof ship.iot_config !== 'undefined') {
+    return {
+      statusCode: 400,
+      headers: { "Content-Type": "text/plain" },
+      body: "Ship is registered to IoT.",
+    };
+  }
+
+  await dynamoDb.deleteItem(params);
+
   return {
-    statusCode: 200,
+    statusCode: 204,
     body: JSON.stringify(ship),
   };
 };

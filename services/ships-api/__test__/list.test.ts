@@ -2,20 +2,20 @@ import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { list } from "../src/functions/list";
 import { apiEvent, callLambda, ensureTableWithData } from "./utils";
 
-describe("list catches", () => {
+describe("list ships", () => {
   const OLD_ENV = process.env;
 
   beforeEach(async () => {
     jest.resetModules(); // Most important - it clears the cache
     process.env = { ...OLD_ENV }; // Make a copy
-    process.env.DYNAMODB_TABLE = "catches-list";
+    process.env.DYNAMODB_TABLE = "ships-list";
   });
 
   afterAll(() => {
     process.env = OLD_ENV; // Make a copy
   });
 
-  it("should list catches", async () => {
+  it("should list ships", async () => {
     const dynamoDb = new DynamoDB({
       endpoint: process.env.DYNAMODB_ENDPOINT,
       region: process.env.AWS_REGION,
@@ -23,11 +23,11 @@ describe("list catches", () => {
     await ensureTableWithData(dynamoDb, process.env.DYNAMODB_TABLE!, [
       {
         id: "test1",
-        catched_at: "2022-09-04T18:05:02Z",
+        name: "USS Enterprise 1",
       },
       {
         id: "test2",
-        catched_at: "2022-09-04T18:05:03Z",
+        name: "USS Enterprise 2",
       },
     ]);
     const result = await callLambda(list, apiEvent({}));
@@ -37,14 +37,14 @@ describe("list catches", () => {
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({
-      catches: [
+      ships: [
         {
           id: "test1",
-          catched_at: "2022-09-04T18:05:02Z",
+          name: "USS Enterprise 1",
         },
         {
           id: "test2",
-          catched_at: "2022-09-04T18:05:03Z",
+          name: "USS Enterprise 2",
         },
       ],
     });

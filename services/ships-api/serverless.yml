@@ -8,7 +8,9 @@ custom:
   webpack:
     includeModules:
       forceExclude:
-        - aws-sdk
+        - "@aws-sdk/client-dynamodb"
+        - "@aws-sdk/util-dynamodb"
+        - "@aws-sdk/client-iot"
       nodeModulesRelativeDir: "../../"
     packagerOptions:
       lockFile: "../../package-lock.json"
@@ -23,6 +25,8 @@ provider:
   lambdaHashingVersion: "20201221"
   environment:
     DYNAMODB_TABLE: ${self:service}-${sls:stage}
+    IOT_THING_GROUP_NAME: ${self:service}-${sls:stage}
+    IOT_POLICY_NAME: ${self:service}-${sls:stage}
   httpApi:
     id: !ImportValue sls-fishing-logger-apigw-${sls:stage}-HttpApiId
   iam:
@@ -39,8 +43,24 @@ provider:
           Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:provider.environment.DYNAMODB_TABLE}
         - Effect: Allow
           Action:
-            - iot:DescribeEndpoint
+            - iot:DescribeThing
+            - iot:CreateThing
+            - iot:AddThingToThingGroup
+            - iot:AttachThingPrincipal
+            - iot:AttachPolicy
+            - iot:DetachPolicy
+            - iot:DetachThingPrincipal
+            - iot:RemoveThingFromThingGroup
+            - iot:DeleteThing
+            - iot:UpdateCertificate
+            - iot:DeleteCertificate
           Resource: arn:aws:iot:${aws:region}:${aws:accountId}:*
+        - Effect: Allow
+          Action:
+            - iot:DescribeEndpoint
+            - iot:CreateKeysAndCertificate
+            - iot:CreateCertificateFromCsr
+          Resource: "*"
 
 functions:
   list:
@@ -50,40 +70,40 @@ functions:
           path: /api/ships
           method: get
 
-  register:
-    handler: src/functions/register.handler
+  create:
+    handler: src/functions/create.create
     events:
       - httpApi:
-          path: /api/ships/register
+          path: /api/ships
           method: post
 
   get:
-    handler: src/functions/get.handler
+    handler: src/functions/get.get
     events:
       - httpApi:
           path: /api/ships/{id}
           method: get
 
-  get-iot-config:
-    handler: src/functions/get-iot-config.handler
+  register-iot:
+    handler: src/functions/register-iot.registerIot
     events:
       - httpApi:
-          path: /api/ships/{id}/iot-config
-          method: get
+          path: /api/ships/{id}/iot/register
+          method: post
 
-  put-iot-config:
-    handler: src/functions/put-iot-config.handler
+  unregister-iot:
+    handler: src/functions/unregister-iot.unregisterIot
     events:
       - httpApi:
-          path: /api/ships/{id}/iot-config
-          method: put
+          path: /api/ships/{id}/iot/unregister
+          method: delete
 
-  update:
-    handler: src/functions/update.handler
+  delete:
+    handler: src/functions/delete-ship.deleteShip
     events:
       - httpApi:
           path: /api/ships/{id}
-          method: put
+          method: delete
 
 resources:
   Resources:
@@ -101,12 +121,26 @@ resources:
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
     shipsIotCorePolicy:
       Type: AWS::IoT::Policy
-      Properties: 
+      Properties:
+        PolicyName: ${self:provider.environment.IOT_POLICY_NAME}
         PolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Action:
                 - iot:Connect
-              Resource: 
-                - arn:aws:iot:${aws:region}:${aws:accountId}:client/*
+              Resource:
+                - !Join
+                  - ""
+                  - - "arn:aws:iot:${aws:region}:${aws:accountId}:client/$"
+                    - "{iot:Connection.Thing.ThingName}"
+            - Effect: Allow
+              Action:
+                - iot:Publish
+                - iot:Subscribe
+              Resource:
+                - arn:aws:iot:${aws:region}:${aws:accountId}:topic/*
+    shipsIotThingGroup:
+      Type: AWS::IoT::ThingGroup
+      Properties:
+        ThingGroupName: ${self:provider.environment.IOT_THING_GROUP_NAME}
