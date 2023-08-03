@@ -48,6 +48,12 @@ provider:
             - iot:AddThingToThingGroup
             - iot:AttachThingPrincipal
             - iot:AttachPolicy
+            - iot:DetachPolicy
+            - iot:DetachThingPrincipal
+            - iot:RemoveThingFromThingGroup
+            - iot:DeleteThing
+            - iot:UpdateCertificate
+            - iot:DeleteCertificate
           Resource: arn:aws:iot:${aws:region}:${aws:accountId}:*
         - Effect: Allow
           Action:
