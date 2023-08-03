@@ -98,6 +98,13 @@ functions:
           path: /api/ships/{id}/iot/unregister
           method: delete
 
+  delete:
+    handler: src/functions/delete-ship.deleteShip
+    events:
+      - httpApi:
+          path: /api/ships/{id}
+          method: delete
+
 resources:
   Resources:
     shipsDynamoDbTable:
