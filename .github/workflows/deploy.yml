@@ -5,7 +5,6 @@ on:
     types:
       - opened
       - synchronize
-      - reopened
     branches:
       - main
   push:
@@ -44,8 +43,30 @@ jobs:
           DYNAMODB_ENDPOINT: http://localhost:4566
           S3_ENDPOINT: http://localhost:4566
 
-  publish:
+  deploy-staging:
+    environment: Staging
     needs: build
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - run: npm run build
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+      - run: npm run deploy:staging
+
+  deploy-prod:
+    environment: Production
+    needs: deploy-staging
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' }}
     steps:
