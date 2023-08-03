@@ -20,17 +20,11 @@ export const create: APIGatewayProxyHandlerV2 = async (event) => {
     }),
   };
 
-  try {
-    // write the catch to the database
-    await dynamoDb.putItem(params);
-    // create a response
-    return {
-      statusCode: 200,
-      body: JSON.stringify(unmarshall(params.Item)),
-    };
-
-  } catch (error) {
-    console.error(error);
-    throw new Error("Couldn't create the catch item.")
-  }
+  // write the catch to the database
+  await dynamoDb.putItem(params);
+  // create a response
+  return {
+    statusCode: 200,
+    body: JSON.stringify(unmarshall(params.Item)),
+  };
 };
