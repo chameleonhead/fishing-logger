@@ -18,7 +18,11 @@ export const list: APIGatewayProxyHandlerV2 = async (event) => {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      ships: result.Items?.map((item) => unmarshall(item as any)),
+      ships: result.Items?.map((item) => {
+        const ship = unmarshall(item)
+        delete ship.iot_config
+        return ship;
+      }),
     }),
   };
 };

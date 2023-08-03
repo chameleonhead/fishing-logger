@@ -57,6 +57,13 @@ provider:
           Resource: "*"
 
 functions:
+  list:
+    handler: src/functions/list.list
+    events:
+      - httpApi:
+          path: /api/ships
+          method: get
+
   create:
     handler: src/functions/create.create
     events:
@@ -64,12 +71,26 @@ functions:
           path: /api/ships
           method: post
 
+  get:
+    handler: src/functions/get.get
+    events:
+      - httpApi:
+          path: /api/ships/{id}
+          method: get
+
   register-iot:
     handler: src/functions/register-iot.registerIot
     events:
       - httpApi:
           path: /api/ships/{id}/iot/register
           method: post
+
+  unregister-iot:
+    handler: src/functions/unregister-iot.unregisterIot
+    events:
+      - httpApi:
+          path: /api/ships/{id}/iot/unregister
+          method: delete
 
 resources:
   Resources:

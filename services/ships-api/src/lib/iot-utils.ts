@@ -49,28 +49,53 @@ export const createKeysAndCertificate = async () => {
   };
 }
 
+export const deleteCertificate = async (certificateId: string) => {
+  const iot = new IoT({
+    endpoint: process.env.IOT_ENDPOINT,
+    region: process.env.AWS_REGION
+  });
+  await iot.updateCertificate({
+    certificateId,
+    newStatus: 'INACTIVE',
+  });
+  await iot.deleteCertificate({
+    certificateId,
+  });
+}
+
 export const ensureThingExists = async (thingName: string) => {
   const iot = new IoT({
     endpoint: process.env.IOT_ENDPOINT,
     region: process.env.AWS_REGION
   });
-  let thingArn: string;
   try {
-    const thing = await iot.describeThing({
+    await iot.describeThing({
       thingName: `${process.env.IOT_THING_GROUP_NAME!}-${thingName}`,
     });
-    thingArn = thing.thingArn!;
   } catch (error) {
     console.log(error);
-    const thing = await iot.createThing({
+    await iot.createThing({
       thingName: `${process.env.IOT_THING_GROUP_NAME!}-${thingName}`,
     });
-    thingArn = thing.thingArn!;
   }
   await iot.addThingToThingGroup({
     thingGroupName: process.env.IOT_THING_GROUP_NAME!,
     thingName: `${process.env.IOT_THING_GROUP_NAME!}-${thingName}`,
   })
+}
+
+export const deleteThing = async (thingName: string) => {
+  const iot = new IoT({
+    endpoint: process.env.IOT_ENDPOINT,
+    region: process.env.AWS_REGION
+  });
+  await iot.removeThingFromThingGroup({
+    thingGroupName: process.env.IOT_THING_GROUP_NAME!,
+    thingName: `${process.env.IOT_THING_GROUP_NAME!}-${thingName}`,
+  })
+  await iot.deleteThing({
+    thingName: `${process.env.IOT_THING_GROUP_NAME!}-${thingName}`,
+  });
 }
 
 export const attachCertificateToThing = async (certificateArn: string, thingName: string) => {
@@ -85,5 +110,20 @@ export const attachCertificateToThing = async (certificateArn: string, thingName
   await iot.attachPolicy({
     policyName: process.env.IOT_POLICY_NAME!,
     target: certificateArn,
+  });
+}
+
+export const detachCertificateFromThing = async (thingName: string, certificateArn: string) => {
+  const iot = new IoT({
+    endpoint: process.env.IOT_ENDPOINT,
+    region: process.env.AWS_REGION
+  });
+  await iot.detachPolicy({
+    policyName: process.env.IOT_POLICY_NAME!,
+    target: certificateArn,
+  });
+  await iot.detachThingPrincipal({
+    thingName: `${process.env.IOT_THING_GROUP_NAME!}-${thingName}`,
+    principal: certificateArn,
   });
 }

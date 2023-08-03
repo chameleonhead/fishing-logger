@@ -10,11 +10,18 @@ import {
   CreateCertificateFromCsrCommand,
   CreateKeysAndCertificateCommand,
   CreateThingCommand,
+  DeleteCertificateCommand,
+  DeleteThingCommand,
   DescribeEndpointCommand,
   DescribeThingCommand,
+  DetachPolicyCommand,
+  DetachThingPrincipalCommand,
   IoT,
+  RemoveThingFromThingGroupCommand,
+  UpdateCertificateCommand,
 } from "@aws-sdk/client-iot";
 import { mockClient } from "aws-sdk-client-mock";
+import { unregisterIot } from "../src/functions/unregister-iot";
 
 describe("register a ship", () => {
   const OLD_ENV = process.env;
@@ -104,6 +111,22 @@ describe("register a ship", () => {
         private_key: "PrivateKey",
       },
     });
+
+    iotMock.on(DetachPolicyCommand).resolves({});
+    iotMock.on(DetachThingPrincipalCommand).resolves({});
+    iotMock.on(UpdateCertificateCommand).resolves({});
+    iotMock.on(DeleteCertificateCommand).resolves({});
+    iotMock.on(RemoveThingFromThingGroupCommand).resolves({});
+    iotMock.on(DeleteThingCommand).resolves({});
+    const resultUnregister = await callLambda(
+      unregisterIot,
+      apiEvent({ pathParameters: { id: shipId } }),
+    );
+
+    if (typeof resultUnregister !== "object") {
+      fail("resultUnregister is not an object");
+    }
+    expect(resultUnregister.statusCode).toBe(204);
   });
 
   it("should register a ship with iot associated by csr", async () => {
@@ -113,7 +136,7 @@ describe("register a ship", () => {
     });
     await ensureTableNoData(dynamoDb, process.env.DYNAMODB_TABLE!);
 
-    const { csrData, privateKey } = generateCSR("test");
+    const { csrData } = generateCSR("test");
     const result = await callLambda(
       create,
       apiEvent({
