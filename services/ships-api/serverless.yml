@@ -64,42 +64,42 @@ provider:
 
 functions:
   list:
-    handler: src/functions/list.list
+    handler: src/functions/list.handler
     events:
       - httpApi:
           path: /api/ships
           method: get
 
   create:
-    handler: src/functions/create.create
+    handler: src/functions/create.handler
     events:
       - httpApi:
           path: /api/ships
           method: post
 
   get:
-    handler: src/functions/get.get
+    handler: src/functions/get.handler
     events:
       - httpApi:
           path: /api/ships/{id}
           method: get
 
-  register-iot:
-    handler: src/functions/register-iot.registerIot
+  activate:
+    handler: src/functions/activate.handler
     events:
       - httpApi:
-          path: /api/ships/{id}/iot/register
+          path: /api/ships/{id}/activate
           method: post
 
-  unregister-iot:
-    handler: src/functions/unregister-iot.unregisterIot
+  deactivate:
+    handler: src/functions/deactivate.handler
     events:
       - httpApi:
-          path: /api/ships/{id}/iot/unregister
-          method: delete
+          path: /api/ships/{id}/deactivate
+          method: post
 
   delete:
-    handler: src/functions/delete-ship.deleteShip
+    handler: src/functions/delete.handler
     events:
       - httpApi:
           path: /api/ships/{id}

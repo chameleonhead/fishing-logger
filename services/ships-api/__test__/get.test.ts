@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { get } from "../src/functions/get";
 import { apiEvent, callLambda, ensureTableWithData } from "./utils";
+import { handler as getHandler } from "../src/functions/get";
 
 describe("get a ship", () => {
   const OLD_ENV = process.env;
@@ -32,7 +32,7 @@ describe("get a ship", () => {
         },
       },
     ]);
-    const result = await callLambda(get, apiEvent({
+    const result = await callLambda(getHandler, apiEvent({
       pathParameters: {
         id: "test",
       },

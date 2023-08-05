@@ -3,7 +3,7 @@ import { convertToAttr } from "@aws-sdk/util-dynamodb";
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import * as uuid from "uuid";
 
-export const create: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION

@@ -1,8 +1,4 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { create } from "../src/functions/create";
-import { registerIot } from "../src/functions/register-iot";
-import { generateCSR } from "./csr-utils";
-import { apiEvent, callLambda, ensureTableNoData } from "./utils";
 import {
   AddThingToThingGroupCommand,
   AttachPolicyCommand,
@@ -21,7 +17,11 @@ import {
   UpdateCertificateCommand,
 } from "@aws-sdk/client-iot";
 import { mockClient } from "aws-sdk-client-mock";
-import { unregisterIot } from "../src/functions/unregister-iot";
+import { apiEvent, callLambda, ensureTableNoData } from "./utils";
+import { generateCSR } from "./csr-utils";
+import { handler as createHandler } from "../src/functions/create";
+import { handler as activateHandler } from "../src/functions/activate";
+import { handler as deactivateHandler } from "../src/functions/deactivate";
 
 describe("register a ship", () => {
   const OLD_ENV = process.env;
@@ -45,7 +45,7 @@ describe("register a ship", () => {
     await ensureTableNoData(dynamoDb, process.env.DYNAMODB_TABLE!);
 
     const result = await callLambda(
-      create,
+      createHandler,
       apiEvent({
         body: {
           name: "ship name",
@@ -89,7 +89,7 @@ describe("register a ship", () => {
       endpointAddress: "endpointAddress",
     });
     const iotResult = await callLambda(
-      registerIot,
+      activateHandler,
       apiEvent({
         pathParameters: {
           id: shipId,
@@ -119,7 +119,7 @@ describe("register a ship", () => {
     iotMock.on(RemoveThingFromThingGroupCommand).resolves({});
     iotMock.on(DeleteThingCommand).resolves({});
     const resultUnregister = await callLambda(
-      unregisterIot,
+      deactivateHandler,
       apiEvent({ pathParameters: { id: shipId } }),
     );
 
@@ -138,7 +138,7 @@ describe("register a ship", () => {
 
     const { csrData } = generateCSR("test");
     const result = await callLambda(
-      create,
+      createHandler,
       apiEvent({
         body: {
           name: "ship name",
@@ -178,7 +178,7 @@ describe("register a ship", () => {
       endpointAddress: "endpointAddress",
     });
     const iotResult = await callLambda(
-      registerIot,
+      activateHandler,
       apiEvent({
         pathParameters: {
           id: shipId,

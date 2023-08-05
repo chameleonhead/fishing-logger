@@ -9,7 +9,7 @@ import {
   getIotConfigurations,
 } from "../lib/iot-utils";
 
-export const registerIot: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,

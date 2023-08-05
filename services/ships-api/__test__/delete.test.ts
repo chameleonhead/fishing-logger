@@ -1,7 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { get } from "../src/functions/get";
 import { apiEvent, callLambda, ensureTableWithData } from "./utils";
-import { deleteShip } from "../src/functions/delete-ship";
+import { handler as deleteHandler } from "../src/functions/delete";
 
 describe("delete a ship", () => {
   const OLD_ENV = process.env;
@@ -28,7 +27,7 @@ describe("delete a ship", () => {
         iot_enabled: false,
       },
     ]);
-    const result = await callLambda(deleteShip, apiEvent({
+    const result = await callLambda(deleteHandler, apiEvent({
       pathParameters: {
         id: "test",
       },
