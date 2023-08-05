@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { create } from "../src/functions/create";
 import { apiEvent, callLambda, ensureTableNoData } from "./utils";
+import { handler as createHandler } from "../src/functions/create";
 
 describe("create catches", () => {
   const OLD_ENV = process.env;
@@ -21,7 +21,7 @@ describe("create catches", () => {
       region: process.env.AWS_REGION,
     });
     await ensureTableNoData(dynamoDb, process.env.DYNAMODB_TABLE!);
-    const result = await callLambda(create, apiEvent({
+    const result = await callLambda(createHandler, apiEvent({
       body: {
         catched_at: "2022-09-04T18:05:02Z",
         place: {

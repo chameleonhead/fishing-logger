@@ -2,7 +2,7 @@ import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { convertToAttr, convertToNative, unmarshall } from "@aws-sdk/util-dynamodb";
 
-export const addMedia: APIGatewayProxyHandlerV2 = async (
+export const handler: APIGatewayProxyHandlerV2 = async (
   event,
 ) => {
   const dynamoDb = new DynamoDB({

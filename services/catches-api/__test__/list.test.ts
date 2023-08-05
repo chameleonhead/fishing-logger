@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { list } from "../src/functions/list";
 import { apiEvent, callLambda, ensureTableWithData } from "./utils";
+import { handler as listHandler } from "../src/functions/list";
 
 describe("list catches", () => {
   const OLD_ENV = process.env;
@@ -30,7 +30,7 @@ describe("list catches", () => {
         catched_at: "2022-09-04T18:05:03Z",
       },
     ]);
-    const result = await callLambda(list, apiEvent({}));
+    const result = await callLambda(listHandler, apiEvent({}));
 
     if (typeof result !== "object") {
       fail("result is not an object")

@@ -3,7 +3,7 @@ import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import * as uuid from "uuid";
 
-export const create: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,

@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { update } from "../src/functions/update";
 import { apiEvent, callLambda, ensureTableWithData } from "./utils";
+import { handler as updateHandler } from "../src/functions/update";
 
 describe("update catch", () => {
   const OLD_ENV = process.env;
@@ -43,7 +43,7 @@ describe("update catch", () => {
         updated_at: 1630793102,
       },
     ]);
-    const result = await callLambda(update, apiEvent({
+    const result = await callLambda(updateHandler, apiEvent({
       pathParameters: {
         id: "test",
       },

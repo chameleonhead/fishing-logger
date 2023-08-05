@@ -57,14 +57,14 @@ provider:
 
 functions:
   initiate-upload:
-    handler: src/functions/initiate-upload.initiateUpload
+    handler: src/functions/initiate-upload.handler
     events:
       - httpApi:
           path: /api/media/initiate-upload
           method: post
 
   on-upload-completed:
-    handler: src/functions/on-upload-completed.onUploadCompleted
+    handler: src/functions/on-upload-completed.handler
     events:
       - s3:
           bucket: ${self:provider.environment.S3_BUCKET}
@@ -75,7 +75,7 @@ functions:
           forceDeploy: true
 
   get:
-    handler: src/functions/get.get
+    handler: src/functions/get.handler
     events:
       - httpApi:
           path: /api/media/{id}

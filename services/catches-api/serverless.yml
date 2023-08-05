@@ -41,35 +41,35 @@ provider:
 
 functions:
   create:
-    handler: src/functions/create.create
+    handler: src/functions/create.handler
     events:
       - httpApi:
           path: /api/catches
           method: post
 
   add-media:
-    handler: src/functions/add-media.addMedia
+    handler: src/functions/add-media.handler
     events:
       - httpApi:
           path: /api/catches/{id}/media
           method: post
 
   list:
-    handler: src/functions/list.list
+    handler: src/functions/list.handler
     events:
       - httpApi:
           path: /api/catches
           method: get
 
   get:
-    handler: src/functions/get.get
+    handler: src/functions/get.handler
     events:
       - httpApi:
           path: /api/catches/{id}
           method: get
 
   update:
-    handler: src/functions/update.update
+    handler: src/functions/update.handler
     events:
       - httpApi:
           path: /api/catches/{id}

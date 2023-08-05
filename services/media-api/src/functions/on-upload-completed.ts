@@ -4,7 +4,7 @@ import { convertToAttr, marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { S3Handler } from "aws-lambda";
 import * as uuid from "uuid";
 
-export const onUploadCompleted: S3Handler = async (
+export const handler: S3Handler = async (
   event,
   context,
   callback,

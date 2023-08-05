@@ -1,11 +1,11 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { DynamoDB, PutItemOutput } from "@aws-sdk/client-dynamodb";
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import * as uuid from "uuid";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
-export const initiateUpload: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
