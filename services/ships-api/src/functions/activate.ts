@@ -76,6 +76,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       statusCode: 200,
       body: JSON.stringify({
         iot_endpoint: iotEndpoint,
+        client_id: `${process.env.IOT_THING_GROUP_NAME!}-${id}`,
         certificate: certificatePem,
         ca_certificate: caCertificate,
       }),
@@ -92,6 +93,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       ExpressionAttributeValues: {
         ":iot_enabled": convertToAttr(true),
         ":iot_config": convertToAttr({
+          client_id: `${process.env.IOT_THING_GROUP_NAME!}-${id}`,
           certificate_arn: certificateArn,
           certificate_id: certificateId,
           certificate_pem: certificatePem,
@@ -110,6 +112,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       statusCode: 200,
       body: JSON.stringify({
         iot_endpoint: iotEndpoint,
+        client_id: `${process.env.IOT_THING_GROUP_NAME!}-${id}`,
         certificate: certificatePem,
         ca_certificate: caCertificate,
         key_pair: {

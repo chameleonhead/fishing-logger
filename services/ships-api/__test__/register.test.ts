@@ -31,6 +31,7 @@ describe("register a ship", () => {
     jest.resetModules(); // Most important - it clears the cache
     process.env = { ...OLD_ENV }; // Make a copy
     process.env.DYNAMODB_TABLE = "ships-register";
+    process.env.IOT_THING_GROUP_NAME = "ships-register"
   });
 
   afterAll(() => {
@@ -104,6 +105,7 @@ describe("register a ship", () => {
     expect(iotResult.statusCode).toBe(200);
     expect(JSON.parse(iotResult.body!)).toEqual({
       iot_endpoint: "endpointAddress",
+      client_id: `${process.env.IOT_THING_GROUP_NAME!}-${shipId}`,
       certificate: "certificatePem",
       ca_certificate: expect.any(String),
       key_pair: {
@@ -196,6 +198,7 @@ describe("register a ship", () => {
     expect(iotResult.statusCode).toBe(200);
     expect(JSON.parse(iotResult.body!)).toEqual({
       iot_endpoint: "endpointAddress",
+      client_id: `${process.env.IOT_THING_GROUP_NAME!}-${shipId}`,
       certificate: "certificatePem",
       ca_certificate: expect.any(String),
     });
