@@ -46,6 +46,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   await ensureThingExists(id!);
 
   if (event.body) {
+    console.log("body: ", event.body);
     const { csr } = JSON.parse(event.body!);
     const { certificateArn, certificateId, certificatePem } =
       await createCertificateFromCsr(csr);

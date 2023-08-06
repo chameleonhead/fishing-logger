@@ -72,8 +72,10 @@ export const ensureThingExists = async (thingName: string) => {
     await iot.describeThing({
       thingName: `${process.env.IOT_THING_GROUP_NAME!}-${thingName}`,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    if (error.name !== 'ResourceNotFoundException') {
+      throw error;
+    }
     await iot.createThing({
       thingName: `${process.env.IOT_THING_GROUP_NAME!}-${thingName}`,
     });
