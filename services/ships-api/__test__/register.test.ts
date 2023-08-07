@@ -22,6 +22,7 @@ import { generateCSR } from "./csr-utils";
 import { handler as createHandler } from "../src/functions/create";
 import { handler as activateHandler } from "../src/functions/activate";
 import { handler as deactivateHandler } from "../src/functions/deactivate";
+import { handler as getConfigHandler } from "../src/functions/get-config";
 
 describe("register a ship", () => {
   const OLD_ENV = process.env;
@@ -86,9 +87,6 @@ describe("register a ship", () => {
     iotMock.on(AddThingToThingGroupCommand).resolves({});
     iotMock.on(AttachThingPrincipalCommand).resolves({});
     iotMock.on(AttachPolicyCommand).resolves({});
-    iotMock.on(DescribeEndpointCommand).resolves({
-      endpointAddress: "endpointAddress",
-    });
     const iotResult = await callLambda(
       activateHandler,
       apiEvent({
@@ -104,7 +102,6 @@ describe("register a ship", () => {
 
     expect(iotResult.statusCode).toBe(200);
     expect(JSON.parse(iotResult.body!)).toEqual({
-      iot_endpoint: "endpointAddress",
       client_id: `${process.env.IOT_THING_GROUP_NAME!}-${shipId}`,
       certificate: "certificatePem",
       ca_certificate: expect.any(String),
@@ -112,6 +109,25 @@ describe("register a ship", () => {
         public_key: "PublicKey",
         private_key: "PrivateKey",
       },
+    });
+
+    iotMock.on(DescribeEndpointCommand).resolves({
+      endpointAddress: "endpointAddress",
+    });
+    const getConfigResult = await callLambda(
+      getConfigHandler,
+      apiEvent({
+        pathParameters: {
+          id: shipId,
+        },
+      }));
+    if (typeof getConfigResult !== "object") {
+      fail("getConfigResult is not an object");
+    }
+    expect(getConfigResult.statusCode).toBe(200);
+    expect(JSON.parse(getConfigResult.body!)).toEqual({
+      iot_endpoint: "endpointAddress",
+      topic_prefix: `${process.env.IOT_THING_GROUP_NAME!}/`,
     });
 
     iotMock.on(DetachPolicyCommand).resolves({});
@@ -176,9 +192,6 @@ describe("register a ship", () => {
     iotMock.on(AddThingToThingGroupCommand).resolves({});
     iotMock.on(AttachThingPrincipalCommand).resolves({});
     iotMock.on(AttachPolicyCommand).resolves({});
-    iotMock.on(DescribeEndpointCommand).resolves({
-      endpointAddress: "endpointAddress",
-    });
     const iotResult = await callLambda(
       activateHandler,
       apiEvent({
@@ -197,7 +210,6 @@ describe("register a ship", () => {
 
     expect(iotResult.statusCode).toBe(200);
     expect(JSON.parse(iotResult.body!)).toEqual({
-      iot_endpoint: "endpointAddress",
       client_id: `${process.env.IOT_THING_GROUP_NAME!}-${shipId}`,
       certificate: "certificatePem",
       ca_certificate: expect.any(String),

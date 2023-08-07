@@ -6,7 +6,7 @@ import {
   createCertificateFromCsr,
   createKeysAndCertificate,
   ensureThingExists,
-  getIotConfigurations,
+  getCaCertificate,
 } from "../lib/iot-utils";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -71,12 +71,11 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       ReturnValues: "ALL_NEW",
     });
 
-    const { iotEndpoint, caCertificate } = await getIotConfigurations();
+    const { caCertificate } = await getCaCertificate();
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        iot_endpoint: iotEndpoint,
         client_id: `${process.env.IOT_THING_GROUP_NAME!}-${id}`,
         certificate: certificatePem,
         ca_certificate: caCertificate,
@@ -107,12 +106,11 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       ReturnValues: "ALL_NEW",
     });
 
-    const { iotEndpoint, caCertificate } = await getIotConfigurations();
+    const { caCertificate } = await getCaCertificate();
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        iot_endpoint: iotEndpoint,
         client_id: `${process.env.IOT_THING_GROUP_NAME!}-${id}`,
         certificate: certificatePem,
         ca_certificate: caCertificate,

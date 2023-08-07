@@ -91,6 +91,13 @@ functions:
           path: /api/ships/{id}/activate
           method: post
 
+  get-config:
+    handler: src/functions/get-config.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}/config
+          method: get
+
   deactivate:
     handler: src/functions/deactivate.handler
     events:

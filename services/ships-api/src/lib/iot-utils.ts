@@ -1,19 +1,26 @@
 import { IoT } from "@aws-sdk/client-iot";
 import fetch from 'node-fetch';
 
+export const getCaCertificate = async () => {
+  const response = await fetch('https://www.amazontrust.com/repository/AmazonRootCA1.pem', {
+    method: 'GET',
+  }).then((res) => res.text());
+
+  return {
+    caCertificate: response,
+  }
+}
+
 export const getIotConfigurations = async () => {
   const iot = new IoT({
     endpoint: process.env.IOT_ENDPOINT,
     region: process.env.AWS_REGION
   });
   const { endpointAddress } = await iot.describeEndpoint({ endpointType: 'iot:Data-ATS' });
-  const response = await fetch('https://www.amazontrust.com/repository/AmazonRootCA1.pem', {
-    method: 'GET',
-  }).then((res) => res.text());
 
   return {
-    iotEndpoint: endpointAddress,
-    caCertificate: response,
+    iot_endpoint: endpointAddress,
+    topic_prefix: `${process.env.IOT_THING_GROUP_NAME!}/`,
   }
 }
 
