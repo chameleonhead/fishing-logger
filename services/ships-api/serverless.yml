@@ -151,3 +151,36 @@ resources:
       Type: AWS::IoT::ThingGroup
       Properties:
         ThingGroupName: ${self:provider.environment.IOT_THING_GROUP_NAME}
+    shipsIotTopicRule1Role:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service:
+                  - "iot.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          - PolicyName: aws-iot-rule
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: dynamodb:PutItem
+                  Resource: !GetAtt shipsDynamoDbTable.Arn
+    shipsIotTopicRule1:
+      Type: AWS::IoT::TopicRule
+      Properties:
+        RuleName:
+          !Join ["_", !Split ["-", "${self:service}-${sls:stage}-iot-rule1"]]
+        TopicRulePayload:
+          AwsIotSqlVersion: "2016-03-23"
+          Sql: SELECT concat(regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', ''), ':state') as id, * FROM '${self:provider.environment.IOT_THING_GROUP_NAME}/#'
+          Actions:
+            - DynamoDBv2:
+                RoleArn: !GetAtt shipsIotTopicRule1Role.Arn
+                PutItem:
+                  TableName: ${self:provider.environment.DYNAMODB_TABLE}
