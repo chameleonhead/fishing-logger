@@ -33,7 +33,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const paramsIotState = {
     TableName: process.env.DYNAMODB_TABLE!,
     Key: {
-      id: convertToAttr("iot:" + event.pathParameters!.id),
+      id: convertToAttr(event.pathParameters!.id + ":state"),
     },
   };
   const resultIotState = await dynamoDb.getItem(paramsIotState);

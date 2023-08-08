@@ -61,7 +61,7 @@ describe("get a ship", () => {
         iot_enabled: false,
       },
       {
-        id: "iot:test",
+        id: "test:state",
         last_updated: "test",
       },
     ]);
