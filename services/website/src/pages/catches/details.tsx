@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Container, Modal, ModalBody, ModalHeader } from "reactstrap";
 import CatchDetails from "../../components/catch/CatchDetails";
-import EditCatchForm from "../../components/catch/EditCatchForm";
+import CatchEditForm from "../../components/catch/CatchEditForm";
 
 type DetailsPageProps = {
   id: string;
@@ -26,12 +26,12 @@ export const DetailsPage = ({ id }: DetailsPageProps) => {
           漁獲の編集
         </ModalHeader>
         <ModalBody>
-          <EditCatchForm
+          <CatchEditForm
             id={id}
             onSuccess={() => {
               setEditModalOpen(false);
             }}
-          ></EditCatchForm>
+          ></CatchEditForm>
         </ModalBody>
       </Modal>
     </Container>

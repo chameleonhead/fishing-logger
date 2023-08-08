@@ -16,12 +16,12 @@ import { DateTimeInput } from "../inputs/DateTimeInput";
 import { PlaceInput } from "../inputs/PlaceInput";
 import { Catch } from "./models";
 
-type EditCatchFormProps = {
+type CatchEditFormProps = {
   data: Catch;
   onSubmit: (value: Partial<Catch>) => void;
 };
 
-export const EditCatchForm = ({ data, onSubmit }: EditCatchFormProps) => {
+export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
   const formik = useFormik({
     initialValues: {
       catched_at: LocalDateTime.from(
@@ -225,7 +225,7 @@ export default function ({
   }, []);
   if (data) {
     return (
-      <EditCatchForm
+      <CatchEditForm
         data={data}
         onSubmit={async (value) => {
           try {

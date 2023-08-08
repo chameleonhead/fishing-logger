@@ -16,11 +16,11 @@ import { DateTimeInput } from "../inputs/DateTimeInput";
 import { PlaceInput } from "../inputs/PlaceInput";
 import { Catch } from "./models";
 
-type CreateCatchFormProps = {
+type CatchCreateFormProps = {
   onSubmit: (value: Catch) => void;
 };
 
-export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
+export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
   const formik = useFormik({
     initialValues: {
       catched_at: LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES) as
@@ -206,7 +206,7 @@ export const CreateCatchForm = ({ onSubmit }: CreateCatchFormProps) => {
 
 export default function ({ onSuccess }: { onSuccess: (value: Catch) => void }) {
   return (
-    <CreateCatchForm
+    <CatchCreateForm
       onSubmit={async (value) => {
         try {
           const result = await fetch("/api/catches", {
