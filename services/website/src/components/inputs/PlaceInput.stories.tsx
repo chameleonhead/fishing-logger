@@ -1,22 +1,23 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 
 import { PlaceInput } from "./PlaceInput";
 
-export default {
+const meta = {
   title: "components/inputs/PlaceInput",
   component: PlaceInput,
-} as ComponentMeta<typeof PlaceInput>;
+} as Meta<typeof PlaceInput>;
 
-const Template: ComponentStory<typeof PlaceInput> = (args) => (
-  <PlaceInput {...args} />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  value: { latitude: 35.65809922, longitude: 139.74135747 },
+export const Default: Story = {
+  args: {
+    value: { latitude: 35.65809922, longitude: 139.74135747 },
+  },
 };
 
-export const withoutValue = Template.bind({});
-withoutValue.args = {
-  value: undefined,
+export const withoutValue: Story = {
+  args: {
+    value: undefined,
+  },
 };

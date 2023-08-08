@@ -1,24 +1,25 @@
+import { Meta, StoryObj } from "@storybook/react";
 import { LocalDateTime } from "@js-joda/core";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { DateTimeInput } from "./DateTimeInput";
 
-export default {
+const meta = {
   title: "components/inputs/DateTimeInput",
   component: DateTimeInput,
-} as ComponentMeta<typeof DateTimeInput>;
+} as Meta<typeof DateTimeInput>;
 
-const Template: ComponentStory<typeof DateTimeInput> = (args) => (
-  <DateTimeInput {...args} />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  value: LocalDateTime.now(),
+export const Default: Story = {
+  args: {
+    value: LocalDateTime.now(),
+  },
 };
 
-export const withError = Template.bind({});
-withError.args = {
-  ...Default.args,
-  invalid: true,
+export const withError: Story = {
+  args: {
+    ...Default.args,
+    invalid: true,
+  },
 };

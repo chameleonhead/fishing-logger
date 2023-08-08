@@ -1,15 +1,16 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { StoryObj, Meta } from "@storybook/react";
 
 import { Map } from "./Map";
 
-export default {
-  title: "components/map/Map",
-  component: Map,
-} as ComponentMeta<typeof Map>;
+const meta = { title: "components/map/Map", component: Map } as Meta<
+  typeof Map
+>;
 
-const Template: ComponentStory<typeof Map> = (args) => <Map {...args} />;
+export default meta;
+type Story = StoryObj<typeof Map>;
 
-export const Default = Template.bind({});
-Default.args = {
-  position: { lat: 35.65809922, lng: 139.74135747 },
+export const Default: Story = {
+  args: {
+    position: { lat: 35.65809922, lng: 139.74135747 },
+  },
 };

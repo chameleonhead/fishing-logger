@@ -158,7 +158,7 @@ export const VideoThumbnail = ({ data }: MediaThumbnailProps) => {
       style={{ overflow: "clip" }}
       className="h-100 d-flex align-items-center justify-content-center"
     >
-      <video controls>
+      <video controls style={{ maxHeight: "100%", maxWidth: "100%" }}>
         <source src={data.url} type={data.content_type} />
         Sorry, your browser doesn't support embedded videos.
       </video>
@@ -174,7 +174,7 @@ const initialValue = {
 
 function reducer(
   state: typeof initialValue,
-  action: { type: "FETCH" } | { type: "FETCHED"; payload: Media }
+  action: { type: "FETCH" } | { type: "FETCHED"; payload: Media },
 ): typeof initialValue {
   switch (action.type) {
     case "FETCH":

@@ -1,14 +1,13 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 
 import { CatchCreateForm } from "./CatchCreateForm";
 
-export default {
+const meta = {
   title: "components/catch/CatchCreateForm",
   component: CatchCreateForm,
-} as ComponentMeta<typeof CatchCreateForm>;
+} as Meta<typeof CatchCreateForm>;
 
-const Template: ComponentStory<typeof CatchCreateForm> = (args) => (
-  <CatchCreateForm {...args} />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
+export const Default: Story = {};

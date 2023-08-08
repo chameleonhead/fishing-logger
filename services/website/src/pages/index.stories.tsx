@@ -1,10 +1,10 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import Layout from "../components/common/Layout";
 
 import { IndexPage } from "./index";
 
-export default {
+const meta = {
   title: "pages/IndexPage",
   component: IndexPage,
   decorators: [
@@ -18,13 +18,13 @@ export default {
       </MemoryRouter>
     ),
   ],
-} as ComponentMeta<typeof IndexPage>;
+} as Meta<typeof IndexPage>;
 
-const Template: ComponentStory<typeof IndexPage> = (args) => (
-  <IndexPage {...args} />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  data: [],
+export const Default: Story = {
+  args: {
+    data: [],
+  },
 };
