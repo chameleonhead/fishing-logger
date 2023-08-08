@@ -110,6 +110,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
     return {
       statusCode: 200,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         client_id: `${process.env.IOT_THING_GROUP_NAME!}-${id}`,
         certificate: certificatePem,

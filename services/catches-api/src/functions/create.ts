@@ -25,6 +25,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   // create a response
   return {
     statusCode: 200,
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(unmarshall(params.Item)),
   };
 };

@@ -48,4 +48,40 @@ describe("get a ship", () => {
       iot_enabled: true,
     });
   });
+
+  it("should get a ship with state", async () => {
+    const dynamoDb = new DynamoDB({
+      endpoint: process.env.DYNAMODB_ENDPOINT,
+      region: process.env.AWS_REGION,
+    });
+    await ensureTableWithData(dynamoDb, process.env.DYNAMODB_TABLE!, [
+      {
+        id: "test",
+        name: "test",
+        iot_enabled: false,
+      },
+      {
+        id: "iot:test",
+        last_updated: "test",
+      },
+    ]);
+    const result = await callLambda(getHandler, apiEvent({
+      pathParameters: {
+        id: "test",
+      },
+    }));
+
+    if (typeof result !== "object") {
+      fail("result is not an object")
+    }
+    expect(result.statusCode).toBe(200);
+    expect(JSON.parse(result.body!)).toEqual({
+      id: "test",
+      name: "test",
+      iot_enabled: false,
+      state: {
+        last_updated: "test",
+      }
+    });
+  });
 });

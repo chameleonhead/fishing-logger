@@ -15,7 +15,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   };
 
   // fetch ship from the database
-  const result = await dynamoDb.getItem(params)
+  const result = await dynamoDb.getItem(params);
 
   if (!result.Item) {
     return {
@@ -28,8 +28,23 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   // create a response
   const ship = unmarshall(result!.Item!);
   delete ship.iot_config;
+
+  // fetch ship state from the database
+  const paramsIotState = {
+    TableName: process.env.DYNAMODB_TABLE!,
+    Key: {
+      id: convertToAttr("iot:" + event.pathParameters!.id),
+    },
+  };
+  const resultIotState = await dynamoDb.getItem(paramsIotState);
+  if (resultIotState.Item) {
+    ship.state = unmarshall(resultIotState!.Item!);
+    delete ship.state.id;
+  }
+
   return {
     statusCode: 200,
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(ship),
   };
 };
