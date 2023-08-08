@@ -23,7 +23,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         const ship = unmarshall(item)
         delete ship.iot_config
         return ship;
-      }),
+      }).filter((ship) => !ship.id.endsWith(":state")),
     }),
   };
 };
