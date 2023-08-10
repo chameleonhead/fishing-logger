@@ -46,7 +46,7 @@ export async function ensureTableNoData(dynamoDb: DynamoDB, tableName: string) {
 export async function ensureTableWithData(
   dynamoDb: DynamoDB,
   tableName: string,
-  data: any[],
+  data: object[],
 ) {
   await ensureTableNoData(dynamoDb, tableName);
   console.log(`Writing data to table ${tableName}`);
@@ -54,7 +54,7 @@ export async function ensureTableWithData(
     RequestItems: {
       [tableName]: data.map((item) => ({
         PutRequest: {
-          Item: marshall(item) as any,
+          Item: marshall(item),
         },
       })),
     },
@@ -87,17 +87,17 @@ export function callLambda<TRequest, TResponse>(
   handler: Handler<TRequest, TResponse>,
   request: TRequest,
 ) {
-  return new Promise<TResponse>(async (resolve, reject) => {
+  return new Promise<TResponse>((resolve, reject) => {
     try {
-      const result = await handler(request, {} as any, (error, result) => {
+      const promise = handler(request, {} as never, (error, result) => {
         if (error) {
           reject(error);
         } else {
           resolve(result!);
         }
       });
-      if (typeof result !== "undefined") {
-        resolve(result);
+      if (typeof promise !== "undefined") {
+        promise.then(resolve).catch(reject);
       }
     } catch (err) {
       reject(err);
@@ -108,9 +108,9 @@ export function callLambda<TRequest, TResponse>(
 export function apiEvent({
   method = "GET",
   path = "/",
-  body = undefined,
-  pathParameters = undefined,
-}: any) {
+  body = undefined as object | undefined,
+  pathParameters = undefined as object | undefined,
+}) {
   return {
     version: "",
     routeKey: "",

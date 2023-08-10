@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { AttributeValue, DynamoDB } from "@aws-sdk/client-dynamodb";
 import { convertToAttr, unmarshall } from "@aws-sdk/util-dynamodb";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -52,13 +52,13 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       ...entries.reduce((prev, { attr, key }) => {
         prev[attr] = key;
         return prev;
-      }, {} as any),
+      }, {} as Record<string, string>),
     },
     ExpressionAttributeValues: {
       ...entries.reduce((prev, { key, value }) => {
         prev[":" + key] = convertToAttr(value);
         return prev;
-      }, {} as any),
+      }, {} as Record<string, AttributeValue>),
       ":updated_at": convertToAttr(timestamp),
     },
     UpdateExpression:
@@ -66,7 +66,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       entries.map(({ attr, key }) => `${attr} = :${key}`).join(", ") +
       ", updated_at = :updated_at",
     ReturnValues: "ALL_NEW",
-  } as any;
+  };
 
   // update the catch in the database
   const resultUpdate = await dynamoDb.updateItem(paramsUpdate);

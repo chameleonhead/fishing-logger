@@ -2,7 +2,7 @@ import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 
-export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2 = async () => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
@@ -19,7 +19,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     statusCode: 200,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      catches: result.Items?.map((item) => unmarshall(item as any)),
+      catches: result.Items?.map((item) => unmarshall(item)),
     }),
   };
 };

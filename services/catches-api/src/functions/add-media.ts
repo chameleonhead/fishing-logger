@@ -29,7 +29,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (
     ExpressionAttributeValues: {
       ":media": convertToAttr(
         convertToNative(
-          (result!.Item?.media as any) || { L: [] },
+          (result!.Item?.media) || { L: [] },
         ).concat([data]),
       ),
       ":updated_at": convertToAttr(timestamp),
@@ -45,6 +45,6 @@ export const handler: APIGatewayProxyHandlerV2 = async (
   return {
     statusCode: 200,
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(unmarshall(updateResult!.Attributes as any)),
+    body: JSON.stringify(unmarshall(updateResult!.Attributes!)),
   };
 };
