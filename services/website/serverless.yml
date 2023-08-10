@@ -7,7 +7,7 @@ plugins:
 provider:
   name: aws
   region: ap-northeast-1
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   environment:
     S3_BUCKET: ${self:service}-${sls:stage}
 

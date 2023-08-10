@@ -22,8 +22,7 @@ package:
 provider:
   name: aws
   region: ap-northeast-1
-  runtime: nodejs16.x
-  lambdaHashingVersion: "20201221"
+  runtime: nodejs18.x
   environment:
     DYNAMODB_TABLE: ${self:service}-${sls:stage}
     S3_BUCKET: ${self:service}-${sls:stage}
