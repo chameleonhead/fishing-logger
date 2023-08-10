@@ -185,7 +185,7 @@ function reducer(
   return state;
 }
 
-export default function ({ id }: { id: string }) {
+const MediaThumbnailWithState = function ({ id }: { id: string }) {
   const [state, dispatch] = useReducer(reducer, initialValue);
   const [isPreviewOpen, setPreviewOpen] = useState(false);
   useEffect(() => {
@@ -197,7 +197,7 @@ export default function ({ id }: { id: string }) {
         dispatch({ type: "FETCHED", payload: data });
       })();
     }
-  }, [id, state.status]);
+  }, [dispatch, id, state.status, state.data]);
   if (!state.data) {
     return <div>Loading...</div>;
   }
@@ -208,4 +208,6 @@ export default function ({ id }: { id: string }) {
       onTogglePreview={() => setPreviewOpen(!isPreviewOpen)}
     />
   );
-}
+};
+
+export default MediaThumbnailWithState;

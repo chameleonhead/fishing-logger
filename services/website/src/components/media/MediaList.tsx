@@ -18,3 +18,5 @@ export const MediaList = ({ data }: MediaListProps) => {
     </Row>
   );
 };
+
+export default MediaList;

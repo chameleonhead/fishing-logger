@@ -1,5 +1,5 @@
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Badge, Button, Col, ListGroup, ListGroupItem, Row } from "reactstrap";
 import Map from "../map/Map";
 import MediaUploader from "../media/MediaUploader";
@@ -24,7 +24,7 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
         <Col className="text-end">
           <small>
             {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
-              Instant.parse(data.catched_at).atZone(ZoneId.systemDefault())
+              Instant.parse(data.catched_at).atZone(ZoneId.systemDefault()),
             )}
           </small>
         </Col>
@@ -96,7 +96,7 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
   );
 };
 
-export default function ({
+const CatchDetailsWithState = function ({
   id,
   onEditRequested,
 }: {
@@ -117,24 +117,27 @@ export default function ({
         }
       })();
     }
-  }, [requestReload]);
+  }, [id, requestReload]);
+
+  const handleSuccess = useCallback(
+    async (r: { id: string }) => {
+      await fetch(`/api/catches/${id}/media`, {
+        method: "POST",
+        body: JSON.stringify(r),
+      });
+      setRequestReload(true);
+    },
+    [id],
+  );
   if (data) {
     return (
       <>
         <CatchDetails data={data} onEditRequested={onEditRequested} />
-        <MediaUploader
-          onSuccess={(r) => {
-            (async () => {
-              await fetch(`/api/catches/${id}/media`, {
-                method: "POST",
-                body: JSON.stringify(r),
-              });
-              setRequestReload(true);
-            })();
-          }}
-        />
+        <MediaUploader onSuccess={handleSuccess} />
       </>
     );
   }
   return <div>Loading...</div>;
-}
+};
+
+export default CatchDetailsWithState;

@@ -2,9 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "reactstrap";
 import CatchCreateForm from "../../components/catch/CatchCreateForm";
 
-type CreatePageProps = {};
-
-export const CreatePage = ({}: CreatePageProps) => {
+export const CreatePage = () => {
   const navigate = useNavigate();
   return (
     <Container fluid>
@@ -17,6 +15,4 @@ export const CreatePage = ({}: CreatePageProps) => {
   );
 };
 
-export default function () {
-  return <CreatePage />;
-}
+export default CreatePage;

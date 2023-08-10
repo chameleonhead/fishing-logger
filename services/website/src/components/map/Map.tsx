@@ -40,7 +40,7 @@ const CurrentLocationController = createControlComponent(
           this.container.innerHTML = trackingContent;
           this.watchId = navigator.geolocation.watchPosition(
             this.onWatchPosition.bind(this),
-            this.onWatchError.bind(this)
+            this.onWatchError.bind(this),
           );
         } else {
           this.trackLocation = false;
@@ -84,7 +84,7 @@ const CurrentLocationController = createControlComponent(
           this.container,
           "click",
           this.onClick.bind(this),
-          this.container
+          this.container,
         );
 
         return this.container;
@@ -99,7 +99,7 @@ const CurrentLocationController = createControlComponent(
       },
     });
     return new CurrentLocation();
-  }
+  },
 );
 
 type MapProps = {
@@ -118,7 +118,7 @@ const MapEventHandler = ({ position, onPositionChange }: MapProps) => {
     if (position && !map.getBounds().contains(position)) {
       map.setView(position);
     }
-  }, [position?.lat, position?.lng]);
+  }, [map, position]);
   return null;
 };
 

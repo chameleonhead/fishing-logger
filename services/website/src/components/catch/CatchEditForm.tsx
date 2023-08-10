@@ -125,13 +125,13 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
             !!formik.errors.fishes_species &&
             !!formik.errors.fishes_species[0] &&
             !!formik.touched.fishes_species &&
-            (formik.touched.fishes_species as any)[0]
+            (formik.touched.fishes_species as unknown as boolean[])[0]
           }
         />
         {formik.errors.fishes_species &&
           formik.errors.fishes_species[0] &&
           formik.touched.fishes_species &&
-          (formik.touched.fishes_species as any)[0] && (
+          (formik.touched.fishes_species as unknown as boolean[])[0] && (
             <FormFeedback>{formik.errors.fishes_species[0]}</FormFeedback>
           )}
       </FormGroup>
@@ -205,7 +205,7 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
   );
 };
 
-export default function ({
+const CatchEditFormWithState = function ({
   id,
   onSuccess,
 }: {
@@ -222,7 +222,7 @@ export default function ({
         setData(await result.json());
       }
     })();
-  }, []);
+  }, [id]);
   if (data) {
     return (
       <CatchEditForm
@@ -246,4 +246,6 @@ export default function ({
     );
   }
   return <div>Loading...</div>;
-}
+};
+
+export default CatchEditFormWithState;

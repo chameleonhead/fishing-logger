@@ -125,21 +125,21 @@ export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
             !!formik.errors.fishes_species &&
             !!formik.errors.fishes_species[0] &&
             !!formik.touched.fishes_species &&
-            (formik.touched.fishes_species as any)[0]
+            (formik.touched.fishes_species as unknown as boolean[])[0]
           }
         />
         {formik.errors.fishes_species &&
           formik.errors.fishes_species[0] &&
           formik.touched.fishes_species &&
-          (formik.touched.fishes_species as any)[0] && (
+          (formik.touched.fishes_species as unknown as boolean[])[0] && (
             <FormFeedback>{formik.errors.fishes_species[0]}</FormFeedback>
           )}
       </FormGroup>
       <FormGroup>
-        <Label for="fishes_sizeText0">サイズ</Label>
+        <Label for="fishes_size_text0">サイズ</Label>
         <Input
-          id="fishes_sizeText0"
-          name="fishes_sizeText[0]"
+          id="fishes_size_text0"
+          name="fishes_size_text[0]"
           placeholder="例) 50cm"
           type="text"
           value={formik.values.fishes_size_text[0]}
@@ -204,7 +204,7 @@ export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
   );
 };
 
-export default function ({ onSuccess }: { onSuccess: (value: Catch) => void }) {
+const CatchCreateFormWithState = function({ onSuccess }: { onSuccess: (value: Catch) => void }) {
   return (
     <CatchCreateForm
       onSubmit={async (value) => {
@@ -225,3 +225,5 @@ export default function ({ onSuccess }: { onSuccess: (value: Catch) => void }) {
     />
   );
 }
+
+export default CatchCreateFormWithState;

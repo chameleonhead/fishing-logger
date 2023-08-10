@@ -38,7 +38,9 @@ export const DetailsPage = ({ id }: DetailsPageProps) => {
   );
 };
 
-export default function () {
+const DetailsPageWithState = function () {
   const params = useParams();
   return <DetailsPage id={params.id as string} />;
-}
+};
+
+export default DetailsPageWithState;

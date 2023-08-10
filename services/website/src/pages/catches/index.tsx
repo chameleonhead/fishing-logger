@@ -1,9 +1,7 @@
 import { Container } from "reactstrap";
 import CatchList from "../../components/catch/CatchList";
 
-type IndexPageProps = {};
-
-export const IndexPage = ({}: IndexPageProps) => {
+export const IndexPage = () => {
   return (
     <Container fluid>
       <div className="my-3">
@@ -13,6 +11,4 @@ export const IndexPage = ({}: IndexPageProps) => {
   );
 };
 
-export default function () {
-  return <IndexPage />;
-}
+export default IndexPage;

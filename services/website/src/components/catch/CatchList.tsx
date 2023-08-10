@@ -40,8 +40,8 @@ export const CatchList = ({ data }: CatchListProps) => {
                 <small>
                   {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
                     Instant.parse(item.catched_at).atZone(
-                      ZoneId.systemDefault()
-                    )
+                      ZoneId.systemDefault(),
+                    ),
                   )}
                 </small>
               </Col>
@@ -70,7 +70,7 @@ export const CatchList = ({ data }: CatchListProps) => {
   );
 };
 
-export default function () {
+const CatchListWithState = function () {
   const [data, setData] = useState(undefined as Catch[] | undefined);
   useEffect(() => {
     (async () => {
@@ -86,4 +86,6 @@ export default function () {
     return <CatchList data={data} />;
   }
   return <div>Loading...</div>;
-}
+};
+
+export default CatchListWithState;
