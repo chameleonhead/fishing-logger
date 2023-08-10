@@ -1,6 +1,6 @@
+import React from "react";
 import type { Preview } from "@storybook/react";
-
-import "bootstrap/dist/css/bootstrap.min.css";
+import { NextUIProvider } from "@nextui-org/react";
 import "../src/index.css";
 
 const preview: Preview = {
@@ -13,6 +13,7 @@ const preview: Preview = {
       },
     },
   },
+  decorators: [(story) => React.createElement(NextUIProvider, null, story())],
 };
 
 export default preview;
