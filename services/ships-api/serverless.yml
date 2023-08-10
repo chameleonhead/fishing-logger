@@ -11,6 +11,7 @@ custom:
         - "@aws-sdk/client-dynamodb"
         - "@aws-sdk/util-dynamodb"
         - "@aws-sdk/client-iot"
+        - "@aws-sdk/client-timestream-query"
       nodeModulesRelativeDir: "../../"
     packagerOptions:
       lockFile: "../../package-lock.json"
@@ -28,6 +29,8 @@ provider:
     S3_BUCKET: ${self:service}-${sls:stage}
     IOT_THING_GROUP_NAME: ${self:service}-${sls:stage}
     IOT_POLICY_NAME: ${self:service}-${sls:stage}
+    TIMESTREAM_DATABASE: fishing_logger_ships_api_${sls:stage}
+    TIMESTREAM_TABLE_SHIPS_POSITION: ships_position
   httpApi:
     id: !ImportValue sls-fishing-logger-apigw-${sls:stage}-HttpApiId
   iam:
@@ -62,6 +65,17 @@ provider:
             - iot:CreateKeysAndCertificate
             - iot:CreateCertificateFromCsr
           Resource: "*"
+        - Effect: Allow
+          Action:
+            - timestream:DescribeEndpoints
+            - timestream:SelectValues
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - timestream:DescribeTable
+            - timestream:ListMeasures
+            - timestream:Select
+          Resource: arn:aws:timestream:${aws:region}:${aws:accountId}:database/${self:provider.environment.TIMESTREAM_DATABASE}/table/${self:provider.environment.TIMESTREAM_TABLE_SHIPS_POSITION}
 
 functions:
   list:
@@ -97,6 +111,13 @@ functions:
     events:
       - httpApi:
           path: /api/ships/{id}/config
+          method: get
+
+  get-logs:
+    handler: src/functions/get-logs.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}/logs
           method: get
 
   deactivate:
@@ -159,11 +180,11 @@ resources:
     shipsTimestreamDatabase:
       Type: AWS::Timestream::Database
       Properties:
-        DatabaseName: !Join ["_", !Split ["-", "${self:service}-${sls:stage}"]]
+        DatabaseName: ${self:provider.environment.TIMESTREAM_DATABASE}
     shipsTimestreamTableShipsPosition:
       Type: AWS::Timestream::Table
       Properties:
-        TableName: ships_position
+        TableName: ${self:provider.environment.TIMESTREAM_TABLE_SHIPS_POSITION}
         DatabaseName: !Ref shipsTimestreamDatabase
         RetentionProperties:
           MemoryStoreRetentionPeriodInHours: 1440
