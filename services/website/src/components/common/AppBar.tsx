@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link as RouterLink, NavLink as RouterNavLink } from "react-router-dom";
+import VisibleTransition from "./VisibleTransition";
 
 type AppBarProps = {
   menuOpen: boolean;
@@ -77,13 +78,13 @@ export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
                 className="block h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 aria-hidden="true"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d={
                     menuOpen
                       ? "M6 18L18 6M6 6l12 12"
@@ -95,49 +96,51 @@ export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
           </div>
         </div>
 
-        <div className={menuOpen ? "md:hidden" : "hidden"} id="mobile-menu">
-          <div className="space-y-1 pb-3 pt-2">
-            <RouterNavLink
-              to="/catches"
-              end
-              className={({ isActive, isPending }) =>
-                isPending
-                  ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                  : isActive
-                  ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-              }
-              aria-current="page"
-            >
-              漁獲一覧
-            </RouterNavLink>
-            <RouterNavLink
-              to="/catches/create"
-              className={({ isActive, isPending }) =>
-                isPending
-                  ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                  : isActive
-                  ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-              }
-              aria-current="page"
-            >
-              漁獲登録
-            </RouterNavLink>
-            <RouterNavLink
-              to="/ships"
-              className={({ isActive, isPending }) =>
-                isPending
-                  ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                  : isActive
-                  ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-              }
-              aria-current="page"
-            >
-              船
-            </RouterNavLink>
-          </div>
+        <div className="md:hidden" id="mobile-menu">
+          <VisibleTransition visible={menuOpen}>
+            <div className="space-y-1 pb-3 pt-2">
+              <RouterNavLink
+                to="/catches"
+                end
+                className={({ isActive, isPending }) =>
+                  isPending
+                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
+                    : isActive
+                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
+                    : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
+                }
+                aria-current="page"
+              >
+                漁獲一覧
+              </RouterNavLink>
+              <RouterNavLink
+                to="/catches/create"
+                className={({ isActive, isPending }) =>
+                  isPending
+                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
+                    : isActive
+                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
+                    : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
+                }
+                aria-current="page"
+              >
+                漁獲登録
+              </RouterNavLink>
+              <RouterNavLink
+                to="/ships"
+                className={({ isActive, isPending }) =>
+                  isPending
+                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
+                    : isActive
+                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
+                    : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
+                }
+                aria-current="page"
+              >
+                船
+              </RouterNavLink>
+            </div>
+          </VisibleTransition>
         </div>
       </div>
     </nav>

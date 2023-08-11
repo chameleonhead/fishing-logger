@@ -16,9 +16,7 @@
     "deploy:prod": "serverless deploy --stage prod && serverless syncToS3 --stage prod && serverless invalidateCloudFrontCache --stage prod"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.16",
     "@js-joda/core": "^5.5.3",
-    "@nextui-org/react": "^2.0.9",
     "bootstrap": "^5.3.1",
     "formik": "^2.4.2",
     "framer-motion": "^10.15.1",
