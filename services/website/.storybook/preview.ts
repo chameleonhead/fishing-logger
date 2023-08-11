@@ -1,4 +1,5 @@
 import React from "react";
+import { MemoryRouter } from "react-router-dom";
 import type { Preview } from "@storybook/react";
 import { NextUIProvider } from "@nextui-org/react";
 import "../src/index.css";
@@ -13,7 +14,7 @@ const preview: Preview = {
       },
     },
   },
-  decorators: [(story) => React.createElement(NextUIProvider, null, story())],
+  decorators: [(story) => React.createElement(NextUIProvider, null, React.createElement(MemoryRouter, null, story()))],
 };
 
 export default preview;

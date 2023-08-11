@@ -1,38 +1,12 @@
-import {
-  Link as RouterLink,
-  NavLink as RouterNavLink,
-  Outlet,
-} from "react-router-dom";
-import { Nav, Navbar, NavbarBrand, NavItem } from "reactstrap";
+import AppBar from "./AppBar";
+import { Outlet } from "react-router-dom";
 
 export const Layout = () => {
   return (
-    <>
-      <Navbar color="dark" dark>
-        <NavbarBrand tag={RouterLink} to="/">
-          Fishing Logger
-        </NavbarBrand>
-        <Nav navbar className="d-flex flex-row">
-          <NavItem className="me-3">
-            <RouterNavLink
-              to="/catches"
-              className={(isActive) => "nav-link" + (isActive ? " active" : "")}
-            >
-              一覧
-            </RouterNavLink>
-          </NavItem>
-          <NavItem>
-            <RouterNavLink
-              to="/catches/create"
-              className={(isActive) => "nav-link" + (isActive ? " active" : "")}
-            >
-              漁獲登録
-            </RouterNavLink>
-          </NavItem>
-        </Nav>
-      </Navbar>
+    <div className="min-h-full">
+      <AppBar />
       <Outlet />
-    </>
+    </div>
   );
 };
 
