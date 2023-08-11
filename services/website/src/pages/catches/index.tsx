@@ -1,13 +1,16 @@
-import { Container } from "reactstrap";
 import CatchList from "../../components/catch/CatchList";
+import PageHeader from "../../components/common/PageHeader";
 
 export const IndexPage = () => {
   return (
-    <Container fluid>
-      <div className="my-3">
-        <CatchList />
-      </div>
-    </Container>
+    <div>
+      <PageHeader title="漁獲一覧" />
+      <main>
+        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+          <CatchList />
+        </div>
+      </main>
+    </div>
   );
 };
 

@@ -1,15 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { Container } from "reactstrap";
 import ShipCreateForm from "../../components/ships/ShipCreateForm";
+import PageHeader from "../../components/common/PageHeader";
 
 export const CreatePage = () => {
   const navigate = useNavigate();
   return (
-    <Container fluid>
-      <div className="my-3">
-        <ShipCreateForm onSuccess={(value) => navigate(`/ships/${value.id}`)} />
-      </div>
-    </Container>
+    <div>
+      <PageHeader title="船登録" />
+      <main>
+        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+          <ShipCreateForm
+            onSuccess={(value) => navigate(`/ships/${value.id}`)}
+          />
+        </div>
+      </main>
+    </div>
   );
 };
 

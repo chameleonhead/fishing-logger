@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Modal, ModalBody, ModalHeader } from "reactstrap";
+import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import ShipDetails from "../../components/ships/ShipDetails";
 import ShipEditForm from "../../components/ships/ShipEditForm";
+import PageHeader from "../../components/common/PageHeader";
 
 type DetailsPageProps = {
   id: string;
@@ -11,10 +12,13 @@ type DetailsPageProps = {
 export const DetailsPage = ({ id }: DetailsPageProps) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   return (
-    <Container fluid>
-      <div className="my-3">
-        <ShipDetails id={id} onEditRequested={() => setEditModalOpen(true)} />
-      </div>
+    <div>
+      <PageHeader title="船詳細" />
+      <main>
+        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+          <ShipDetails id={id} onEditRequested={() => setEditModalOpen(true)} />
+        </div>
+      </main>
       <Modal
         isOpen={isEditModalOpen}
         toggle={() => setEditModalOpen(!isEditModalOpen)}
@@ -34,7 +38,7 @@ export const DetailsPage = ({ id }: DetailsPageProps) => {
           ></ShipEditForm>
         </ModalBody>
       </Modal>
-    </Container>
+    </div>
   );
 };
 

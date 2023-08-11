@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Modal, ModalBody, ModalHeader } from "reactstrap";
+import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import CatchDetails from "../../components/catch/CatchDetails";
 import CatchEditForm from "../../components/catch/CatchEditForm";
+import PageHeader from "../../components/common/PageHeader";
 
 type DetailsPageProps = {
   id: string;
@@ -11,10 +12,16 @@ type DetailsPageProps = {
 export const DetailsPage = ({ id }: DetailsPageProps) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   return (
-    <Container fluid>
-      <div className="my-3">
-        <CatchDetails id={id} onEditRequested={() => setEditModalOpen(true)} />
-      </div>
+    <div>
+      <PageHeader title="漁獲詳細" />
+      <main>
+        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+          <CatchDetails
+            id={id}
+            onEditRequested={() => setEditModalOpen(true)}
+          />
+        </div>
+      </main>
       <Modal
         isOpen={isEditModalOpen}
         toggle={() => setEditModalOpen(!isEditModalOpen)}
@@ -23,7 +30,7 @@ export const DetailsPage = ({ id }: DetailsPageProps) => {
           className="bg-primary text-light"
           toggle={() => setEditModalOpen(!isEditModalOpen)}
         >
-          漁獲の編集
+          船の編集
         </ModalHeader>
         <ModalBody>
           <CatchEditForm
@@ -34,7 +41,7 @@ export const DetailsPage = ({ id }: DetailsPageProps) => {
           ></CatchEditForm>
         </ModalBody>
       </Modal>
-    </Container>
+    </div>
   );
 };
 
