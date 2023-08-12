@@ -24,7 +24,7 @@ export const Default: Story = {
   },
 };
 
-export const withImage: Story = {
+export const WithImage: Story = {
   args: {
     data: {
       ...Default.args!.data!,
@@ -34,7 +34,7 @@ export const withImage: Story = {
   },
 };
 
-export const withImageWithPreviewOpen: Story = {
+export const WithImageWithPreviewOpen: Story = {
   args: {
     data: {
       ...Default.args!.data!,
@@ -45,7 +45,7 @@ export const withImageWithPreviewOpen: Story = {
   },
 };
 
-export const withAudio: Story = {
+export const WithAudio: Story = {
   args: {
     data: {
       ...Default.args!.data!,
@@ -55,7 +55,7 @@ export const withAudio: Story = {
   },
 };
 
-export const withVideo: Story = {
+export const WithVideo: Story = {
   args: {
     data: {
       ...Default.args!.data!,

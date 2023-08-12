@@ -11,7 +11,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const COLORS = ["primary", "secondary", "default"] as BadgeProps["color"][];
-const render = ({ color, ...args }: BadgeProps) => (
+const render = (args: BadgeProps) => (
   <div>
     {COLORS.map((value) => (
       <Badge key={value} color={value} {...args} />
@@ -25,4 +25,3 @@ export const Default: Story = {
   },
   render,
 };
-

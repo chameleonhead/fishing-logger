@@ -16,7 +16,7 @@ export const Default: Story = {
   },
 };
 
-export const withoutValue: Story = {
+export const WithoutValue: Story = {
   args: {
     value: undefined,
   },

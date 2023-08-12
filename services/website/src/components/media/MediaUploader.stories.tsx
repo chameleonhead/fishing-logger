@@ -16,12 +16,12 @@ export const Default: Story = {
   },
 };
 
-export const withQueued: Story = {
+export const WithQueued: Story = {
   args: {
     queue: [
       {
         id: 1,
-        target: { name: "Name" } as any,
+        target: { name: "Name" } as File,
         status: "QUEUED",
         progress: 0,
       },
@@ -29,12 +29,12 @@ export const withQueued: Story = {
   },
 };
 
-export const withUploading: Story = {
+export const WithUploading: Story = {
   args: {
     queue: [
       {
         id: 1,
-        target: { name: "Name" } as any,
+        target: { name: "Name" } as File,
         status: "UPLOADING",
         progress: 10,
       },
@@ -42,12 +42,12 @@ export const withUploading: Story = {
   },
 };
 
-export const withSucceeded: Story = {
+export const WithSucceeded: Story = {
   args: {
     queue: [
       {
         id: 1,
-        target: { name: "Name" } as any,
+        target: { name: "Name" } as File,
         status: "SUCCEEDED",
         progress: 100,
       },
@@ -55,12 +55,12 @@ export const withSucceeded: Story = {
   },
 };
 
-export const withFailed: Story = {
+export const WithFailed: Story = {
   args: {
     queue: [
       {
         id: 1,
-        target: { name: "Name" } as any,
+        target: { name: "Name" } as File,
         status: "FAILED",
         progress: 0,
         error: new Error("error"),

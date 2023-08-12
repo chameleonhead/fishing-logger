@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import Map from "../map/Map";
 
@@ -39,7 +39,7 @@ function valueToState(value: PlaceInputProps["value"]) {
 
 function tryParse(
   latitudeText: string,
-  longitudeText: string
+  longitudeText: string,
 ): PlaceInputProps["value"] {
   let latitudeNumber: number | undefined;
   let longitudeNumber: number | undefined;
@@ -79,7 +79,7 @@ function tryParse(
 export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
   const [state, setState] = useState(valueToState(value));
 
-  const handleFetchCurrentLocation = () =>
+  const handleFetchCurrentLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition((position) => {
       const newValue = {
         latitude:
@@ -94,12 +94,13 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         onChange(newValue);
       }
     });
+  }, [onChange]);
 
   useEffect(() => {
     if (!value) {
       handleFetchCurrentLocation();
     }
-  }, []);
+  }, [value, handleFetchCurrentLocation]);
   useEffect(() => {
     if (value !== (null as InvalidValue)) {
       const newValue = valueToState(value);
@@ -112,7 +113,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         setState(newValue);
       }
     }
-  }, [value]);
+  }, [value, state]);
 
   return (
     <div>

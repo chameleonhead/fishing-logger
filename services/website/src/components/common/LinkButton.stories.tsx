@@ -15,7 +15,7 @@ const COLORS = [
   "secondary",
   "default",
 ] as LinkButtonProps["color"][];
-const render = ({ color, ...args }: LinkButtonProps) => (
+const render = (args: LinkButtonProps) => (
   <div>
     {COLORS.map((value) => (
       <LinkButton key={value} color={value} {...args} />

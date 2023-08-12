@@ -11,7 +11,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const COLORS = ["primary", "secondary", "default"] as ButtonProps["color"][];
-const render = ({ color, ...args }: ButtonProps) => (
+const render = (args: ButtonProps) => (
   <div>
     {COLORS.map((value) => (
       <Button key={value} color={value} {...args} />
