@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Link as RouterLink, NavLink as RouterNavLink } from "react-router-dom";
-import VisibleTransition from "./VisibleTransition";
+import {
+  Collapse,
+  IconButton,
+  Navbar,
+  Typography,
+} from "@material-tailwind/react";
 
 type AppBarProps = {
   menuOpen: boolean;
@@ -8,142 +13,91 @@ type AppBarProps = {
   onMenuClose: () => void;
 };
 
-export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
+const NavItem = ({
+  to,
+  children,
+}: {
+  to: string;
+  children: React.ReactNode;
+}) => {
   return (
-    <nav className="bg-gray-800">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <RouterLink to="/">
-                <h1 className="text-bold text-white text-xl">Fishing Logger</h1>
-              </RouterLink>
-            </div>
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-4">
-                <RouterNavLink
-                  to="/catches"
-                  end
-                  className={({ isActive, isPending }) =>
-                    isPending
-                      ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                      : isActive
-                      ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                  }
-                  aria-current="page"
-                >
-                  漁獲一覧
-                </RouterNavLink>
-                <RouterNavLink
-                  to="/catches/create"
-                  className={({ isActive, isPending }) =>
-                    isPending
-                      ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                      : isActive
-                      ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                  }
-                  aria-current="page"
-                >
-                  漁獲登録
-                </RouterNavLink>
-                <RouterNavLink
-                  to="/ships"
-                  className={({ isActive, isPending }) =>
-                    isPending
-                      ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                      : isActive
-                      ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                  }
-                  aria-current="page"
-                >
-                  船
-                </RouterNavLink>
-              </div>
-            </div>
-          </div>
-          <div className="-mr-2 flex md:hidden">
-            <button
-              type="button"
-              className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-              aria-controls="mobile-menu"
-              aria-expanded="false"
-              onClick={menuOpen ? onMenuClose : onMenuOpen}
-            >
-              <span className="absolute -inset-0.5"></span>
-              <span className="sr-only">Open main menu</span>
-              <svg
-                className="block h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d={
-                    menuOpen
-                      ? "M6 18L18 6M6 6l12 12"
-                      : "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  }
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
+    <RouterNavLink
+      to={to}
+      className={({ isActive, isPending }) =>
+        isPending
+          ? "block py-1 px-3 rounded-md cursor-pointer transition-all hover:bg-blue-gray-50 hover:bg-opacity-80 focus:bg-blue-gray-50 focus:bg-opacity-80 active:bg-blue-gray-50 active:bg-opacity-80 hover:text-blue-gray-900 focus:text-blue-gray-900 active:text-blue-gray-900 outline-none bg-blue-gray-50 bg-opacity-80 text-blue-gray-900"
+          : isActive
+          ? "block py-1 px-3 rounded-md cursor-pointer transition-all hover:bg-blue-gray-50 hover:bg-opacity-80 focus:bg-blue-gray-50 focus:bg-opacity-80 active:bg-blue-gray-50 active:bg-opacity-80 hover:text-blue-gray-900 focus:text-blue-gray-900 active:text-blue-gray-900 outline-none bg-blue-gray-50 bg-opacity-80 text-blue-gray-900"
+          : "block py-1 px-3 rounded-md cursor-pointer transition-all hover:bg-blue-gray-50 hover:bg-opacity-80 focus:bg-blue-gray-50 focus:bg-opacity-80 active:bg-blue-gray-50 active:bg-opacity-80 hover:text-blue-gray-900 focus:text-blue-gray-900 active:text-blue-gray-900 outline-none"
+      }
+    >
+      <Typography as="span" className="font-medium">
+        {children}
+      </Typography>
+    </RouterNavLink>
+  );
+};
 
-        <div className="md:hidden" id="mobile-menu">
-          <VisibleTransition visible={menuOpen}>
-            <div className="space-y-1 pb-3 pt-2">
-              <RouterNavLink
-                to="/catches"
-                end
-                className={({ isActive, isPending }) =>
-                  isPending
-                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                    : isActive
-                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-                }
-                aria-current="page"
-              >
-                漁獲一覧
-              </RouterNavLink>
-              <RouterNavLink
-                to="/catches/create"
-                className={({ isActive, isPending }) =>
-                  isPending
-                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                    : isActive
-                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-                }
-                aria-current="page"
-              >
-                漁獲登録
-              </RouterNavLink>
-              <RouterNavLink
-                to="/ships"
-                className={({ isActive, isPending }) =>
-                  isPending
-                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                    : isActive
-                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-                }
-                aria-current="page"
-              >
-                船
-              </RouterNavLink>
-            </div>
-          </VisibleTransition>
-        </div>
+export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
+  const navList = (
+    <div className="mb-4 mt-2 flex flex-col gap-2 md:mb-0 md:mt-0 md:flex-row md:items-center md:gap-6">
+      <NavItem to="/catches">漁獲</NavItem>
+      <NavItem to="/ships">船</NavItem>
+    </div>
+  );
+  return (
+    <Navbar variant="filled" fullWidth className="bg-blue-500 px-4 py-3">
+      <div className="container mx-auto max-w-7xl flex items-center justify-between md:justify-start text-white">
+        <Typography
+          as={RouterLink}
+          to="/"
+          className="mr-4 cursor-pointer py-1.5 text-lg font-bold"
+        >
+          Fishing Logger
+        </Typography>
+        <div className="hidden md:block ml-3">{navList}</div>
+        <IconButton
+          variant="text"
+          className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent md:hidden"
+          ripple={false}
+          onClick={() => (menuOpen ? onMenuClose() : onMenuOpen())}
+        >
+          {menuOpen ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              className="h-6 w-6"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          )}
+        </IconButton>
       </div>
-    </nav>
+      <div className="md:hidden">
+        <Collapse open={menuOpen}>{navList}</Collapse>
+      </div>
+    </Navbar>
   );
 };
 
