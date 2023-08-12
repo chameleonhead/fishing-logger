@@ -46,16 +46,16 @@ export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
     </div>
   );
   return (
-    <Navbar variant="filled" fullWidth className="bg-blue-500 px-4 py-3">
-      <div className="container mx-auto max-w-7xl flex items-center justify-between md:justify-start text-white">
+    <Navbar variant="filled" fullWidth className="bg-blue-500">
+      <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex items-center justify-between md:justify-start text-white">
         <Typography
           as={RouterLink}
           to="/"
-          className="mr-4 cursor-pointer py-1.5 text-lg font-bold"
+          className="cursor-pointer py-1.5 text-lg font-bold"
         >
           Fishing Logger
         </Typography>
-        <div className="hidden md:block ml-3">{navList}</div>
+        <div className="hidden md:block ml-9">{navList}</div>
         <IconButton
           variant="text"
           className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent md:hidden"
@@ -95,7 +95,9 @@ export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
         </IconButton>
       </div>
       <div className="md:hidden">
-        <Collapse open={menuOpen}>{navList}</Collapse>
+        <Collapse open={menuOpen} className="sm:px-6 lg:px-8">
+          {navList}
+        </Collapse>
       </div>
     </Navbar>
   );

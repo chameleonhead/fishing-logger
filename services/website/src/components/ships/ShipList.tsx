@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link as RouterLink, Navigate } from "react-router-dom";
 import { Ship } from "./models";
-import List from "../common/List";
+import { List, ListItem } from "@material-tailwind/react";
 
 type ShipListProps = {
   data: Ship[];
@@ -15,9 +15,9 @@ export const ShipList = ({ data }: ShipListProps) => {
     <List>
       {data.map((item) => {
         return (
-          <List.Item key={item.id} action href={`/ships/${item.id}`}>
-            {item.name}
-          </List.Item>
+          <RouterLink key={item.id} to={`/ships/${item.id}`}>
+            <ListItem>{item.name}</ListItem>
+          </RouterLink>
         );
       })}
     </List>
