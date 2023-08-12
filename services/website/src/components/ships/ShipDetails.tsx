@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Ship } from "./models";
+import ShipLogs from "./ShipLogs";
 
 type ShipDetailsProps = {
   data: Ship;
@@ -65,6 +66,7 @@ const ShipDetailsWithState = function ({
     return (
       <>
         <ShipDetails data={data} onEditRequested={onEditRequested} />
+        <ShipLogs id={id} />
       </>
     );
   }
