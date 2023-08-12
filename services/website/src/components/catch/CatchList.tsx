@@ -1,16 +1,9 @@
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { useEffect, useState } from "react";
-import { Link as RouterLink, Navigate } from "react-router-dom";
-import {
-  Badge,
-  Col,
-  ListGroup,
-  ListGroupItem,
-  ListGroupItemHeading,
-  ListGroupItemText,
-  Row,
-} from "reactstrap";
+import { Navigate } from "react-router-dom";
 import { Catch } from "./models";
+import Badge from "../common/Badge";
+import List from "../common/List";
 
 type CatchListProps = {
   data: Catch[];
@@ -21,52 +14,38 @@ export const CatchList = ({ data }: CatchListProps) => {
     return <Navigate to="/catches/create" />;
   }
   return (
-    <ListGroup>
+    <List>
       {data.map((item) => {
         return (
-          <ListGroupItem
-            key={item.id}
-            action
-            tag={RouterLink}
-            to={`/catches/${item.id}`}
-          >
-            <Row>
-              <Col>
-                <Badge color="primary" className="me-2 mb-2">
-                  {item.method.type}
-                </Badge>
-              </Col>
-              <Col className="text-end">
-                <small>
-                  {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
-                    Instant.parse(item.catched_at).atZone(
-                      ZoneId.systemDefault(),
-                    ),
-                  )}
-                </small>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <ListGroupItemHeading className="d-inline">
-                  {item.fishes[0].species}
-                  {!item.fishes[0].size_text ? null : (
-                    <span className="ms-3 text-muted">
-                      {item.fishes[0].size_text}
-                    </span>
-                  )}
-                </ListGroupItemHeading>
-                {!(item.method && item.method.details) ? null : (
-                  <ListGroupItemText className="m-0">
-                    {item.method.details}
-                  </ListGroupItemText>
+          <List.Item key={item.id} action href={`/catches/${item.id}`}>
+            <div className="min-w-0 flex-auto">
+              <p className="font-semibold leading-6 text-gray-900">
+                {item.fishes[0].species}
+                {!item.fishes[0].size_text ? null : (
+                  <span className="ms-3 text-muted">
+                    {item.fishes[0].size_text}
+                  </span>
                 )}
-              </Col>
-            </Row>
-          </ListGroupItem>
+              </p>
+
+              <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                <Badge color="primary">{item.method.type}</Badge>
+                {!(item.method && item.method.details) ? null : (
+                  <span className="ml-3">{item.method.details}</span>
+                )}
+              </p>
+            </div>
+            <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+              <p className="mt-1 text-xs leading-5 text-gray-500">
+                {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
+                  Instant.parse(item.catched_at).atZone(ZoneId.systemDefault()),
+                )}
+              </p>
+            </div>
+          </List.Item>
         );
       })}
-    </ListGroup>
+    </List>
   );
 };
 

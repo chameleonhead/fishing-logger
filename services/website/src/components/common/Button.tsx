@@ -17,15 +17,18 @@ export const Button = ({
     secondary:
       "text-white bg-gray-600 hover:bg-gray-500 focus-visible:outline-gray-600",
   };
+
+  const sizes: Record<string, string> = {
+    sm: "text-sm shadow-sm",
+    md: "text-base shadow-md",
+    lg: "text-xl shadow-lg",
+  };
   return (
     <button
       type="button"
-      className={
-        `inline-flex items-center rounded-md px-3 py-2 text-${
-          size === "md" ? "base" : size === "lg" ? "xl" : size
-        } font-semibold shadow-${size} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ` +
-        (colors[color] || "")
-      }
+      className={`inline-flex items-center rounded-md px-3 py-2 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+        sizes[size] || ""
+      } ${colors[color] || ""}`}
       {...props}
     >
       {children}

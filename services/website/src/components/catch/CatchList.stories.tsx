@@ -1,12 +1,10 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { MemoryRouter } from "react-router-dom";
 
 import { CatchList } from "./CatchList";
 
 const meta = {
   title: "components/catch/CatchList",
   component: CatchList,
-  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as Meta<typeof CatchList>;
 
 export default meta;
