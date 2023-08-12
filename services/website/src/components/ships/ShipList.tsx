@@ -12,7 +12,7 @@ export const ShipList = ({ data }: ShipListProps) => {
     return <Navigate to="/ships/create" />;
   }
   return (
-    <List>
+    <List className="-m-4">
       {data.map((item) => {
         return (
           <RouterLink key={item.id} to={`/ships/${item.id}`}>

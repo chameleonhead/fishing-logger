@@ -15,7 +15,7 @@ export const DetailsPage = ({ id }: DetailsPageProps) => {
     <div>
       <PageHeader title="船詳細" />
       <main>
-        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <ShipDetails id={id} onEditRequested={() => setEditModalOpen(true)} />
         </div>
       </main>

@@ -1,8 +1,6 @@
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
-import { useCallback, useEffect, useState } from "react";
-import { Badge, Button, Col, ListGroup, ListGroupItem, Row } from "reactstrap";
+import { Chip, Typography } from "@material-tailwind/react";
 import Map from "../map/Map";
-import MediaUploader from "../media/MediaUploader";
 import { Catch } from "./models";
 import { MediaList } from "../media/MediaList";
 
@@ -12,38 +10,16 @@ type CatchDetailsProps = {
   onRequestReload?: () => void;
 };
 
-export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
+export const CatchDetails = ({ data }: CatchDetailsProps) => {
   return (
     <div>
-      <Row>
-        <Col>
-          <Badge color="primary" className="me-2 mb-2">
-            {data.method.type}
-          </Badge>
-        </Col>
-        <Col className="text-end">
-          <small>
-            {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
-              Instant.parse(data.catched_at).atZone(ZoneId.systemDefault()),
-            )}
-          </small>
-        </Col>
-      </Row>
-      <div className="d-flex justify-content-between align-items-baseline mb-3">
-        <h1>{data.fishes[0].species}</h1>
-        <div>
-          {onEditRequested && (
-            <Button
-              type="button"
-              color="secondary"
-              outline
-              size="sm"
-              onClick={() => onEditRequested()}
-            >
-              編集
-            </Button>
+      <div className="flex justify-between">
+        <Chip color="blue" className="me-2 mb-2" value={data.method.type} />
+        <Typography className="text-xs leading-5 text-gray-600">
+          {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
+            Instant.parse(data.catched_at).atZone(ZoneId.systemDefault()),
           )}
-        </div>
+        </Typography>
       </div>
       {data.place && (
         <div className="mb-3">
@@ -55,40 +31,38 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
         </div>
       )}
       <div className="mb-3">
-        <h2>魚種</h2>
-        <ListGroup>
-          {data.fishes.map((fish, i) => {
-            return (
-              <ListGroupItem key={i}>
-                <Row>
-                  <Col>
-                    <div className="d-flex justify-content-between">
-                      <div>
-                        {fish.species}
-                        {!fish.size_text ? null : (
-                          <span className="ms-3 text-muted">
-                            {fish.size_text}
-                          </span>
-                        )}
-                      </div>
-                      <div>{fish.count}匹</div>
-                    </div>
-                  </Col>
-                </Row>
-              </ListGroupItem>
-            );
-          })}
-        </ListGroup>
+        <Typography as="h2" className="mb-2 text-xl font-bold">
+          魚種
+        </Typography>
+        {data.fishes.map((fish, i) => {
+          return (
+            <div key={i} className="flex justify-between">
+              <div>
+                {fish.species}
+                {!fish.size_text ? null : (
+                  <Typography as="span" className="inline ms-3 text-gray-600">
+                    {fish.size_text}
+                  </Typography>
+                )}
+              </div>
+              <div>{fish.count}匹</div>
+            </div>
+          );
+        })}
       </div>
       {data.method.details && (
         <div className="mb-3">
-          <h2>詳細</h2>
+          <Typography as="h2" className="mb-2 text-xl font-bold">
+            詳細
+          </Typography>
           <div>{data.method.details}</div>
         </div>
       )}
       {data.media && data.media.length > 0 && (
         <div className="mb-3">
-          <h2>添付ファイル</h2>
+          <Typography as="h2" className="mb-2 text-xl font-bold">
+            添付ファイル
+          </Typography>
           <MediaList data={data.media} />
         </div>
       )}
@@ -96,48 +70,4 @@ export const CatchDetails = ({ data, onEditRequested }: CatchDetailsProps) => {
   );
 };
 
-const CatchDetailsWithState = function ({
-  id,
-  onEditRequested,
-}: {
-  id: string;
-  onEditRequested: () => void;
-}) {
-  const [data, setData] = useState(undefined);
-  const [requestReload, setRequestReload] = useState(true);
-  useEffect(() => {
-    setRequestReload(false);
-    if (requestReload) {
-      (async () => {
-        const result = await fetch(`/api/catches/${id}`, {
-          method: "GET",
-        });
-        if (result.ok) {
-          setData(await result.json());
-        }
-      })();
-    }
-  }, [id, requestReload]);
-
-  const handleSuccess = useCallback(
-    async (r: { id: string }) => {
-      await fetch(`/api/catches/${id}/media`, {
-        method: "POST",
-        body: JSON.stringify(r),
-      });
-      setRequestReload(true);
-    },
-    [id],
-  );
-  if (data) {
-    return (
-      <>
-        <CatchDetails data={data} onEditRequested={onEditRequested} />
-        <MediaUploader onSuccess={handleSuccess} />
-      </>
-    );
-  }
-  return <div>Loading...</div>;
-};
-
-export default CatchDetailsWithState;
+export default CatchDetails;

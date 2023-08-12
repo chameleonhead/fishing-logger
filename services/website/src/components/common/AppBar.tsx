@@ -46,8 +46,8 @@ export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
     </div>
   );
   return (
-    <Navbar variant="filled" fullWidth className="bg-blue-500">
-      <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex items-center justify-between md:justify-start text-white">
+    <Navbar variant="filled" fullWidth className="bg-blue-500 px-0">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between md:justify-start text-white">
         <Typography
           as={RouterLink}
           to="/"
@@ -95,7 +95,7 @@ export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
         </IconButton>
       </div>
       <div className="md:hidden">
-        <Collapse open={menuOpen} className="sm:px-6 lg:px-8">
+        <Collapse open={menuOpen} className="px-4 sm:px-6 lg:px-8">
           {navList}
         </Collapse>
       </div>
