@@ -1,6 +1,7 @@
+import { Link as RouterLink } from "react-router-dom";
+import { Button } from "@material-tailwind/react";
 import ShipList from "../../components/ships/ShipList";
 import PageHeader from "../../components/common/PageHeader";
-import LinkButton from "../../components/common/LinkButton";
 
 export const IndexPage = () => {
   return (
@@ -8,9 +9,9 @@ export const IndexPage = () => {
       <PageHeader
         title="船一覧"
         actions={
-          <LinkButton color="primary" to="/ships/create">
-            船登録
-          </LinkButton>
+          <RouterLink to="/catches/create">
+            <Button color="blue">登録</Button>
+          </RouterLink>
         }
       />
       <main>
