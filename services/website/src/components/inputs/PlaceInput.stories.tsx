@@ -1,10 +1,12 @@
 import { Meta, StoryObj } from "@storybook/react";
 
 import { PlaceInput } from "./PlaceInput";
+import { LocationProvider } from "../common/LocationProvider";
 
 const meta = {
   title: "components/inputs/PlaceInput",
   component: PlaceInput,
+  decorators: [(story) => <LocationProvider>{story()}</LocationProvider>],
 } as Meta<typeof PlaceInput>;
 
 export default meta;

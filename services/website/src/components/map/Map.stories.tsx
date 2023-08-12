@@ -1,10 +1,13 @@
 import { StoryObj, Meta } from "@storybook/react";
 
 import { Map } from "./Map";
+import { LocationProvider } from "../common/LocationProvider";
 
-const meta = { title: "components/map/Map", component: Map } as Meta<
-  typeof Map
->;
+const meta = {
+  title: "components/map/Map",
+  component: Map,
+  decorators: [(story) => <LocationProvider>{story()}</LocationProvider>],
+} as Meta<typeof Map>;
 
 export default meta;
 type Story = StoryObj<typeof Map>;

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import Map from "../map/Map";
+import { Button, Input } from "@material-tailwind/react";
 
 const PRECISION = 8;
 
@@ -18,8 +18,7 @@ type PlaceInputProps = {
 
 function valueToState(value: PlaceInputProps["value"]) {
   return {
-    latitude: value && value.latitude,
-    longitude: value && value.longitude,
+    latitude: value?.latitude ?? undefined,
     latitudeText: !value
       ? ""
       : value.latitude === 0
@@ -27,6 +26,7 @@ function valueToState(value: PlaceInputProps["value"]) {
       : value.latitude > 0
       ? value.latitude + "N"
       : -value.latitude + "S",
+    longitude: value?.longitude ?? undefined,
     longitudeText: !value
       ? ""
       : value.longitude === 0
@@ -78,42 +78,59 @@ function tryParse(
 
 export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
   const [state, setState] = useState(valueToState(value));
+  const [isFetchingCurrentLocation, setFetchingCurrentLocation] =
+    useState(false);
 
   const handleFetchCurrentLocation = useCallback(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const newValue = {
-        latitude:
-          Math.round(position.coords.latitude * 10 ** PRECISION) /
-          10 ** PRECISION,
-        longitude:
-          Math.round(position.coords.longitude * 10 ** PRECISION) /
-          10 ** PRECISION,
-      };
-      setState(valueToState(newValue));
-      if (onChange) {
-        onChange(newValue);
-      }
-    });
-  }, [onChange]);
+    setFetchingCurrentLocation(true);
+    try {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const newValue = {
+            latitude:
+              Math.round(position.coords.latitude * 10 ** PRECISION) /
+              10 ** PRECISION,
+            longitude:
+              Math.round(position.coords.longitude * 10 ** PRECISION) /
+              10 ** PRECISION,
+          };
+          if (
+            typeof value === "undefined" ||
+            value === null ||
+            value.latitude !== newValue.latitude ||
+            value.longitude !== newValue.longitude
+          ) {
+            onChange?.(newValue);
+          }
+          setFetchingCurrentLocation(false);
+        },
+        (error) => {
+          setFetchingCurrentLocation(false);
+          alert(error.message);
+        },
+        {
+          timeout: 5000,
+        },
+      );
+    } catch (e) {
+      setFetchingCurrentLocation(false);
+      alert(e);
+    }
+  }, [value, onChange]);
 
   useEffect(() => {
-    if (!value) {
+    if (typeof value === "undefined") {
       handleFetchCurrentLocation();
-    }
-  }, [value, handleFetchCurrentLocation]);
-  useEffect(() => {
-    if (value !== (null as InvalidValue)) {
+    } else if (value !== (null as InvalidValue)) {
       const newValue = valueToState(value);
-      if (typeof value === "undefined") {
-        setState(newValue);
-      } else if (
-        value.latitude !== state.latitude ||
-        value.longitude !== state.longitude
+      if (
+        newValue.latitude !== state.latitude ||
+        newValue.longitude !== state.longitude
       ) {
         setState(newValue);
       }
     }
-  }, [value, state]);
+  }, [value, state, handleFetchCurrentLocation]);
 
   return (
     <div>
@@ -121,12 +138,14 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         <Map
           style={{ height: "300px" }}
           position={
-            typeof state.latitude !== "undefined" &&
-            typeof state.longitude !== "undefined"
-              ? { lat: state.latitude!, lng: state.longitude! }
-              : undefined
+            typeof value === "undefined" || value === null
+              ? undefined
+              : { lat: value.latitude!, lng: value.longitude! }
           }
           onPositionChange={(position) => {
+            if (isFetchingCurrentLocation) {
+              return;
+            }
             const newValue = {
               latitude:
                 Math.round(position.lat * 10 ** PRECISION) / 10 ** PRECISION,
@@ -140,68 +159,65 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
           }}
         />
       </div>
-      <Row>
-        <Col md={5}>
-          <FormGroup>
-            <Label for="place_latitude">緯度</Label>
-            <Input
-              id="place_latitude"
-              name="place_latitude"
-              placeholder="例) 35.65809922N"
-              type="text"
-              value={state.latitudeText}
-              onChange={(e) => {
-                const newValue = tryParse(e.target.value, state.longitudeText);
-                setState({
-                  ...state,
-                  ...newValue,
-                  latitudeText: e.target.value,
-                });
-                if (onChange) {
-                  onChange(newValue);
-                }
-              }}
-            />
-          </FormGroup>
-        </Col>
-        <Col md={5}>
-          <FormGroup>
-            <Label for="place_longitude">経度</Label>
-            <Input
-              id="place_longitude"
-              name="place_longitude"
-              placeholder="例) 139.74135747E"
-              type="text"
-              value={state.longitudeText}
-              onChange={(e) => {
-                const newValue = tryParse(state.latitudeText, e.target.value);
-                setState({
-                  ...state,
-                  ...newValue,
-                  longitudeText: e.target.value,
-                });
-                if (onChange) {
-                  onChange(newValue);
-                }
-              }}
-            />
-          </FormGroup>
-        </Col>
-        <Col md={2}>
-          <FormGroup>
-            <Label for="place_latitude">現在地</Label>
-            <Button
-              className="px-0"
-              type="button"
-              color="primary"
-              block
-              onClick={handleFetchCurrentLocation}
-            >
-              取得
-            </Button>
-          </FormGroup>
-        </Col>
-      </Row>
+      <div className="flex my-3 space-x-1">
+        <Input
+          variant="static"
+          containerProps={{ className: "min-w-[72px]" }}
+          className="grow px-2"
+          id="place_latitude"
+          name="place_latitude"
+          label="緯度"
+          placeholder="例) 35.65809922N"
+          type="text"
+          value={state.latitudeText}
+          disabled={isFetchingCurrentLocation}
+          onChange={(e) => {
+            const newValue = tryParse(e.target.value, state.longitudeText);
+            setState({
+              ...state,
+              ...newValue,
+              latitudeText: e.target.value,
+            });
+            if (onChange) {
+              onChange(newValue);
+            }
+          }}
+        />
+        <Input
+          variant="static"
+          containerProps={{ className: "min-w-[72px]" }}
+          className="grow px-2"
+          id="place_longitude"
+          name="place_longitude"
+          label="経度"
+          placeholder="例) 139.74135747E"
+          type="text"
+          value={state.longitudeText}
+          disabled={isFetchingCurrentLocation}
+          onChange={(e) => {
+            const newValue = tryParse(state.latitudeText, e.target.value);
+            setState({
+              ...state,
+              ...newValue,
+              longitudeText: e.target.value,
+            });
+            if (onChange) {
+              onChange(newValue);
+            }
+          }}
+        />
+      </div>
+      <div className="my-3">
+        <Button
+          className="w-full"
+          type="button"
+          color="blue"
+          disabled={isFetchingCurrentLocation}
+          onClick={handleFetchCurrentLocation}
+        >
+          {isFetchingCurrentLocation ? "取得中" : "現在地取得"}
+        </Button>
+      </div>
     </div>
   );
 };
