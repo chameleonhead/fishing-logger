@@ -1,12 +1,10 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { MemoryRouter } from "react-router-dom";
 
 import { ShipList } from "./ShipList";
 
 const meta = {
   title: "components/ships/ShipList",
   component: ShipList,
-  decorators: [(story) => <MemoryRouter>{story()}</MemoryRouter>],
 } as Meta<typeof ShipList>;
 
 export default meta;

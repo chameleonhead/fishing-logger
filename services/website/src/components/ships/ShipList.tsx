@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link as RouterLink, Navigate } from "react-router-dom";
-import { ListGroup, ListGroupItem } from "reactstrap";
+import { Navigate } from "react-router-dom";
 import { Ship } from "./models";
+import List from "../common/List";
 
 type ShipListProps = {
   data: Ship[];
@@ -12,20 +12,15 @@ export const ShipList = ({ data }: ShipListProps) => {
     return <Navigate to="/ships/create" />;
   }
   return (
-    <ListGroup>
+    <List>
       {data.map((item) => {
         return (
-          <ListGroupItem
-            key={item.id}
-            action
-            tag={RouterLink}
-            to={`/ships/${item.id}`}
-          >
+          <List.Item key={item.id} action href={`/ships/${item.id}`}>
             {item.name}
-          </ListGroupItem>
+          </List.Item>
         );
       })}
-    </ListGroup>
+    </List>
   );
 };
 
