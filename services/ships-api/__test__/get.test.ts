@@ -32,14 +32,17 @@ describe("get a ship", () => {
         },
       },
     ]);
-    const result = await callLambda(getHandler, apiEvent({
-      pathParameters: {
-        id: "test",
-      },
-    }));
+    const result = await callLambda(
+      getHandler,
+      apiEvent({
+        pathParameters: {
+          id: "test",
+        },
+      }),
+    );
 
     if (typeof result !== "object") {
-      fail("result is not an object")
+      fail("result is not an object");
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({
@@ -65,14 +68,17 @@ describe("get a ship", () => {
         last_updated: "test",
       },
     ]);
-    const result = await callLambda(getHandler, apiEvent({
-      pathParameters: {
-        id: "test",
-      },
-    }));
+    const result = await callLambda(
+      getHandler,
+      apiEvent({
+        pathParameters: {
+          id: "test",
+        },
+      }),
+    );
 
     if (typeof result !== "object") {
-      fail("result is not an object")
+      fail("result is not an object");
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({
@@ -81,7 +87,7 @@ describe("get a ship", () => {
       iot_enabled: false,
       state: {
         last_updated: "test",
-      }
+      },
     });
   });
 });

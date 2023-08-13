@@ -6,7 +6,7 @@ import * as uuid from "uuid";
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
-    region: process.env.AWS_REGION
+    region: process.env.AWS_REGION,
   });
   const timestamp = new Date().getTime();
   const body = JSON.parse(event.body!);
@@ -19,11 +19,11 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       iot_enabled: convertToAttr(false),
       created_at: convertToAttr(timestamp),
       updated_at: convertToAttr(timestamp),
-    }
+    },
   });
   return {
     statusCode: 200,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id }),
-  }
+  };
 };

@@ -12,7 +12,7 @@ export const handler: APIGatewayProxyHandlerV2 = async () => {
   };
 
   // fetch all catches from the database
-  const result = await dynamoDb.scan(params)
+  const result = await dynamoDb.scan(params);
 
   // create a response
   return {

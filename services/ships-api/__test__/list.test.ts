@@ -33,7 +33,7 @@ describe("list ships", () => {
     const result = await callLambda(listHandler, apiEvent({}));
 
     if (typeof result !== "object") {
-      fail("result is not an object")
+      fail("result is not an object");
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({

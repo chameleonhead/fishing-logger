@@ -237,7 +237,14 @@ resources:
               Key: !Join
                 - "/"
                 - - "iot/rule2/error"
-                  - !Join ["", ["$", "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}/$", "{timestamp()}.json"]]
+                  - !Join [
+                      "",
+                      [
+                        "$",
+                        "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}/$",
+                        "{timestamp()}.json",
+                      ],
+                    ]
     shipsIotTopicRule2:
       Type: AWS::IoT::TopicRule
       Properties:
@@ -269,4 +276,11 @@ resources:
               Key: !Join
                 - "/"
                 - - "iot/rule2/error"
-                  - !Join ["", ["$", "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}/$", "{timestamp()}.json"]]
+                  - !Join [
+                      "",
+                      [
+                        "$",
+                        "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}/$",
+                        "{timestamp()}.json",
+                      ],
+                    ]

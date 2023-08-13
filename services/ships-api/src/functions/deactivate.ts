@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   }
 
   const item = unmarshall(result.Item);
-  if (typeof item.iot_config === 'undefined') {
+  if (typeof item.iot_config === "undefined") {
     return {
       statusCode: 400,
       body: JSON.stringify({

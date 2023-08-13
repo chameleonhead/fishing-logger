@@ -15,7 +15,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   };
 
   // fetch ship from the database
-  const result = await dynamoDb.getItem(params)
+  const result = await dynamoDb.getItem(params);
 
   if (!result.Item) {
     return {
@@ -28,7 +28,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   // create a response
   const ship = unmarshall(result!.Item!);
 
-  if (typeof ship.iot_config !== 'undefined') {
+  if (typeof ship.iot_config !== "undefined") {
     return {
       statusCode: 400,
       headers: { "Content-Type": "text/plain" },

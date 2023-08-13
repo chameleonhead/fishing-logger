@@ -41,14 +41,17 @@ describe("get catch", () => {
         },
       },
     ]);
-    const result = await callLambda(getHandler, apiEvent({
-      pathParameters: {
-        id: "test",
-      },
-    }));
+    const result = await callLambda(
+      getHandler,
+      apiEvent({
+        pathParameters: {
+          id: "test",
+        },
+      }),
+    );
 
     if (typeof result !== "object") {
-      fail("result is not an object")
+      fail("result is not an object");
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({

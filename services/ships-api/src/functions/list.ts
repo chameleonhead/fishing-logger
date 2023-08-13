@@ -12,7 +12,7 @@ export const handler: APIGatewayProxyHandlerV2 = async () => {
   };
 
   // fetch all catches from the database
-  const result = await dynamoDb.scan(params)
+  const result = await dynamoDb.scan(params);
 
   // create a response
   return {
@@ -20,8 +20,8 @@ export const handler: APIGatewayProxyHandlerV2 = async () => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       ships: result.Items?.map((item) => {
-        const ship = unmarshall(item)
-        delete ship.iot_config
+        const ship = unmarshall(item);
+        delete ship.iot_config;
         return ship;
       }).filter((ship) => !ship.id.endsWith(":state")),
     }),

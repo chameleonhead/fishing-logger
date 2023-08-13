@@ -27,14 +27,17 @@ describe("delete a ship", () => {
         iot_enabled: false,
       },
     ]);
-    const result = await callLambda(deleteHandler, apiEvent({
-      pathParameters: {
-        id: "test",
-      },
-    }));
+    const result = await callLambda(
+      deleteHandler,
+      apiEvent({
+        pathParameters: {
+          id: "test",
+        },
+      }),
+    );
 
     if (typeof result !== "object") {
-      fail("result is not an object")
+      fail("result is not an object");
     }
     expect(result.statusCode).toBe(204);
 
@@ -42,8 +45,8 @@ describe("delete a ship", () => {
       TableName: process.env.DYNAMODB_TABLE!,
       Key: {
         id: { S: "test" },
-      }
-    })
+      },
+    });
     expect(ship.Item).toBeUndefined();
   });
 });

@@ -4,11 +4,7 @@ import { convertToAttr, marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { S3Handler } from "aws-lambda";
 import * as uuid from "uuid";
 
-export const handler: S3Handler = async (
-  event,
-  context,
-  callback,
-) => {
+export const handler: S3Handler = async (event, context, callback) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,

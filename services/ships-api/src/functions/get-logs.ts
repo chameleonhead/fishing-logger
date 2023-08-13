@@ -42,7 +42,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        logs: []
+        logs: [],
       }),
     };
   }
@@ -57,8 +57,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         return {
           time: row.Time,
           position: JSON.parse(row.Value!.ScalarValue!),
-        }
-      })
+        };
+      }),
     }),
   };
 };

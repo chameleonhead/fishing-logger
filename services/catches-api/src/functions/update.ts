@@ -16,7 +16,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   };
 
   // fetch catch from the database
-  const result = await dynamoDb.getItem(params)
+  const result = await dynamoDb.getItem(params);
 
   if (!result.Item) {
     return {
@@ -49,16 +49,22 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       id: convertToAttr(event.pathParameters!.id),
     },
     ExpressionAttributeNames: {
-      ...entries.reduce((prev, { attr, key }) => {
-        prev[attr] = key;
-        return prev;
-      }, {} as Record<string, string>),
+      ...entries.reduce(
+        (prev, { attr, key }) => {
+          prev[attr] = key;
+          return prev;
+        },
+        {} as Record<string, string>,
+      ),
     },
     ExpressionAttributeValues: {
-      ...entries.reduce((prev, { key, value }) => {
-        prev[":" + key] = convertToAttr(value);
-        return prev;
-      }, {} as Record<string, AttributeValue>),
+      ...entries.reduce(
+        (prev, { key, value }) => {
+          prev[":" + key] = convertToAttr(value);
+          return prev;
+        },
+        {} as Record<string, AttributeValue>,
+      ),
       ":updated_at": convertToAttr(timestamp),
     },
     UpdateExpression:

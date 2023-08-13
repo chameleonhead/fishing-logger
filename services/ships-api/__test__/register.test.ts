@@ -32,7 +32,7 @@ describe("register a ship", () => {
     jest.resetModules(); // Most important - it clears the cache
     process.env = { ...OLD_ENV }; // Make a copy
     process.env.DYNAMODB_TABLE = "ships-register";
-    process.env.IOT_THING_GROUP_NAME = "ships-register"
+    process.env.IOT_THING_GROUP_NAME = "ships-register";
   });
 
   afterAll(() => {
@@ -120,7 +120,8 @@ describe("register a ship", () => {
         pathParameters: {
           id: shipId,
         },
-      }));
+      }),
+    );
     if (typeof getConfigResult !== "object") {
       fail("getConfigResult is not an object");
     }

@@ -1,10 +1,12 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { convertToAttr, convertToNative, unmarshall } from "@aws-sdk/util-dynamodb";
+import {
+  convertToAttr,
+  convertToNative,
+  unmarshall,
+} from "@aws-sdk/util-dynamodb";
 
-export const handler: APIGatewayProxyHandlerV2 = async (
-  event,
-) => {
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
@@ -28,9 +30,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (
     },
     ExpressionAttributeValues: {
       ":media": convertToAttr(
-        convertToNative(
-          (result!.Item?.media) || { L: [] },
-        ).concat([data]),
+        convertToNative(result!.Item?.media || { L: [] }).concat([data]),
       ),
       ":updated_at": convertToAttr(timestamp),
     },
@@ -39,7 +39,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (
   };
 
   // update the catch in the database
-  const updateResult = await dynamoDb.updateItem(paramsUpdate)
+  const updateResult = await dynamoDb.updateItem(paramsUpdate);
 
   // create a response
   return {

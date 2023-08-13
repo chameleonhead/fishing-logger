@@ -15,7 +15,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   };
 
   // fetch catch from the database
-  const result = await dynamoDb.getItem(params)
+  const result = await dynamoDb.getItem(params);
 
   if (!result.Item) {
     return {
