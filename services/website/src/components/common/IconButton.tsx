@@ -1,53 +1,39 @@
 import React from "react";
 
-export type IconButtonProps<T extends React.ElementType> =
-  React.ComponentProps<T> & {
-    as: React.ElementType;
+export type IconButtonProps =
+  React.ComponentProps<"button"> & {
     color?: "primary" | "secondary" | "default";
     size?: "sm" | "md" | "lg";
     className?: string;
   };
 
-export const IconButton = <T extends React.ElementType>({
-  as: As = "button",
+export const IconButton = ({
   type = "button",
   color = "default",
-  variant = "filled",
   size = "md",
   className,
+  children,
   ...props
-}: IconButtonProps<T>) => {
+}: IconButtonProps) => {
   const colors = {
-    default:
-      variant === "outline"
-        ? "bg-white text-gray-700 border-gray-500 ring-gray-500 enabled:hover:ring-gray-500 enabled:hover:bg-gray-50 focus:bg-gray-50"
-        : "bg-gray-500 text-white ring-gray-500 enabled:hover:bg-gray-400 enabled:hover:ring-gray-600 focus:bg-gray-400",
-    primary:
-      variant === "outline"
-        ? "bg-white text-blue-700 border-blue-500 ring-blue-500 enabled:hover:ring-blue-500 enabled:hover:bg-blue-50 focus:bg-blue-50"
-        : "bg-blue-500 text-white ring-blue-500 enabled:hover:bg-blue-400 enabled:hover:ring-blue-600 focus:bg-blue-400",
-    secondary:
-      variant === "outline"
-        ? "bg-white text-orange-700 border-orange-500 ring-orange-500 enabled:hover:ring-orange-500 enabled:hover:bg-orange-50 focus:bg-orange-50"
-        : "bg-orange-500 text-white ring-orange-500 enabled:hover:bg-orange-400 enabled:hover:ring-orange-600 focus:bg-orange-400",
-  };
+    default: "text-gray-500",
+    primary: "text-blue-500",
+    secondary: "text-orange-500"
+  }
+  const sizes = {
+    sm: "w-9 h-9 p-2",
+    md: "w-10 h-10 p-2",
+    lg: "w-12 h-12 p-2",
+  }
   const classList = [
-    "transition-all inline-flex items-center justify-center rounded shadow-sm font-medium focus:ring-1",
-    size === "sm"
-      ? "px-2 py-1 text-sm"
-      : size === "lg"
-      ? "px-6 py-1 text-lg"
-      : "px-4 py-1 text-base",
-    variant === "outline"
-      ? "outline-0 ring-0 border"
-      : "outline-0 ring-0 border-0",
-    "disabled:opacity-75 disabled:cursor-not-allowed",
-    colors[(color as keyof typeof colors) || "default"],
+    "icon-button transition-all transform duration-300 rounded-full flex items-center justify-center outline-none text-dark hover:bg-gray-300 hover:bg-opacity-20 focus:bg-gray-300 focus:bg-opacity-30",
+    colors[color || "default"],
+    sizes[size || "md"]
   ];
   if (className) {
     classList.push(className);
   }
-  return <As className={classList.join(" ")} {...props} />;
+  return <button className={classList.join(" ")} {...props}>{children}</button>;
 };
 
 export default IconButton;

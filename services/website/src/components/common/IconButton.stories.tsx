@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from "@storybook/react";
 
 import { IconButton } from "./IconButton";
+import { AcademicCapIcon } from "@heroicons/react/20/solid";
 
 const meta = {
   title: "components/common/IconButton",
@@ -15,15 +16,13 @@ const colors = ["primary", "secondary", "default"] as const;
 const render = (args: Story["args"]) => (
   <div className="flex gap-2">
     {colors.map((color) => (
-      <IconButton key={color} {...args} color={color} />
+      <IconButton key={color} {...args} color={color}><AcademicCapIcon /></IconButton>
     ))}
   </div>
 );
 
 export const Default: Story = {
   args: {
-    children: "IconButton",
-    variant: "filled",
   },
   render,
 };
@@ -31,23 +30,6 @@ export const Default: Story = {
 export const Disabled: Story = {
   args: {
     ...Default.args,
-    disabled: true,
-  },
-  render,
-};
-
-export const Outline: Story = {
-  args: {
-    ...Default.args,
-    variant: "outline",
-  },
-  render,
-};
-
-export const OutlineDisabled: Story = {
-  args: {
-    ...Default.args,
-    variant: "outline",
     disabled: true,
   },
   render,
