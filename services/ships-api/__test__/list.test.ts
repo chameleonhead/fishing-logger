@@ -29,6 +29,10 @@ describe("list ships", () => {
         id: "test2",
         name: "USS Enterprise 2",
       },
+      {
+        id: "signalk:test2",
+        name: "USS Enterprise 2",
+      },
     ]);
     const result = await callLambda(listHandler, apiEvent({}));
 
