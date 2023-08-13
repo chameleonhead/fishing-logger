@@ -13,7 +13,7 @@ type CatchDetailsProps = {
 export const CatchDetails = ({ data }: CatchDetailsProps) => {
   return (
     <div>
-      <div className="flex justify-between">
+      <div className="my-3 flex justify-between">
         <Chip color="blue" className="me-2 mb-2">
           {data.method.type}
         </Chip>
@@ -24,7 +24,7 @@ export const CatchDetails = ({ data }: CatchDetailsProps) => {
         </small>
       </div>
       {data.place && (
-        <div className="mb-3">
+        <div className="my-3">
           <Map
             style={{ height: "200px" }}
             position={{ lat: data.place.latitude, lng: data.place.longitude }}
@@ -32,8 +32,8 @@ export const CatchDetails = ({ data }: CatchDetailsProps) => {
           />
         </div>
       )}
-      <div className="mb-3">
-        <h2>魚種</h2>
+      <div className="my-3">
+        <h4 className="mb-1">魚種</h4>
         {data.fishes.map((fish, i) => {
           return (
             <div key={i} className="flex justify-between">
@@ -51,14 +51,14 @@ export const CatchDetails = ({ data }: CatchDetailsProps) => {
         })}
       </div>
       {data.method.details && (
-        <div className="mb-3">
-          <h2>詳細</h2>
+        <div className="my-3">
+          <h4 className="mb-1">詳細</h4>
           <div>{data.method.details}</div>
         </div>
       )}
       {data.media && data.media.length > 0 && (
-        <div className="mb-3">
-          <h2>添付ファイル</h2>
+        <div className="my-3">
+          <h4 className="mb-1">添付ファイル</h4>
           <MediaList data={data.media} />
         </div>
       )}

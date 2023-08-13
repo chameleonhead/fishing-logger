@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link as RouterLink, Navigate } from "react-router-dom";
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { Catch } from "./models";
+import List from "../common/List";
+import Chip from "../common/Chip";
 
 type CatchListProps = {
   data: Catch[];
@@ -16,34 +18,34 @@ export const CatchList = ({ data }: CatchListProps) => {
       {data.map((item) => {
         return (
           <RouterLink key={item.id} to={`/catches/${item.id}`}>
-            <ListItem>
+            <List.Item action>
               <div className="w-full">
                 <p className="font-semibold leading-6 text-gray-900">
                   {item.fishes[0].species}
                   {!item.fishes[0].size_text ? null : (
-                    <span className="ms-3 text-muted">
+                    <span className="ml-3 text-gray-400">
                       {item.fishes[0].size_text}
                     </span>
                   )}
                 </p>
                 <div className="flex justify-between">
                   <p className="flex items-baseline mt-1 truncate text-xs leading-5 text-gray-600">
-                    <Chip color="blue" size="sm" value={item.method.type} />
+                    <Chip color="primary">{item.method.type}</Chip>
                     {!(item.method && item.method.details) ? null : (
                       <span className="ml-3">{item.method.details}</span>
                     )}
                   </p>
 
-                  <Typography className="text-xs leading-5 text-gray-600">
+                  <small className="text-xs leading-5 text-gray-600">
                     {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
                       Instant.parse(item.catched_at).atZone(
                         ZoneId.systemDefault(),
                       ),
                     )}
-                  </Typography>
+                  </small>
                 </div>
               </div>
-            </ListItem>
+            </List.Item>
           </RouterLink>
         );
       })}
