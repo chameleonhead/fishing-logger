@@ -28,7 +28,9 @@ export const WithState: Story = {
       id: "1",
       name: "おおもと丸",
       iot_enabled: false,
-      state: {
+    },
+    state: {
+      signalk: {
         navigation: {
           courseOverGroundTrue: null,
           datetime: "2023-08-10T05:18:20.000Z",
