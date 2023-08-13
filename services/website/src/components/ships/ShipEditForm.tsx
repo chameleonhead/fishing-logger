@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useEffect, useState } from "react";
+import InputField from "../common/InputField";
+import Button from "../common/Button";
 import { Ship } from "./models";
 
 type ShipEditFormProps = {
@@ -25,23 +27,29 @@ export const ShipEditForm = ({ data, onSubmit }: ShipEditFormProps) => {
     },
   });
   return (
-    <Form onSubmit={formik.handleSubmit}>
-      <FormGroup>
-        <Label for="name">名前</Label>
-        <Input
-          id="name"
+    <form onSubmit={formik.handleSubmit}>
+      <div className="my-4">
+        <InputField
+          label="船名"
           name="name"
-          placeholder="例) クイーンエリザベス"
+          placeholder="例）クイーンエリザベス"
           type="text"
           value={formik.values.name}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          error={
+            formik.touched.name
+              ? formik.errors.name
+              : undefined
+          }
         />
-      </FormGroup>
-      <Button type="submit" color="primary" block>
-        登録
-      </Button>
-    </Form>
+      </div>
+      <div className="my-4">
+        <Button type="submit" color="primary">
+          登録
+        </Button>
+      </div>
+    </form>
   );
 };
 

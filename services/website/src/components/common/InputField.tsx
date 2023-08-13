@@ -39,7 +39,7 @@ export const InputField = ({
   onBlur,
   ...props
 }: InputFieldProps) => {
-  const classList = [  ];
+  const classList = [];
   if (!!error) {
     classList.push("text-red-500 border-red-500");
   } else {

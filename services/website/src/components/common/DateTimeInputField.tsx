@@ -19,13 +19,13 @@ function valueToState(value: string | InvalidValue | undefined) {
         dateText: !value
           ? ""
           : DateTimeFormatter.ISO_LOCAL_DATE.format(
-              instant.atZone(ZoneId.SYSTEM),
-            ),
+            instant.atZone(ZoneId.SYSTEM),
+          ),
         timeText: !value
           ? ""
           : DateTimeFormatter.ofPattern("HH:mm").format(
-              instant.atZone(ZoneId.SYSTEM),
-            ),
+            instant.atZone(ZoneId.SYSTEM),
+          ),
       };
     } catch (e) {
       console.error(e);
