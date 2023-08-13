@@ -10,7 +10,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const colors = ["primary", "secondary", "default"] as const;
+const colors = ["primary", "secondary", "default", "danger"] as const;
 
 const render = (args: Story["args"]) => (
   <div className="flex gap-2">

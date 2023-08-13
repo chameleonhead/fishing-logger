@@ -14,14 +14,6 @@ export const Default: Story = {
   args: {
     name: "name",
     label: "Label",
-    placeholder: "Placeholder",
-  },
-};
-
-export const ReadOnly: Story = {
-  args: {
-    ...Default.args,
-    readOnly: true,
   },
 };
 

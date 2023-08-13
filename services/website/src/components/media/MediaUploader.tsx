@@ -2,6 +2,7 @@ import { useEffect, useReducer } from "react";
 import FileInputField from "../common/FileInputField";
 import List from "../common/List";
 import Button from "../common/Button";
+import Progress from "../common/Progress";
 
 type FileUploadState = {
   id: number;
@@ -9,6 +10,13 @@ type FileUploadState = {
   status: "QUEUED" | "UPLOADING" | "SUCCEEDED" | "FAILED";
   progress: number;
   error?: FileUploadError;
+};
+
+const statusText = {
+  QUEUED: "待機中",
+  UPLOADING: "アップロード中",
+  SUCCEEDED: "アップロード完了",
+  FAILED: "アップロード失敗",
 };
 
 type MediaUploaderProps = {
@@ -38,20 +46,30 @@ export const MediaUploader = ({
       <List>
         {queue.map((item) => (
           <List.Item key={item.id}>
-            {item.target.name}
-            {item.status === "FAILED" ? (
-              <Button
-                block
-                color="danger"
-                size="sm"
-                onClick={() => onRetry(item.id)}
-              >
-                再実行
-              </Button>
-            ) : (
-              <></>
-              // <Progress animated value={item.progress} />
-            )}
+            <div className="w-full">
+              <div className="flex justify-start">
+                <div>{item.target.name}</div>
+              </div>
+              <div>
+                {item.status === "FAILED" ? (
+                  <Button
+                    color="danger"
+                    size="sm"
+                    onClick={() => onRetry(item.id)}
+                    className="w-full"
+                  >
+                    再実行
+                  </Button>
+                ) : (
+                  <>
+                    <Progress animated value={item.progress} />
+                    <div className="my-1 text-gray-500 text-sm">
+                      {statusText[item.status]}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
           </List.Item>
         ))}
       </List>

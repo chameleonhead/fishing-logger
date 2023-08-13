@@ -3,7 +3,7 @@ import React from "react";
 export type ButtonProps<T extends React.ElementType> =
   React.ComponentProps<T> & {
     as: React.ElementType;
-    color?: "primary" | "secondary" | "default";
+    color?: "primary" | "secondary" | "danger" | "default";
     variant?: "outline" | "filled";
     size?: "sm" | "md" | "lg";
     className?: string;
@@ -31,9 +31,13 @@ export const Button = <T extends React.ElementType>({
       variant === "outline"
         ? "bg-white text-orange-700 border-orange-500 ring-orange-500 enabled:hover:ring-orange-500 enabled:hover:bg-orange-50 focus:bg-orange-50"
         : "bg-orange-500 text-white ring-orange-500 enabled:hover:bg-orange-400 enabled:hover:ring-orange-600 focus:bg-orange-400",
+    danger:
+      variant === "outline"
+        ? "bg-white text-red-500 border-red-500 ring-red-500 enabled:hover:ring-red-500 enabled:hover:bg-red-50 focus:bg-red-50"
+        : "bg-red-500 text-white ring-red-500 enabled:hover:bg-red-400 enabled:hover:ring-red-600 focus:bg-red-400",
   };
   const classList = [
-    "transition-all inline-flex items-center justify-center rounded shadow-sm font-medium focus:ring-1",
+    "transition-all duration-200 inline-flex items-center justify-center rounded shadow-sm font-medium focus:ring-1",
     size === "sm"
       ? "px-2 py-1 text-sm"
       : size === "lg"
