@@ -46,10 +46,7 @@ export const DetailsPage = ({
       />
       <main>
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <CatchDetails
-            data={data}
-            onEditRequested={() => setEditModalOpen(true)}
-          />
+          <CatchDetails data={data} />
           <MediaUploader onSuccess={onMediaUploadSuccess} />
         </div>
       </main>

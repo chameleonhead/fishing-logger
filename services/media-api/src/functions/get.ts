@@ -18,6 +18,13 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
   // fetch media from the database
   const result = await dynamoDb.getItem(params);
+  if (!result.Item) {
+    return {
+      statusCode: 404,
+      headers: { "Content-Type": "application/json" },
+      body: "Not found",
+    };
+  }
   const item = unmarshall(result.Item!);
   const s3Client = new S3Client({
     endpoint: process.env.S3_ENDPOINT,

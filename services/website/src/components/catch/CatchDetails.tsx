@@ -6,8 +6,6 @@ import { Chip } from "../common/Chip";
 
 type CatchDetailsProps = {
   data: Catch;
-  onEditRequested?: () => void;
-  onRequestReload?: () => void;
 };
 
 export const CatchDetails = ({ data }: CatchDetailsProps) => {

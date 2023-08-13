@@ -153,9 +153,19 @@ const MediaThumbnailWithState = function ({ id }: { id: string }) {
     if (state.status === "PENDING" || state.data?.id !== id) {
       dispatch({ type: "FETCH" });
       (async () => {
-        const result = await fetch("/api/media/" + id);
-        const data = await result.json();
-        dispatch({ type: "FETCHED", payload: data });
+        for (let i = 0; i < 3; i++) {
+          try {
+            const result = await fetch("/api/media/" + id);
+            if (result.ok) {
+              const data = await result.json();
+              dispatch({ type: "FETCHED", payload: data });
+              return;
+            }
+          } catch (e) {
+            console.error(e);
+          }
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+        }
       })();
     }
   }, [dispatch, id, state.status, state.data]);
