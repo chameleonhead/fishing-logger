@@ -34,13 +34,7 @@ export const FileInputField = ({
   }
   return (
     <div className={className}>
-      {label ? (
-        <label
-          htmlFor={name}
-        >
-          {label}
-        </label>
-      ) : null}
+      {label ? <label htmlFor={name}>{label}</label> : null}
       <input
         id={name}
         name={name}

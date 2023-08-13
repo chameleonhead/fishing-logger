@@ -16,14 +16,15 @@ const colors = ["primary", "secondary", "default"] as const;
 const render = (args: Story["args"]) => (
   <div className="flex gap-2">
     {colors.map((color) => (
-      <IconButton key={color} {...args} color={color}><AcademicCapIcon /></IconButton>
+      <IconButton key={color} {...args} color={color}>
+        <AcademicCapIcon />
+      </IconButton>
     ))}
   </div>
 );
 
 export const Default: Story = {
-  args: {
-  },
+  args: {},
   render,
 };
 

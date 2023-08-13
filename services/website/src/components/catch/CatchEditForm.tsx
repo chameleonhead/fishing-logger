@@ -19,9 +19,9 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
       catched_at: data.catched_at as string | null | undefined,
       place: data.place as
         | {
-          latitude: number;
-          longitude: number;
-        }
+            latitude: number;
+            longitude: number;
+          }
         | null
         | undefined,
       fishes_species: data.fishes.map((fish) => fish.species),

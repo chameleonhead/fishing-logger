@@ -19,13 +19,13 @@ function valueToState(value: string | InvalidValue | undefined) {
         dateText: !value
           ? ""
           : DateTimeFormatter.ISO_LOCAL_DATE.format(
-            instant.atZone(ZoneId.SYSTEM),
-          ),
+              instant.atZone(ZoneId.SYSTEM),
+            ),
         timeText: !value
           ? ""
           : DateTimeFormatter.ofPattern("HH:mm").format(
-            instant.atZone(ZoneId.SYSTEM),
-          ),
+              instant.atZone(ZoneId.SYSTEM),
+            ),
       };
     } catch (e) {
       console.error(e);
@@ -94,9 +94,7 @@ export const DateTimeInputField = ({
         target: { name, value: tryParse(state) },
       } as any);
   }, [name, state]);
-  const classList = [
-    "grow shrink w-auto min-w-fit sm:w-full",
-  ];
+  const classList = ["grow shrink w-auto min-w-fit sm:w-full"];
   if (!!error) {
     classList.push("text-red-500 border-red-500");
   } else {

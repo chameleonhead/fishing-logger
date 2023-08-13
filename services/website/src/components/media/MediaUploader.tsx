@@ -195,11 +195,11 @@ const reducer = function (
       const newFileUploadingState = state.fileUploadingState.map((value) =>
         value.id == action.payload.id
           ? {
-            ...value,
-            progress: 0,
-            status: "FAILED",
-            error: action.payload.error,
-          }
+              ...value,
+              progress: 0,
+              status: "FAILED",
+              error: action.payload.error,
+            }
           : value,
       ) as (typeof initialValue)["fileUploadingState"];
       return {

@@ -47,13 +47,7 @@ export const InputField = ({
   }
   return (
     <div className={className}>
-      {label ? (
-        <label
-          htmlFor={name}
-        >
-          {label}
-        </label>
-      ) : null}
+      {label ? <label htmlFor={name}>{label}</label> : null}
       {type === "textarea" ? (
         <textarea
           id={name}

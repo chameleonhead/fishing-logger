@@ -37,11 +37,7 @@ export const ShipEditForm = ({ data, onSubmit }: ShipEditFormProps) => {
           value={formik.values.name}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={
-            formik.touched.name
-              ? formik.errors.name
-              : undefined
-          }
+          error={formik.touched.name ? formik.errors.name : undefined}
         />
       </div>
       <div className="my-4">

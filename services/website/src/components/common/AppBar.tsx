@@ -23,8 +23,8 @@ const NavItem = ({
         isPending
           ? "block py-1 px-3 rounded-md cursor-pointer transition-all hover:bg-blue-400 hover:bg-opacity-80 focus:bg-blue-400 focus:bg-opacity-80 active:bg-blue-400 active:bg-opacity-80 hover:text-gray-100 focus:text-gray-100 active:text-gray-100 outline-none bg-blue-400 bg-opacity-80 text-gray-100"
           : isActive
-            ? "block py-1 px-3 rounded-md cursor-pointer transition-all hover:bg-blue-400 hover:bg-opacity-80 focus:bg-blue-400 focus:bg-opacity-80 active:bg-blue-400 active:bg-opacity-80 hover:text-gray-100 focus:text-gray-100 active:text-gray-100 outline-none bg-blue-400 bg-opacity-80 text-gray-100"
-            : "block py-1 px-3 rounded-md cursor-pointer transition-all hover:bg-blue-400 hover:bg-opacity-80 focus:bg-blue-400 focus:bg-opacity-80 active:bg-blue-400 active:bg-opacity-80 hover:text-gray-100 focus:text-gray-100 active:text-gray-100 outline-none"
+          ? "block py-1 px-3 rounded-md cursor-pointer transition-all hover:bg-blue-400 hover:bg-opacity-80 focus:bg-blue-400 focus:bg-opacity-80 active:bg-blue-400 active:bg-opacity-80 hover:text-gray-100 focus:text-gray-100 active:text-gray-100 outline-none bg-blue-400 bg-opacity-80 text-gray-100"
+          : "block py-1 px-3 rounded-md cursor-pointer transition-all hover:bg-blue-400 hover:bg-opacity-80 focus:bg-blue-400 focus:bg-opacity-80 active:bg-blue-400 active:bg-opacity-80 hover:text-gray-100 focus:text-gray-100 active:text-gray-100 outline-none"
       }
     >
       <span className="font-medium">{children}</span>

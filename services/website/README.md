@@ -1,8 +1,6 @@
-釣り日誌フロントエンド
-=====================
+# 釣り日誌フロントエンド
 
-実行方法
---------
+## 実行方法
 
 **Vite の実行**
 
@@ -22,8 +20,7 @@ npm run storybook
 
 上記実行後に http://localhost:6006 にアクセスする (自動的にブラウザーが起動する)
 
-構築手順
---------
+## 構築手順
 
 ```
 npm create vite@latest fishing-logger-website -- --template react-ts

@@ -63,8 +63,8 @@ export const DetailsPage = ({
             setEditModalOpen(false);
           }}
         />
-      </Modal >
-    </div >
+      </Modal>
+    </div>
   );
 };
 

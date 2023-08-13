@@ -2,14 +2,17 @@ import React from "react";
 
 export type ListProps = {
   children:
-  | React.ReactElement<ListItemProps>
-  | Array<React.ReactElement<ListItemProps>>;
+    | React.ReactElement<ListItemProps>
+    | Array<React.ReactElement<ListItemProps>>;
   className?: string;
 };
 
 export const List = ({ children, className }: ListProps) => {
   return (
-    <div role="list" className={`divide-y divide-gray-100 ${className ? className : ""}`}>
+    <div
+      role="list"
+      className={`divide-y divide-gray-100 ${className ? className : ""}`}
+    >
       {children}
     </div>
   );

@@ -72,12 +72,12 @@ class ServerlessPlugin {
       "describeStacks",
       { StackName: stackName },
       this.options.stage,
-      this.options.region
+      this.options.region,
     );
 
     const outputs = result.Stacks[0].Outputs;
     const output = outputs.find(
-      (entry) => entry.OutputKey === "WebAppCloudFrontDistributionOutput"
+      (entry) => entry.OutputKey === "WebAppCloudFrontDistributionOutput",
     );
 
     if (output && output.OutputValue) {
@@ -100,17 +100,17 @@ class ServerlessPlugin {
       "listDistributions",
       {},
       this.options.stage,
-      this.options.region
+      this.options.region,
     );
 
     const distributions = result.DistributionList.Items;
     const distribution = distributions.find(
-      (entry) => entry.DomainName === domain
+      (entry) => entry.DomainName === domain,
     );
 
     if (distribution) {
       this.serverless.cli.log(
-        `Invalidating CloudFront distribution with id: ${distribution.Id}`
+        `Invalidating CloudFront distribution with id: ${distribution.Id}`,
       );
       const args = [
         "cloudfront",

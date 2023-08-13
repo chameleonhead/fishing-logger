@@ -20,10 +20,11 @@ export const Default: Story = {
   },
   render: (args) => {
     const [open, setOpen] = useState(args.open);
-    return <div>
-      <Button onClick={() => setOpen(true)}>OPEN</Button>
-      <Modal {...args} open={open} onClose={() => setOpen(false)} />
-    </div>
-  }
+    return (
+      <div>
+        <Button onClick={() => setOpen(true)}>OPEN</Button>
+        <Modal {...args} open={open} onClose={() => setOpen(false)} />
+      </div>
+    );
+  },
 };
-

@@ -9,7 +9,9 @@ export const IndexPage = () => {
       <PageHeader
         title="船一覧"
         actions={
-          <Button as={RouterLink} to="/ships/create" color="primary">登録</Button>
+          <Button as={RouterLink} to="/ships/create" color="primary">
+            登録
+          </Button>
         }
       />
       <main>

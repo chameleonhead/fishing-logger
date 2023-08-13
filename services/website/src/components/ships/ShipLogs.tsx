@@ -40,11 +40,7 @@ export const ShipLogs = ({ position, logs }: ShipLogsProps) => {
   );
 };
 
-const ShipLogsWithState = function ({
-  id,
-}: {
-  id: string;
-}) {
+const ShipLogsWithState = function ({ id }: { id: string }) {
   const [data, setData] = useState<{ logs: Log[] } | undefined>(undefined);
   const [requestReload, setRequestReload] = useState(true);
   useEffect(() => {
@@ -63,7 +59,10 @@ const ShipLogsWithState = function ({
   if (data) {
     return (
       <>
-        <ShipLogs position={data.logs[data.logs.length - 1].position} logs={data.logs} />
+        <ShipLogs
+          position={data.logs[data.logs.length - 1].position}
+          logs={data.logs}
+        />
       </>
     );
   }
