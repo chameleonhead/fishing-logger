@@ -47,14 +47,14 @@ export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
         </RouterLink>
         <div className="hidden md:block ml-9">{navList}</div>
         <IconButton
-          className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent md:hidden"
+          color="white"
           onClick={() => (menuOpen ? onMenuClose() : onMenuOpen())}
+          className="md:hidden"
         >
           {menuOpen ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
-              className="h-6 w-6"
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
@@ -68,7 +68,6 @@ export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
               fill="none"
               stroke="currentColor"
               strokeWidth={2}

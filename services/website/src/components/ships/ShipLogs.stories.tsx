@@ -12,10 +12,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    position: {
-      latitude: 34.06300569,
-      longitude: 136.22153699,
-    },
     logs: [
       {
         timestamp: 1633459200,
@@ -53,5 +49,25 @@ export const Default: Story = {
         },
       },
     ],
+  },
+};
+
+export const SingleLogs: Story = {
+  args: {
+    logs: [
+      {
+        timestamp: 1633459200,
+        position: {
+          latitude: 34.06440998,
+          longitude: 136.22257769,
+        },
+      },
+    ],
+  },
+};
+
+export const NoLogs: Story = {
+  args: {
+    logs: [],
   },
 };
