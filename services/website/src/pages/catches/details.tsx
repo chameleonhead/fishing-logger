@@ -23,7 +23,11 @@ export const DetailsPage = ({
 }: DetailsPageProps) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   if (!data) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <PageHeader title="Loading..." />
+      </div>
+    );
   }
   return (
     <div>
@@ -54,7 +58,7 @@ export const DetailsPage = ({
         onClose={() => setEditModalOpen(false)}
         color="primary"
         size="lg"
-        title="船の編集"
+        title="漁獲の編集"
       >
         <CatchEditForm
           id={id}

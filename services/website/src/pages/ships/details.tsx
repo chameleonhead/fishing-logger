@@ -20,7 +20,11 @@ export const DetailsPage = ({
 }: DetailsPageProps) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   if (!data) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <PageHeader title="Loading..." />
+      </div>
+    );
   }
   return (
     <div>

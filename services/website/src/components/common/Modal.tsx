@@ -36,7 +36,10 @@ export const Modal = ({
     "p-4 flex items-center justify-between border-b border-gray-200",
     colors[color || "default"],
   ];
-  const panelClassList = ["mx-auto bg-white", sizes[size || "md"]];
+  const panelClassList = [
+    "mx-auto bg-white overflow-clip shadow",
+    sizes[size || "md"],
+  ];
   if (className) {
     panelClassList.push(className);
   }
