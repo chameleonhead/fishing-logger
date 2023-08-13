@@ -43,10 +43,7 @@ export const DetailsPage = ({
       />
       <main>
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <ShipDetails
-            data={data}
-            onEditRequested={() => setEditModalOpen(true)}
-          />
+          <ShipDetails data={data} />
         </div>
       </main>
       <Modal

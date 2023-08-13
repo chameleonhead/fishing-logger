@@ -7,8 +7,6 @@ import Chip from "../common/Chip";
 type ShipDetailsProps = {
   data: Ship;
   state?: ShipState;
-  onEditRequested?: () => void;
-  onRequestReload?: () => void;
 };
 
 export const ShipDetails = ({ data, state }: ShipDetailsProps) => {
