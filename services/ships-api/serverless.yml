@@ -98,12 +98,12 @@ functions:
           path: /api/ships/{id}
           method: get
 
-  activate:
-    handler: src/functions/activate.handler
+  get-state:
+    handler: src/functions/get-state.handler
     events:
       - httpApi:
-          path: /api/ships/{id}/activate
-          method: post
+          path: /api/ships/{id}/state
+          method: get
 
   get-config:
     handler: src/functions/get-config.handler
@@ -119,12 +119,26 @@ functions:
           path: /api/ships/{id}/logs
           method: get
 
+  activate:
+    handler: src/functions/activate.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}/activate
+          method: post
+
   deactivate:
     handler: src/functions/deactivate.handler
     events:
       - httpApi:
           path: /api/ships/{id}/deactivate
           method: post
+
+  update:
+    handler: src/functions/update.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}
+          method: put
 
   delete:
     handler: src/functions/delete.handler
@@ -227,7 +241,7 @@ resources:
           !Join ["_", !Split ["-", "${self:service}-${sls:stage}-iot-rule1"]]
         TopicRulePayload:
           AwsIotSqlVersion: "2016-03-23"
-          Sql: SELECT concat(regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', ''), ':state') as id, * FROM '${self:provider.environment.IOT_THING_GROUP_NAME}/#'
+          Sql: SELECT concat('signalk:', regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')) as id, * FROM '${self:provider.environment.IOT_THING_GROUP_NAME}/#'
           Actions:
             - DynamoDBv2:
                 RoleArn: !GetAtt shipsIotTopicRuleRole.Arn
@@ -279,7 +293,7 @@ resources:
                   Value: !Join
                     - ""
                     - - "$"
-                      - "{time_to_epoch(navigation.datetime, \"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\")}"
+                      - '{time_to_epoch(navigation.datetime, "yyyy-MM-dd''T''HH:mm:ss.SSS''Z''")}'
           ErrorAction:
             S3:
               RoleArn: !GetAtt shipsIotTopicRuleRole.Arn

@@ -27,11 +27,24 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
   // create a response
   const ship = unmarshall(result!.Item!);
-  delete ship.iot_config;
+
+  // fetch ship state from the database
+  const paramsSignalKState = {
+    TableName: process.env.DYNAMODB_TABLE!,
+    Key: {
+      id: convertToAttr("signalk:" + event.pathParameters!.id),
+    },
+  };
+  const resultData = {} as { signalk?: object & { id?: string }; iot?: object };
+  const resultSignalKState = await dynamoDb.getItem(paramsSignalKState);
+  if (resultSignalKState.Item) {
+    resultData.signalk = unmarshall(resultSignalKState!.Item!);
+    delete resultData.signalk.id;
+  }
 
   return {
     statusCode: 200,
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(ship),
+    body: JSON.stringify(resultData),
   };
 };

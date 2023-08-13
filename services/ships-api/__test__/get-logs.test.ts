@@ -49,7 +49,7 @@ describe("get a ship logs", () => {
                   latitude: 135,
                   longitude: 45,
                 }),
-              }
+              },
             ],
           },
         ],
@@ -106,7 +106,7 @@ describe("get a ship logs", () => {
                   latitude: 135,
                   longitude: 45,
                 }),
-              }
+              },
             ],
           },
         ],
@@ -166,7 +166,7 @@ describe("get a ship logs", () => {
                   latitude: 135,
                   longitude: 45,
                 }),
-              }
+              },
             ],
           },
         ],

@@ -1,21 +1,21 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { apiEvent, callLambda, ensureTableWithData } from "./utils";
-import { handler as getHandler } from "../src/functions/get";
+import { handler as updateHandler } from "../src/functions/update";
 
-describe("get a ship", () => {
+describe("update ship", () => {
   const OLD_ENV = process.env;
 
   beforeEach(async () => {
     jest.resetModules(); // Most important - it clears the cache
     process.env = { ...OLD_ENV }; // Make a copy
-    process.env.DYNAMODB_TABLE = "ships-get";
+    process.env.DYNAMODB_TABLE = "ships-update";
   });
 
   afterAll(() => {
     process.env = OLD_ENV; // Make a copy
   });
 
-  it("should get a ship", async () => {
+  it("should update a ship", async () => {
     const dynamoDb = new DynamoDB({
       endpoint: process.env.DYNAMODB_ENDPOINT,
       region: process.env.AWS_REGION,
@@ -23,20 +23,19 @@ describe("get a ship", () => {
     await ensureTableWithData(dynamoDb, process.env.DYNAMODB_TABLE!, [
       {
         id: "test",
-        name: "test",
-        iot_enabled: true,
-        iot_config: {
-          certificate_id: "cert_id",
-          certificate_arn: "cert_arn",
-          cerfiticate_pem: "cert_pem",
-        },
+        name: "test name",
+        created_at: 1630793102,
+        updated_at: 1630793102,
       },
     ]);
     const result = await callLambda(
-      getHandler,
+      updateHandler,
       apiEvent({
         pathParameters: {
           id: "test",
+        },
+        body: {
+          name: "test name🚩",
         },
       }),
     );
@@ -46,9 +45,10 @@ describe("get a ship", () => {
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({
-      id: "test",
-      name: "test",
-      iot_enabled: true,
+      id: expect.any(String),
+      name: "test name🚩",
+      created_at: 1630793102,
+      updated_at: expect.not.stringMatching("1630793102"),
     });
   });
 });

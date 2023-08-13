@@ -4,20 +4,29 @@ import { convertToAttr, unmarshall } from "@aws-sdk/util-dynamodb";
 import { TimestreamQuery } from "@aws-sdk/client-timestream-query";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
-  const { before, after } = typeof event.queryStringParameters !== "undefined" ? event.queryStringParameters : {} as { before?: string, after?: string };
-  if (typeof before !== "undefined" && before.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/) === null) {
+  const { before, after } =
+    typeof event.queryStringParameters !== "undefined"
+      ? event.queryStringParameters
+      : ({} as { before?: string; after?: string });
+  if (
+    typeof before !== "undefined" &&
+    before.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/) === null
+  ) {
     return {
       statusCode: 400,
       headers: { "Content-Type": "text/plain" },
       body: "Invalid before parameter.",
-    }
+    };
   }
-  if (typeof after !== "undefined" && after.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/) === null) {
+  if (
+    typeof after !== "undefined" &&
+    after.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/) === null
+  ) {
     return {
       statusCode: 400,
       headers: { "Content-Type": "text/plain" },
       body: "Invalid before parameter.",
-    }
+    };
   }
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
