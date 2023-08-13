@@ -34,7 +34,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   });
 
   const logs = await timestreamQuery.query({
-    QueryString: `SELECT CREATE_TIME_SERIES(time, measure_value::varchar) FROM ${process.env.TIMESTREAM_DATABASE}.${process.env.TIMESTREAM_TABLE_SHIPS_POSITION} WHERE measure_name = 'position' AND time > ago(12h) AND id = '${ship.id}' GROUP BY id`,
+    QueryString: `SELECT time, measure_value::varchar FROM ${process.env.TIMESTREAM_DATABASE}.${process.env.TIMESTREAM_TABLE_SHIPS_POSITION} WHERE measure_name = 'position' AND id = '${ship.id}' AND measure_value::varchar <> '{"longitude":null,"latitude":null}' ORDER BY time DESC LIMIT 1440`,
   });
 
   if (typeof logs.Rows === "undefined" || logs.Rows.length === 0) {
@@ -47,16 +47,14 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     };
   }
 
-  const timeSeries = logs.Rows![0].Data![0].TimeSeriesValue!;
-
   return {
     statusCode: 200,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      logs: timeSeries.map((row) => {
+      logs: logs.Rows.map((row) => {
         return {
-          time: row.Time,
-          position: JSON.parse(row.Value!.ScalarValue!),
+          time: row.Data![0].ScalarValue!,
+          position: JSON.parse(row.Data![1].ScalarValue!),
         };
       }),
     }),
