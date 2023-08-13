@@ -95,7 +95,7 @@ export const DateTimeInputField = ({
       } as any);
   }, [name, state]);
   const classList = [
-    "grow shrink w-auto min-w-fit sm:w-full block shadow-sm ring-0 outline-0 border-0 px-0 py-1 rounded-none border-b-2 border-t-0 border-x-0 disabled:opacity-50 disabled:cursor-not-allowed",
+    "grow shrink w-auto min-w-fit sm:w-full",
   ];
   if (!!error) {
     classList.push("text-red-500 border-red-500");

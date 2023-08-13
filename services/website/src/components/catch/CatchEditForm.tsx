@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useEffect, useState } from "react";
 import { PlaceInput } from "../inputs/PlaceInput";
 import { Catch } from "./models";
 import Button from "../common/Button";
@@ -19,9 +19,9 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
       catched_at: data.catched_at as string | null | undefined,
       place: data.place as
         | {
-            latitude: number;
-            longitude: number;
-          }
+          latitude: number;
+          longitude: number;
+        }
         | null
         | undefined,
       fishes_species: data.fishes.map((fish) => fish.species),
@@ -31,7 +31,11 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
       method_details: data.method.details || "",
     },
     validationSchema: Yup.object({
-      catched_at: Yup.object()
+      catched_at: Yup.string()
+        .matches(
+          /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2}(.[0-9]+)?)?Z$/,
+          "日付の形式が間違っています。",
+        )
         .nullable()
         .test("null-check", "不正な値です。", (value) => value !== null)
         .required("必ず入力してください。"),
@@ -63,11 +67,11 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
   });
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div className="flex gap-2 my-3 justify-start">
+      <div className="my-3 grid grid-cols-1 sm:grid-cols-7">
         <DateTimeInputField
           label="日時"
           name="catched_at"
-          className="grow"
+          className="sm:col-span-5 md:col-span-4 lg:col-span-3"
           value={formik.values.catched_at?.toString() || ""}
           onChange={(e) => {
             formik.setValues({
@@ -126,7 +130,9 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
           value={formik.values.method_type}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={formik.errors.method_type}
+          error={
+            formik.touched.method_type ? formik.errors.method_type : undefined
+          }
         />
       </div>
       <div className="my-4">
@@ -138,6 +144,11 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
           value={formik.values.method_details}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          error={
+            formik.touched.method_details
+              ? formik.errors.method_details
+              : undefined
+          }
         />
       </div>
       <div className="my-4">

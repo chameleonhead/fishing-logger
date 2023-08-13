@@ -39,9 +39,7 @@ export const InputField = ({
   onBlur,
   ...props
 }: InputFieldProps) => {
-  const classList = [
-    "block w-full shadow-sm ring-0 outline-0 border-0 px-0 py-1 rounded-none border-b-2 border-t-0 border-x-0 disabled:opacity-50 disabled:cursor-not-allowed",
-  ];
+  const classList = [  ];
   if (!!error) {
     classList.push("text-red-500 border-red-500");
   } else {
@@ -52,7 +50,6 @@ export const InputField = ({
       {label ? (
         <label
           htmlFor={name}
-          className="block text-sm font-medium text-gray-700"
         >
           {label}
         </label>

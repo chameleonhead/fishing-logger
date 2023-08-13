@@ -21,9 +21,9 @@ export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
         | undefined,
       place: undefined as
         | {
-            latitude: number;
-            longitude: number;
-          }
+          latitude: number;
+          longitude: number;
+        }
         | null
         | undefined,
       fishes_species: [""],
