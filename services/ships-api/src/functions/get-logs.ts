@@ -34,7 +34,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   });
 
   const logs = await timestreamQuery.query({
-    QueryString: `SELECT time, measure_value::varchar FROM ${process.env.TIMESTREAM_DATABASE}.${process.env.TIMESTREAM_TABLE_SHIPS_POSITION} WHERE measure_name = 'position' AND id = '${ship.id}' AND measure_value::varchar <> '{"longitude":null,"latitude":null}' ORDER BY time DESC LIMIT 1440`,
+    QueryString: `SELECT to_iso8601(time) || 'Z', measure_value::varchar FROM ${process.env.TIMESTREAM_DATABASE}.${process.env.TIMESTREAM_TABLE_SHIPS_POSITION} WHERE measure_name = 'position' AND id = '${ship.id}' AND measure_value::varchar <> '{"longitude":null,"latitude":null}' ORDER BY time DESC LIMIT 500`,
   });
 
   if (typeof logs.Rows === "undefined" || logs.Rows.length === 0) {

@@ -40,18 +40,14 @@ describe("get a ship logs", () => {
           {
             Data: [
               {
-                TimeSeriesValue: [
-                  {
-                    Time: "2023-03-04T00:00:00.000000000Z",
-                    Value: {
-                      ScalarValue: JSON.stringify({
-                        latitude: 135,
-                        longitude: 45,
-                      }),
-                    },
-                  },
-                ],
+                ScalarValue: "2023-08-11T17:13:21Z",
               },
+              {
+                ScalarValue: JSON.stringify({
+                  latitude: 135,
+                  longitude: 45,
+                }),
+              }
             ],
           },
         ],
@@ -72,7 +68,7 @@ describe("get a ship logs", () => {
     expect(JSON.parse(result.body!)).toEqual({
       logs: [
         {
-          time: "2023-03-04T00:00:00.000000000Z",
+          time: "2023-08-11T17:13:21Z",
           position: { latitude: 135, longitude: 45 },
         },
       ],

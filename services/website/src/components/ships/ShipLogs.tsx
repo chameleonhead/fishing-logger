@@ -1,4 +1,4 @@
-import { DateTimeFormatter, LocalDateTime, ZoneId } from "@js-joda/core";
+import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
@@ -40,11 +40,10 @@ export const ShipLogs = ({ logs }: ShipLogsProps) => {
   if (lastLog === null) {
     return <div>位置情報がありません</div>;
   }
-  const formattter = DateTimeFormatter.ofPattern(
-    "yyyy-MM-dd HH:mm:ss.SSSSSSSSS",
+  const lastLogInstant = DateTimeFormatter.ISO_INSTANT.parse(
+    lastLog.time,
+    Instant.FROM,
   );
-  const lastLogLdt = formattter.parse(lastLog.time, LocalDateTime.FROM);
-  const lastLogInstant = lastLogLdt.atZone(ZoneId.UTC).toInstant();
   const zonedLastLogTime = lastLogInstant.atZone(ZoneId.SYSTEM);
   return (
     <div className="w-100" style={{ minHeight: "300px", height: "300px" }}>
