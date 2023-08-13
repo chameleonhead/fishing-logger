@@ -1,4 +1,7 @@
 import { useEffect, useReducer } from "react";
+import FileInputField from "../common/FileInputField";
+import List from "../common/List";
+import Button from "../common/Button";
 
 type FileUploadState = {
   id: number;
@@ -21,8 +24,7 @@ export const MediaUploader = ({
 }: MediaUploaderProps) => {
   return (
     <div>
-      <Input
-        type="file"
+      <FileInputField
         onChange={(e) => {
           onFileSelected &&
             onFileSelected(
@@ -33,9 +35,9 @@ export const MediaUploader = ({
           e.target.value = "";
         }}
       />
-      <ListGroup className="mt-3">
+      <List>
         {queue.map((item) => (
-          <ListGroupItem key={item.id}>
+          <List.Item key={item.id}>
             {item.target.name}
             {item.status === "FAILED" ? (
               <Button
@@ -47,11 +49,12 @@ export const MediaUploader = ({
                 再実行
               </Button>
             ) : (
-              <Progress animated value={item.progress} />
+              <></>
+              // <Progress animated value={item.progress} />
             )}
-          </ListGroupItem>
+          </List.Item>
         ))}
-      </ListGroup>
+      </List>
     </div>
   );
 };
@@ -192,11 +195,11 @@ const reducer = function (
       const newFileUploadingState = state.fileUploadingState.map((value) =>
         value.id == action.payload.id
           ? {
-              ...value,
-              progress: 0,
-              status: "FAILED",
-              error: action.payload.error,
-            }
+            ...value,
+            progress: 0,
+            status: "FAILED",
+            error: action.payload.error,
+          }
           : value,
       ) as (typeof initialValue)["fileUploadingState"];
       return {

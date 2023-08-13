@@ -6,6 +6,7 @@ import sample from "./sample.json";
 const meta = {
   title: "components/media/MediaThumbnail",
   component: MediaThumbnail,
+  render: (args: any) => <div className="h-screen"><MediaThumbnail {...args} /></div>,
 } as Meta<typeof MediaThumbnail>;
 
 export default meta;

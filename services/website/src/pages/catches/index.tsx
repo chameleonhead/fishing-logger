@@ -1,6 +1,7 @@
 import { Link as RouterLink } from "react-router-dom";
 import CatchList from "../../components/catch/CatchList";
 import PageHeader from "../../components/common/PageHeader";
+import Button from "../../components/common/Button";
 
 export const IndexPage = () => {
   return (
@@ -8,9 +9,7 @@ export const IndexPage = () => {
       <PageHeader
         title="漁獲一覧"
         actions={
-          <RouterLink to="/catches/create">
-            <Button color="blue">登録</Button>
-          </RouterLink>
+          <Button as={RouterLink} to="/catches/create" color="primary">登録</Button>
         }
       />
       <main>

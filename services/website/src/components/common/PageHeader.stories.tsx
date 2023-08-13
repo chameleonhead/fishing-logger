@@ -3,6 +3,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
 
 import { PageHeader } from "./PageHeader";
+import Button from "./Button";
 
 const meta = {
   title: "components/common/PageHeader",
@@ -29,7 +30,7 @@ export const WithActionOnLargeDisplay: Story = {
     title: "Page Title with long long long long long text",
     actions: (
       <div className="flex space-x-2">
-        <Button color="blue" size="sm">
+        <Button color="primary" size="sm">
           Some Button 1
         </Button>
         <Button size="sm">Some Button 2</Button>
@@ -49,7 +50,7 @@ export const WithActionOnSmallDisplay: Story = {
     title: "Page Title with long long long long long text",
     actions: (
       <div className="flex space-x-2">
-        <Button color="blue" size="sm">
+        <Button color="primary" size="sm">
           Some Button 1
         </Button>
         <Button size="sm">Some Button 2</Button>

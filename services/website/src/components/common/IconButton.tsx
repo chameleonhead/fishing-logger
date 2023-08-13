@@ -1,21 +1,25 @@
 import React from "react";
 
-export type IconButtonProps =
-  React.ComponentProps<"button"> & {
+export type IconButtonProps<T extends React.ElementType> =
+  React.ComponentProps<T> & {
+    as?: React.ElementType;
     color?: "primary" | "secondary" | "default";
     size?: "sm" | "md" | "lg";
     className?: string;
   };
 
-export const IconButton = ({
+export const IconButton = <T extends React.ElementType>({
+  as: Component = "button",
   type = "button",
   color = "default",
   size = "md",
   className,
   children,
   ...props
-}: IconButtonProps) => {
+}: IconButtonProps<T>) => {
   const colors = {
+    white: "text-white",
+    dark: "text-gray-900",
     default: "text-gray-500",
     primary: "text-blue-500",
     secondary: "text-orange-500"
@@ -27,8 +31,8 @@ export const IconButton = ({
   }
   const classList = [
     "icon-button transition-all transform duration-300 rounded-full flex items-center justify-center outline-none text-dark hover:bg-gray-300 hover:bg-opacity-20 focus:bg-gray-300 focus:bg-opacity-30",
-    colors[color || "default"],
-    sizes[size || "md"]
+    colors[(color || "default") as "primary" | "secondary" | "default"],
+    sizes[(size || "md") as "sm" | "md" | "lg"]
   ];
   if (className) {
     classList.push(className);

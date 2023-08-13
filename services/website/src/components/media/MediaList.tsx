@@ -6,7 +6,7 @@ type MediaListProps = {
 
 export const MediaList = ({ data }: MediaListProps) => {
   return (
-    <div className="grid grid-col-2 md:grid-col-4 gap-2">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
       {data.map((media) => {
         return (
           <div key={media.id}>

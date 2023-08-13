@@ -14,7 +14,7 @@ export const CatchList = ({ data }: CatchListProps) => {
     return <Navigate to="/catches/create" />;
   }
   return (
-    <List className="-m-4">
+    <List className="-m-2">
       {data.map((item) => {
         return (
           <RouterLink key={item.id} to={`/catches/${item.id}`}>

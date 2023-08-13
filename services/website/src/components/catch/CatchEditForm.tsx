@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { PlaceInput } from "../inputs/PlaceInput";
+import { PlaceInput } from "../common/PlaceInput";
 import { Catch } from "./models";
 import Button from "../common/Button";
 import InputField from "../common/InputField";

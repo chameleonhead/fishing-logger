@@ -5,6 +5,8 @@ import CatchEditForm from "../../components/catch/CatchEditForm";
 import PageHeader from "../../components/common/PageHeader";
 import MediaUploader from "../../components/media/MediaUploader";
 import { Catch } from "../../components/catch/models";
+import Button from "../../components/common/Button";
+import Modal from "../../components/common/Modal";
 
 type DetailsPageProps = {
   id: string;
@@ -30,8 +32,8 @@ export const DetailsPage = ({
         actions={
           <Button
             type="button"
-            color="blue"
-            variant="outlined"
+            color="primary"
+            variant="outline"
             onClick={() => setEditModalOpen(true)}
           >
             編集
@@ -48,26 +50,21 @@ export const DetailsPage = ({
         </div>
       </main>
       <Modal
-        isOpen={isEditModalOpen}
-        toggle={() => setEditModalOpen(!isEditModalOpen)}
+        open={isEditModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        color="primary"
+        size="lg"
+        title="船の編集"
       >
-        <ModalHeader
-          className="bg-primary text-light"
-          toggle={() => setEditModalOpen(!isEditModalOpen)}
-        >
-          船の編集
-        </ModalHeader>
-        <ModalBody>
-          <CatchEditForm
-            id={id}
-            onSuccess={() => {
-              onRequestReload();
-              setEditModalOpen(false);
-            }}
-          ></CatchEditForm>
-        </ModalBody>
-      </Modal>
-    </div>
+        <CatchEditForm
+          id={id}
+          onSuccess={() => {
+            onRequestReload();
+            setEditModalOpen(false);
+          }}
+        />
+      </Modal >
+    </div >
   );
 };
 
