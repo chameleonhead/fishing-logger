@@ -106,6 +106,7 @@ export function apiEvent({
   path = "/",
   body = undefined as object | undefined,
   pathParameters = undefined as object | undefined,
+  queryStringParameters = undefined as object | undefined,
 }) {
   return {
     version: "",
@@ -116,7 +117,7 @@ export function apiEvent({
     headers: {
       "Content-Type": "application/json",
     },
-    queryStringParameters: undefined,
+    queryStringParameters: queryStringParameters,
     requestContext: {
       accountId: "",
       apiId: "",

@@ -269,7 +269,7 @@ resources:
                       - ""
                       - - "$"
                         - "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}"
-                  - Name: accurary
+                  - Name: horizontal_dilution
                     Value: !Join
                       - ""
                       - - "$"
