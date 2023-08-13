@@ -3,7 +3,7 @@ import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import * as uuid from "uuid";
 
-export const create: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
@@ -20,17 +20,12 @@ export const create: APIGatewayProxyHandlerV2 = async (event) => {
     }),
   };
 
-  try {
-    // write the catch to the database
-    await dynamoDb.putItem(params);
-    // create a response
-    return {
-      statusCode: 200,
-      body: JSON.stringify(unmarshall(params.Item)),
-    };
-
-  } catch (error) {
-    console.error(error);
-    throw new Error("Couldn't create the catch item.")
-  }
+  // write the catch to the database
+  await dynamoDb.putItem(params);
+  // create a response
+  return {
+    statusCode: 200,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(unmarshall(params.Item)),
+  };
 };

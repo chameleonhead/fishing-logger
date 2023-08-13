@@ -1,16 +1,9 @@
-import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { useEffect, useState } from "react";
 import { Link as RouterLink, Navigate } from "react-router-dom";
-import {
-  Badge,
-  Col,
-  ListGroup,
-  ListGroupItem,
-  ListGroupItemHeading,
-  ListGroupItemText,
-  Row,
-} from "reactstrap";
+import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { Catch } from "./models";
+import List from "../common/List";
+import Chip from "../common/Chip";
 
 type CatchListProps = {
   data: Catch[];
@@ -21,56 +14,46 @@ export const CatchList = ({ data }: CatchListProps) => {
     return <Navigate to="/catches/create" />;
   }
   return (
-    <ListGroup>
+    <List className="-m-2">
       {data.map((item) => {
         return (
-          <ListGroupItem
-            key={item.id}
-            action
-            tag={RouterLink}
-            to={`/catches/${item.id}`}
-          >
-            <Row>
-              <Col>
-                <Badge color="primary" className="me-2 mb-2">
-                  {item.method.type}
-                </Badge>
-              </Col>
-              <Col className="text-end">
-                <small>
-                  {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
-                    Instant.parse(item.catched_at).atZone(
-                      ZoneId.systemDefault()
-                    )
-                  )}
-                </small>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <ListGroupItemHeading className="d-inline">
+          <RouterLink key={item.id} to={`/catches/${item.id}`}>
+            <List.Item action>
+              <div className="w-full">
+                <p className="font-semibold leading-6 text-gray-900">
                   {item.fishes[0].species}
                   {!item.fishes[0].size_text ? null : (
-                    <span className="ms-3 text-muted">
+                    <span className="ml-3 text-gray-400">
                       {item.fishes[0].size_text}
                     </span>
                   )}
-                </ListGroupItemHeading>
-                {!(item.method && item.method.details) ? null : (
-                  <ListGroupItemText className="m-0">
-                    {item.method.details}
-                  </ListGroupItemText>
-                )}
-              </Col>
-            </Row>
-          </ListGroupItem>
+                </p>
+                <div className="flex justify-between">
+                  <p className="flex items-baseline mt-1 truncate text-xs leading-5 text-gray-600">
+                    <Chip color="primary">{item.method.type}</Chip>
+                    {!(item.method && item.method.details) ? null : (
+                      <span className="ml-3">{item.method.details}</span>
+                    )}
+                  </p>
+
+                  <small className="text-xs leading-5 text-gray-600">
+                    {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
+                      Instant.parse(item.catched_at).atZone(
+                        ZoneId.systemDefault(),
+                      ),
+                    )}
+                  </small>
+                </div>
+              </div>
+            </List.Item>
+          </RouterLink>
         );
       })}
-    </ListGroup>
+    </List>
   );
 };
 
-export default function () {
+const CatchListWithState = function () {
   const [data, setData] = useState(undefined as Catch[] | undefined);
   useEffect(() => {
     (async () => {
@@ -86,4 +69,6 @@ export default function () {
     return <CatchList data={data} />;
   }
   return <div>Loading...</div>;
-}
+};
+
+export default CatchListWithState;

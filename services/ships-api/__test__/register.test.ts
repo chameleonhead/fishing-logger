@@ -1,8 +1,4 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { create } from "../src/functions/create";
-import { registerIot } from "../src/functions/register-iot";
-import { generateCSR } from "./csr-utils";
-import { apiEvent, callLambda, ensureTableNoData } from "./utils";
 import {
   AddThingToThingGroupCommand,
   AttachPolicyCommand,
@@ -21,7 +17,12 @@ import {
   UpdateCertificateCommand,
 } from "@aws-sdk/client-iot";
 import { mockClient } from "aws-sdk-client-mock";
-import { unregisterIot } from "../src/functions/unregister-iot";
+import { apiEvent, callLambda, ensureTableNoData } from "./utils";
+import { generateCSR } from "./csr-utils";
+import { handler as createHandler } from "../src/functions/create";
+import { handler as activateHandler } from "../src/functions/activate";
+import { handler as deactivateHandler } from "../src/functions/deactivate";
+import { handler as getConfigHandler } from "../src/functions/get-config";
 
 describe("register a ship", () => {
   const OLD_ENV = process.env;
@@ -31,6 +32,7 @@ describe("register a ship", () => {
     jest.resetModules(); // Most important - it clears the cache
     process.env = { ...OLD_ENV }; // Make a copy
     process.env.DYNAMODB_TABLE = "ships-register";
+    process.env.IOT_THING_GROUP_NAME = "ships-register";
   });
 
   afterAll(() => {
@@ -45,7 +47,7 @@ describe("register a ship", () => {
     await ensureTableNoData(dynamoDb, process.env.DYNAMODB_TABLE!);
 
     const result = await callLambda(
-      create,
+      createHandler,
       apiEvent({
         body: {
           name: "ship name",
@@ -85,11 +87,8 @@ describe("register a ship", () => {
     iotMock.on(AddThingToThingGroupCommand).resolves({});
     iotMock.on(AttachThingPrincipalCommand).resolves({});
     iotMock.on(AttachPolicyCommand).resolves({});
-    iotMock.on(DescribeEndpointCommand).resolves({
-      endpointAddress: "endpointAddress",
-    });
     const iotResult = await callLambda(
-      registerIot,
+      activateHandler,
       apiEvent({
         pathParameters: {
           id: shipId,
@@ -103,13 +102,33 @@ describe("register a ship", () => {
 
     expect(iotResult.statusCode).toBe(200);
     expect(JSON.parse(iotResult.body!)).toEqual({
-      iot_endpoint: "endpointAddress",
+      client_id: `${process.env.IOT_THING_GROUP_NAME!}-${shipId}`,
       certificate: "certificatePem",
       ca_certificate: expect.any(String),
       key_pair: {
         public_key: "PublicKey",
         private_key: "PrivateKey",
       },
+    });
+
+    iotMock.on(DescribeEndpointCommand).resolves({
+      endpointAddress: "endpointAddress",
+    });
+    const getConfigResult = await callLambda(
+      getConfigHandler,
+      apiEvent({
+        pathParameters: {
+          id: shipId,
+        },
+      }),
+    );
+    if (typeof getConfigResult !== "object") {
+      fail("getConfigResult is not an object");
+    }
+    expect(getConfigResult.statusCode).toBe(200);
+    expect(JSON.parse(getConfigResult.body!)).toEqual({
+      iot_endpoint: "endpointAddress",
+      topic_prefix: `${process.env.IOT_THING_GROUP_NAME!}/`,
     });
 
     iotMock.on(DetachPolicyCommand).resolves({});
@@ -119,7 +138,7 @@ describe("register a ship", () => {
     iotMock.on(RemoveThingFromThingGroupCommand).resolves({});
     iotMock.on(DeleteThingCommand).resolves({});
     const resultUnregister = await callLambda(
-      unregisterIot,
+      deactivateHandler,
       apiEvent({ pathParameters: { id: shipId } }),
     );
 
@@ -138,7 +157,7 @@ describe("register a ship", () => {
 
     const { csrData } = generateCSR("test");
     const result = await callLambda(
-      create,
+      createHandler,
       apiEvent({
         body: {
           name: "ship name",
@@ -174,11 +193,8 @@ describe("register a ship", () => {
     iotMock.on(AddThingToThingGroupCommand).resolves({});
     iotMock.on(AttachThingPrincipalCommand).resolves({});
     iotMock.on(AttachPolicyCommand).resolves({});
-    iotMock.on(DescribeEndpointCommand).resolves({
-      endpointAddress: "endpointAddress",
-    });
     const iotResult = await callLambda(
-      registerIot,
+      activateHandler,
       apiEvent({
         pathParameters: {
           id: shipId,
@@ -195,7 +211,7 @@ describe("register a ship", () => {
 
     expect(iotResult.statusCode).toBe(200);
     expect(JSON.parse(iotResult.body!)).toEqual({
-      iot_endpoint: "endpointAddress",
+      client_id: `${process.env.IOT_THING_GROUP_NAME!}-${shipId}`,
       certificate: "certificatePem",
       ca_certificate: expect.any(String),
     });

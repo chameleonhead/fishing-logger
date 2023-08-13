@@ -1,6 +1,6 @@
+import React from "react";
+import { MemoryRouter } from "react-router-dom";
 import type { Preview } from "@storybook/react";
-
-import "bootstrap/dist/css/bootstrap.min.css";
 import "../src/index.css";
 
 const preview: Preview = {
@@ -13,6 +13,7 @@ const preview: Preview = {
       },
     },
   },
+  decorators: [(story) => React.createElement(MemoryRouter, null, story())],
 };
 
 export default preview;

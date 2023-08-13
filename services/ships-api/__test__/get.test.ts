@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { get } from "../src/functions/get";
 import { apiEvent, callLambda, ensureTableWithData } from "./utils";
+import { handler as getHandler } from "../src/functions/get";
 
 describe("get a ship", () => {
   const OLD_ENV = process.env;
@@ -32,14 +32,17 @@ describe("get a ship", () => {
         },
       },
     ]);
-    const result = await callLambda(get, apiEvent({
-      pathParameters: {
-        id: "test",
-      },
-    }));
+    const result = await callLambda(
+      getHandler,
+      apiEvent({
+        pathParameters: {
+          id: "test",
+        },
+      }),
+    );
 
     if (typeof result !== "object") {
-      fail("result is not an object")
+      fail("result is not an object");
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({

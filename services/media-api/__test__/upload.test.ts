@@ -1,5 +1,5 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { initiateUpload } from "../src/functions/initiate-upload";
+import { handler as initiateUploadHandler } from "../src/functions/initiate-upload";
 import {
   ensureTableNoData,
   callLambda,
@@ -8,8 +8,8 @@ import {
   ensureBucketNoData,
 } from "./utils";
 import fetch from "node-fetch";
-import { onUploadCompleted } from "../src/functions/on-upload-completed";
-import { get } from "../src/functions/get";
+import { handler as onUploadCompletedHandler } from "../src/functions/on-upload-completed";
+import { handler as getHandler } from "../src/functions/get";
 import { S3 } from "@aws-sdk/client-s3";
 import FormData from "form-data";
 
@@ -40,7 +40,7 @@ describe("upload media", () => {
     await ensureTableNoData(dynamoDb, process.env.DYNAMODB_TABLE!);
     await ensureBucketNoData(s3, process.env.S3_BUCKET!);
     const result = await callLambda(
-      initiateUpload,
+      initiateUploadHandler,
       apiEvent({
         body: {
           name: "test.jpg",
@@ -86,12 +86,12 @@ describe("upload media", () => {
     });
 
     await callLambda(
-      onUploadCompleted,
+      onUploadCompletedHandler,
       s3Event({ bucket: process.env.S3_BUCKET!, key: resultObject.id }),
     );
 
     const getResult = await callLambda(
-      get,
+      getHandler,
       apiEvent({ pathParameters: { id: resultObject.data.id } }),
     );
     if (typeof getResult !== "object") {

@@ -4,11 +4,7 @@ import { convertToAttr, marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { S3Handler } from "aws-lambda";
 import * as uuid from "uuid";
 
-export const onUploadCompleted: S3Handler = async (
-  event,
-  context,
-  callback,
-) => {
+export const handler: S3Handler = async (event, context, callback) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
@@ -56,7 +52,7 @@ export const onUploadCompleted: S3Handler = async (
         key: Key,
         created_at: timestamp,
         updated_at: timestamp,
-      } as any;
+      };
       try {
         const headObjectResult = await s3.headObject({
           Bucket: data.s3.bucket.name,
@@ -118,7 +114,7 @@ export const onUploadCompleted: S3Handler = async (
           Key: {
             id: convertToAttr(data.s3.object.key),
           },
-        } as any);
+        });
       } catch (error) {
         console.error(
           `Couldn't delete item ${data.s3.object.key} upload status.`,

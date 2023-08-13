@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { update } from "../src/functions/update";
 import { apiEvent, callLambda, ensureTableWithData } from "./utils";
+import { handler as updateHandler } from "../src/functions/update";
 
 describe("update catch", () => {
   const OLD_ENV = process.env;
@@ -43,32 +43,35 @@ describe("update catch", () => {
         updated_at: 1630793102,
       },
     ]);
-    const result = await callLambda(update, apiEvent({
-      pathParameters: {
-        id: "test",
-      },
-      body: {
-        catched_at: "2022-09-04T18:05:02Z",
-        place: {
-          latitude: 35.65809922,
-          longitude: 139.74135747,
+    const result = await callLambda(
+      updateHandler,
+      apiEvent({
+        pathParameters: {
+          id: "test",
         },
-        fishes: [
-          {
-            species: "オオモンハタ🚩",
-            size_text: "20cm",
-            count: 1,
+        body: {
+          catched_at: "2022-09-04T18:05:02Z",
+          place: {
+            latitude: 35.65809922,
+            longitude: 139.74135747,
           },
-        ],
-        method: {
-          type: "釣",
-          details: "餌釣り（ゴカイ）",
+          fishes: [
+            {
+              species: "オオモンハタ🚩",
+              size_text: "20cm",
+              count: 1,
+            },
+          ],
+          method: {
+            type: "釣",
+            details: "餌釣り（ゴカイ）",
+          },
         },
-      },
-    }));
+      }),
+    );
 
     if (typeof result !== "object") {
-      fail("result is not an object")
+      fail("result is not an object");
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({

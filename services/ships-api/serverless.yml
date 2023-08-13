@@ -11,6 +11,7 @@ custom:
         - "@aws-sdk/client-dynamodb"
         - "@aws-sdk/util-dynamodb"
         - "@aws-sdk/client-iot"
+        - "@aws-sdk/client-timestream-query"
       nodeModulesRelativeDir: "../../"
     packagerOptions:
       lockFile: "../../package-lock.json"
@@ -21,12 +22,14 @@ package:
 provider:
   name: aws
   region: ap-northeast-1
-  runtime: nodejs16.x
-  lambdaHashingVersion: "20201221"
+  runtime: nodejs18.x
   environment:
     DYNAMODB_TABLE: ${self:service}-${sls:stage}
+    S3_BUCKET: ${self:service}-${sls:stage}
     IOT_THING_GROUP_NAME: ${self:service}-${sls:stage}
     IOT_POLICY_NAME: ${self:service}-${sls:stage}
+    TIMESTREAM_DATABASE: fishing_logger_ships_api_${sls:stage}
+    TIMESTREAM_TABLE_SHIPS_POSITION: ships_position
   httpApi:
     id: !ImportValue sls-fishing-logger-apigw-${sls:stage}-HttpApiId
   iam:
@@ -61,45 +64,84 @@ provider:
             - iot:CreateKeysAndCertificate
             - iot:CreateCertificateFromCsr
           Resource: "*"
+        - Effect: Allow
+          Action:
+            - timestream:DescribeEndpoints
+            - timestream:SelectValues
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - timestream:DescribeTable
+            - timestream:ListMeasures
+            - timestream:Select
+          Resource: arn:aws:timestream:${aws:region}:${aws:accountId}:database/${self:provider.environment.TIMESTREAM_DATABASE}/table/${self:provider.environment.TIMESTREAM_TABLE_SHIPS_POSITION}
 
 functions:
   list:
-    handler: src/functions/list.list
+    handler: src/functions/list.handler
     events:
       - httpApi:
           path: /api/ships
           method: get
 
   create:
-    handler: src/functions/create.create
+    handler: src/functions/create.handler
     events:
       - httpApi:
           path: /api/ships
           method: post
 
   get:
-    handler: src/functions/get.get
+    handler: src/functions/get.handler
     events:
       - httpApi:
           path: /api/ships/{id}
           method: get
 
-  register-iot:
-    handler: src/functions/register-iot.registerIot
+  get-state:
+    handler: src/functions/get-state.handler
     events:
       - httpApi:
-          path: /api/ships/{id}/iot/register
+          path: /api/ships/{id}/state
+          method: get
+
+  get-config:
+    handler: src/functions/get-config.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}/config
+          method: get
+
+  get-logs:
+    handler: src/functions/get-logs.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}/logs
+          method: get
+
+  activate:
+    handler: src/functions/activate.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}/activate
           method: post
 
-  unregister-iot:
-    handler: src/functions/unregister-iot.unregisterIot
+  deactivate:
+    handler: src/functions/deactivate.handler
     events:
       - httpApi:
-          path: /api/ships/{id}/iot/unregister
-          method: delete
+          path: /api/ships/{id}/deactivate
+          method: post
+
+  update:
+    handler: src/functions/update.handler
+    events:
+      - httpApi:
+          path: /api/ships/{id}
+          method: put
 
   delete:
-    handler: src/functions/delete-ship.deleteShip
+    handler: src/functions/delete.handler
     events:
       - httpApi:
           path: /api/ships/{id}
@@ -107,6 +149,10 @@ functions:
 
 resources:
   Resources:
+    shipsS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.S3_BUCKET}
     shipsDynamoDbTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
@@ -144,3 +190,116 @@ resources:
       Type: AWS::IoT::ThingGroup
       Properties:
         ThingGroupName: ${self:provider.environment.IOT_THING_GROUP_NAME}
+    shipsTimestreamDatabase:
+      Type: AWS::Timestream::Database
+      Properties:
+        DatabaseName: ${self:provider.environment.TIMESTREAM_DATABASE}
+    shipsTimestreamTableShipsPosition:
+      Type: AWS::Timestream::Table
+      Properties:
+        TableName: ${self:provider.environment.TIMESTREAM_TABLE_SHIPS_POSITION}
+        DatabaseName: !Ref shipsTimestreamDatabase
+        RetentionProperties:
+          MemoryStoreRetentionPeriodInHours: 1440
+          MagneticStoreRetentionPeriodInDays: 365
+    shipsIotTopicRuleRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service:
+                  - "iot.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          - PolicyName: aws-iot-rule
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: dynamodb:PutItem
+                  Resource: !GetAtt shipsDynamoDbTable.Arn
+                - Effect: Allow
+                  Action: s3:PutObject
+                  Resource: !Join
+                    - ""
+                    - - !GetAtt shipsS3Bucket.Arn
+                      - "/*"
+                - Effect: Allow
+                  Action: timestream:WriteRecords
+                  Resource: !GetAtt shipsTimestreamTableShipsPosition.Arn
+                - Effect: Allow
+                  Action: timestream:DescribeEndpoints
+                  Resource: "*"
+    shipsIotTopicRule1:
+      Type: AWS::IoT::TopicRule
+      Properties:
+        RuleName:
+          !Join ["_", !Split ["-", "${self:service}-${sls:stage}-iot-rule1"]]
+        TopicRulePayload:
+          AwsIotSqlVersion: "2016-03-23"
+          Sql: SELECT concat('signalk:', regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')) as id, * FROM '${self:provider.environment.IOT_THING_GROUP_NAME}/#'
+          Actions:
+            - DynamoDBv2:
+                RoleArn: !GetAtt shipsIotTopicRuleRole.Arn
+                PutItem:
+                  TableName: ${self:provider.environment.DYNAMODB_TABLE}
+          ErrorAction:
+            S3:
+              RoleArn: !GetAtt shipsIotTopicRuleRole.Arn
+              BucketName: ${self:provider.environment.S3_BUCKET}
+              Key: !Join
+                - ""
+                - - "iot/rule1/error/$"
+                  - "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}/$"
+                  - "{timestamp()}.json"
+    shipsIotTopicRule2:
+      Type: AWS::IoT::TopicRule
+      Properties:
+        RuleName:
+          !Join ["_", !Split ["-", "${self:service}-${sls:stage}-iot-rule2"]]
+        TopicRulePayload:
+          AwsIotSqlVersion: "2016-03-23"
+          Sql: |
+            SELECT navigation.position
+              FROM '${self:provider.environment.IOT_THING_GROUP_NAME}/ships/+/state'
+             WHERE NOT isNull(navigation.datetime)
+               AND NOT isUndefined(navigation.datetime)
+               AND NOT isNull(navigation.position.latitude)
+               AND NOT isUndefined(navigation.position.latitude)
+               AND NOT isNull(navigation.position.longitude)
+               AND NOT isUndefined(navigation.position.longitude)
+          Actions:
+            - Timestream:
+                RoleArn: !GetAtt shipsIotTopicRuleRole.Arn
+                DatabaseName: !Ref shipsTimestreamDatabase
+                TableName: ships_position
+                Dimensions:
+                  - Name: id
+                    Value: !Join
+                      - ""
+                      - - "$"
+                        - "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}"
+                  - Name: horizontal_dilution
+                    Value: !Join
+                      - ""
+                      - - "$"
+                        - "{navigation.gnss.horizontalDilution}"
+                Timestamp:
+                  Unit: MILLISECONDS
+                  Value: !Join
+                    - ""
+                    - - "$"
+                      - '{time_to_epoch(navigation.datetime, "yyyy-MM-dd''T''HH:mm:ss.SSS''Z''")}'
+          ErrorAction:
+            S3:
+              RoleArn: !GetAtt shipsIotTopicRuleRole.Arn
+              BucketName: ${self:provider.environment.S3_BUCKET}
+              Key: !Join
+                - ""
+                - - "iot/rule2/error/$"
+                  - "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}/$"
+                  - "{timestamp()}.json"

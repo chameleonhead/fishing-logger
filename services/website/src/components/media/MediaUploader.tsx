@@ -1,5 +1,7 @@
 import { useEffect, useReducer } from "react";
-import { Button, Input, ListGroup, ListGroupItem, Progress } from "reactstrap";
+import FileInputField from "../common/FileInputField";
+import List from "../common/List";
+import Button from "../common/Button";
 
 type FileUploadState = {
   id: number;
@@ -22,21 +24,20 @@ export const MediaUploader = ({
 }: MediaUploaderProps) => {
   return (
     <div>
-      <Input
-        type="file"
+      <FileInputField
         onChange={(e) => {
           onFileSelected &&
             onFileSelected(
               [...Array(e.target.files?.length || 0)].map(
-                (_, i) => e.target.files?.item(i)!
-              )
+                (_, i) => e.target.files!.item(i)!,
+              ),
             );
           e.target.value = "";
         }}
       />
-      <ListGroup className="mt-3">
+      <List>
         {queue.map((item) => (
-          <ListGroupItem key={item.id}>
+          <List.Item key={item.id}>
             {item.target.name}
             {item.status === "FAILED" ? (
               <Button
@@ -48,48 +49,49 @@ export const MediaUploader = ({
                 再実行
               </Button>
             ) : (
-              <Progress animated value={item.progress} />
+              <></>
+              // <Progress animated value={item.progress} />
             )}
-          </ListGroupItem>
+          </List.Item>
         ))}
-      </ListGroup>
+      </List>
     </div>
   );
 };
 
-type FileUploadError = any;
+type FileUploadError = Error;
 
 const actions = {
   queueFile: (file: File) => {
-    return { type: "QUEUE_FILE" as "QUEUE_FILE", payload: file };
+    return { type: "QUEUE_FILE" as const, payload: file };
   },
   uploadFile: (id: number) => {
-    return { type: "UPLOAD_FILE" as "UPLOAD_FILE", payload: { id } };
+    return { type: "UPLOAD_FILE" as const, payload: { id } };
   },
   resetQueue: (id: number) => {
-    return { type: "RESET_QUEUE" as "RESET_QUEUE", payload: { id } };
+    return { type: "RESET_QUEUE" as const, payload: { id } };
   },
   progressFileUpload: (id: number, progress: number) => {
     return {
-      type: "PROGRESS_FILE_UPLOAD" as "PROGRESS_FILE_UPLOAD",
+      type: "PROGRESS_FILE_UPLOAD" as const,
       payload: { id, progress },
     };
   },
   fileUploadSucceeded: (id: number) => {
     return {
-      type: "FILE_UPLOAD_SUCCEEDED" as "FILE_UPLOAD_SUCCEEDED",
+      type: "FILE_UPLOAD_SUCCEEDED" as const,
       payload: { id },
     };
   },
   fileUploadFailed: (id: number, error: FileUploadError) => {
     return {
-      type: "FILE_UPLOAD_FAILED" as "FILE_UPLOAD_FAILED",
+      type: "FILE_UPLOAD_FAILED" as const,
       payload: { id, error },
     };
   },
   removeFromQueue: (id: number) => {
     return {
-      type: "REMOVE_FROM_QUEUE" as "REMOVE_FROM_QUEUE",
+      type: "REMOVE_FROM_QUEUE" as const,
       payload: { id },
     };
   },
@@ -112,9 +114,8 @@ const initialValue = {
 
 const reducer = function (
   state: typeof initialValue,
-  action: Actions
+  action: Actions,
 ): typeof initialValue {
-  console.log(action);
   switch (action.type) {
     case "QUEUE_FILE":
       return {
@@ -133,20 +134,20 @@ const reducer = function (
       };
     case "REMOVE_FROM_QUEUE": {
       const newFileUploadingState = state.fileUploadingState.filter(
-        (value) => value.id != action.payload.id
+        (value) => value.id != action.payload.id,
       );
       return {
         ...state,
         fileUploadingState: newFileUploadingState,
         queued: !!newFileUploadingState.find(
-          (value) => value.status === "QUEUED"
+          (value) => value.status === "QUEUED",
         ),
       };
     }
     case "RESET_QUEUE": {
       const newFileUploadingState = state.fileUploadingState.map((value) =>
-        value.id == action.payload.id ? { ...value, status: "QUEUED" } : value
-      ) as typeof initialValue["fileUploadingState"];
+        value.id == action.payload.id ? { ...value, status: "QUEUED" } : value,
+      ) as (typeof initialValue)["fileUploadingState"];
       return {
         ...state,
         fileUploadingState: newFileUploadingState,
@@ -157,13 +158,13 @@ const reducer = function (
       const newFileUploadingState = state.fileUploadingState.map((value) =>
         value.id == action.payload.id
           ? { ...value, status: "UPLOADING" }
-          : value
-      ) as typeof initialValue["fileUploadingState"];
+          : value,
+      ) as (typeof initialValue)["fileUploadingState"];
       return {
         ...state,
         fileUploadingState: newFileUploadingState,
         queued: !!newFileUploadingState.find(
-          (value) => value.status === "QUEUED"
+          (value) => value.status === "QUEUED",
         ),
       };
     }
@@ -173,20 +174,20 @@ const reducer = function (
         fileUploadingState: state.fileUploadingState.map((value) =>
           value.id == action.payload.id
             ? { ...value, progress: action.payload.progress }
-            : value
+            : value,
         ),
       };
     case "FILE_UPLOAD_SUCCEEDED": {
       const newFileUploadingState = state.fileUploadingState.map((value) =>
         value.id == action.payload.id
           ? { ...value, progress: 100, status: "SUCCEEDED" }
-          : value
-      ) as typeof initialValue["fileUploadingState"];
+          : value,
+      ) as (typeof initialValue)["fileUploadingState"];
       return {
         ...state,
         fileUploadingState: newFileUploadingState,
         queued: !!newFileUploadingState.find(
-          (value) => value.status === "QUEUED"
+          (value) => value.status === "QUEUED",
         ),
       };
     }
@@ -199,13 +200,13 @@ const reducer = function (
               status: "FAILED",
               error: action.payload.error,
             }
-          : value
-      ) as typeof initialValue["fileUploadingState"];
+          : value,
+      ) as (typeof initialValue)["fileUploadingState"];
       return {
         ...state,
         fileUploadingState: newFileUploadingState,
         queued: !!newFileUploadingState.find(
-          (value) => value.status === "QUEUED"
+          (value) => value.status === "QUEUED",
         ),
       };
     }
@@ -217,7 +218,7 @@ async function uploadFile(
   file: File,
   onProgress: (progress: number) => void,
   onSuccess: (result: { id: string }) => void,
-  onError: (err: FileUploadError) => void
+  onError: (err: FileUploadError) => void,
 ) {
   try {
     onProgress(1);
@@ -250,7 +251,7 @@ async function uploadFile(
       onError(new Error("File upload failed."));
       return;
     }
-    onSuccess({ id: data.data.id as any });
+    onSuccess({ id: data.data.id as string });
   } catch (error) {
     console.error(error);
     onError(new Error("File upload failed."));
@@ -258,7 +259,7 @@ async function uploadFile(
   }
 }
 
-export default function ({
+const MediaUploaderWithState = function ({
   onSuccess,
 }: {
   onSuccess: (result: { id: string }) => void;
@@ -283,11 +284,11 @@ export default function ({
             }, 1000);
             onSuccess(r);
           },
-          (err) => dispatch(actions.fileUploadFailed(f.id, err))
+          (err) => dispatch(actions.fileUploadFailed(f.id, err)),
         );
       }
     }
-  }, [state.queued]);
+  }, [onSuccess, state.fileUploadingState, state.queued]);
   return (
     <MediaUploader
       queue={state.fileUploadingState}
@@ -297,4 +298,6 @@ export default function ({
       onRetry={(id) => dispatch(actions.resetQueue(id))}
     />
   );
-}
+};
+
+export default MediaUploaderWithState;

@@ -13,7 +13,7 @@ export type Catch = {
       species: string;
       size_text?: string;
       count: number;
-    }
+    },
   ];
   method: {
     type: string;

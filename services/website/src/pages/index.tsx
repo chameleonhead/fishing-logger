@@ -1,8 +1,6 @@
 import { Navigate } from "react-router-dom";
 
-type IndexPageProps = {};
-
-export const IndexPage = ({}: IndexPageProps) => {
+export const IndexPage = () => {
   return <Navigate to="catches" />;
 };
 

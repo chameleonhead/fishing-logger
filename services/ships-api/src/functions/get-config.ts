@@ -1,8 +1,9 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { convertToAttr, unmarshall } from "@aws-sdk/util-dynamodb";
+import { getIotConfigurations } from "../lib/iot-utils";
 
-export const deleteShip: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
@@ -15,7 +16,7 @@ export const deleteShip: APIGatewayProxyHandlerV2 = async (event) => {
   };
 
   // fetch ship from the database
-  const result = await dynamoDb.getItem(params)
+  const result = await dynamoDb.getItem(params);
 
   if (!result.Item) {
     return {
@@ -27,19 +28,18 @@ export const deleteShip: APIGatewayProxyHandlerV2 = async (event) => {
 
   // create a response
   const ship = unmarshall(result!.Item!);
-
-  if (typeof ship.iot_config !== 'undefined') {
+  if (!ship.iot_enabled) {
     return {
-      statusCode: 400,
+      statusCode: 404,
       headers: { "Content-Type": "text/plain" },
-      body: "Ship is registered to IoT.",
+      body: "Ship not activated.",
     };
   }
 
-  await dynamoDb.deleteItem(params);
-
+  const config = await getIotConfigurations();
   return {
-    statusCode: 204,
-    body: JSON.stringify(ship),
+    statusCode: 200,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(config),
   };
 };

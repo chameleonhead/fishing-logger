@@ -6,10 +6,10 @@ import {
   createCertificateFromCsr,
   createKeysAndCertificate,
   ensureThingExists,
-  getIotConfigurations,
+  getCaCertificate,
 } from "../lib/iot-utils";
 
-export const registerIot: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
@@ -46,6 +46,7 @@ export const registerIot: APIGatewayProxyHandlerV2 = async (event) => {
   await ensureThingExists(id!);
 
   if (event.body) {
+    console.log("body: ", event.body);
     const { csr } = JSON.parse(event.body!);
     const { certificateArn, certificateId, certificatePem } =
       await createCertificateFromCsr(csr);
@@ -70,12 +71,12 @@ export const registerIot: APIGatewayProxyHandlerV2 = async (event) => {
       ReturnValues: "ALL_NEW",
     });
 
-    const { iotEndpoint, caCertificate } = await getIotConfigurations();
+    const { caCertificate } = await getCaCertificate();
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        iot_endpoint: iotEndpoint,
+        client_id: `${process.env.IOT_THING_GROUP_NAME!}-${id}`,
         certificate: certificatePem,
         ca_certificate: caCertificate,
       }),
@@ -92,6 +93,7 @@ export const registerIot: APIGatewayProxyHandlerV2 = async (event) => {
       ExpressionAttributeValues: {
         ":iot_enabled": convertToAttr(true),
         ":iot_config": convertToAttr({
+          client_id: `${process.env.IOT_THING_GROUP_NAME!}-${id}`,
           certificate_arn: certificateArn,
           certificate_id: certificateId,
           certificate_pem: certificatePem,
@@ -104,12 +106,13 @@ export const registerIot: APIGatewayProxyHandlerV2 = async (event) => {
       ReturnValues: "ALL_NEW",
     });
 
-    const { iotEndpoint, caCertificate } = await getIotConfigurations();
+    const { caCertificate } = await getCaCertificate();
 
     return {
       statusCode: 200,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        iot_endpoint: iotEndpoint,
+        client_id: `${process.env.IOT_THING_GROUP_NAME!}-${id}`,
         certificate: certificatePem,
         ca_certificate: caCertificate,
         key_pair: {

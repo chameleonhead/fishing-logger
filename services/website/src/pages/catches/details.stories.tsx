@@ -1,30 +1,28 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { Meta, StoryObj } from "@storybook/react";
+import { Route, Routes } from "react-router-dom";
 import Layout from "../../components/common/Layout";
 
 import { DetailsPage } from "./details";
 
-export default {
+const meta = {
   title: "pages/catches/DetailsPage",
   component: DetailsPage,
   decorators: [
     (story) => (
-      <MemoryRouter>
-        <Routes>
-          <Route path="*" element={<Layout />}>
-            <Route path="*" element={story()} />
-          </Route>
-        </Routes>
-      </MemoryRouter>
+      <Routes>
+        <Route path="*" element={<Layout />}>
+          <Route path="*" element={story()} />
+        </Route>
+      </Routes>
     ),
   ],
-} as ComponentMeta<typeof DetailsPage>;
+} as Meta<typeof DetailsPage>;
 
-const Template: ComponentStory<typeof DetailsPage> = (args) => (
-  <DetailsPage {...args} />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  id: "1",
+export const Default: Story = {
+  args: {
+    id: "1",
+  },
 };

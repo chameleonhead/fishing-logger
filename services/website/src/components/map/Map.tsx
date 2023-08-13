@@ -15,9 +15,9 @@ const DEFAULT_POSITION = { lat: 35.65809922, lng: 139.74135747 };
 const CurrentLocationController = createControlComponent(
   function createZoomControl() {
     const notTrackingContent =
-      '<div class="leaflet-bar"><a href="#" title="Current Location" class="text-body" role="button" aria-label="Current Location" aria-disabled="false"><span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bullseye" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 13A5 5 0 1 1 8 3a5 5 0 0 1 0 10zm0 1A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M9.5 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg></span></a></div>';
+      '<div class="leaflet-bar"><a href="#" title="Current Location" class="!text-dark" role="button" aria-label="Current Location" aria-disabled="false"><span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bullseye" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 13A5 5 0 1 1 8 3a5 5 0 0 1 0 10zm0 1A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M9.5 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg></span></a></div>';
     const trackingContent =
-      '<div class="leaflet-bar"><a href="#" title="Current Location" class="text-primary" role="button" aria-label="Current Location" aria-disabled="false"><span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bullseye" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 13A5 5 0 1 1 8 3a5 5 0 0 1 0 10zm0 1A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M9.5 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg></span></a></div>';
+      '<div class="leaflet-bar"><a href="#" title="Current Location" class="!text-blue-500" role="button" aria-label="Current Location" aria-disabled="false"><span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bullseye" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 13A5 5 0 1 1 8 3a5 5 0 0 1 0 10zm0 1A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M9.5 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg></span></a></div>';
 
     const CurrentLocation = Control.extend({
       version: "1.0.1",
@@ -40,7 +40,7 @@ const CurrentLocationController = createControlComponent(
           this.container.innerHTML = trackingContent;
           this.watchId = navigator.geolocation.watchPosition(
             this.onWatchPosition.bind(this),
-            this.onWatchError.bind(this)
+            this.onWatchError.bind(this),
           );
         } else {
           this.trackLocation = false;
@@ -84,7 +84,7 @@ const CurrentLocationController = createControlComponent(
           this.container,
           "click",
           this.onClick.bind(this),
-          this.container
+          this.container,
         );
 
         return this.container;
@@ -99,7 +99,7 @@ const CurrentLocationController = createControlComponent(
       },
     });
     return new CurrentLocation();
-  }
+  },
 );
 
 type MapProps = {
@@ -118,7 +118,7 @@ const MapEventHandler = ({ position, onPositionChange }: MapProps) => {
     if (position && !map.getBounds().contains(position)) {
       map.setView(position);
     }
-  }, [position?.lat, position?.lng]);
+  }, [map, position]);
   return null;
 };
 

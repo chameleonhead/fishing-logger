@@ -1,11 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { MediaList } from "./MediaList";
 
-export default {
+const meta = {
   component: MediaList,
 } as Meta<typeof MediaList>;
 
-export const Default: StoryObj<typeof MediaList> = {
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
   args: {
     data: [{ id: "1" }],
   },

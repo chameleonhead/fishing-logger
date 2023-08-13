@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { addMedia } from "../src/functions/add-media";
 import { apiEvent, callLambda, ensureTableWithData } from "./utils";
+import { handler as addMediaHandler } from "../src/functions/add-media";
 
 describe("add media to a catch", () => {
   const OLD_ENV = process.env;
@@ -43,13 +43,16 @@ describe("add media to a catch", () => {
         updated_at: 1630793102,
       },
     ]);
-    const result = await callLambda(addMedia, apiEvent({
-      pathParameters: { id: "test" },
-      body: { id: "image-id" },
-    }));
+    const result = await callLambda(
+      addMediaHandler,
+      apiEvent({
+        pathParameters: { id: "test" },
+        body: { id: "image-id" },
+      }),
+    );
 
     if (typeof result !== "object") {
-      fail("result is not an object")
+      fail("result is not an object");
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({

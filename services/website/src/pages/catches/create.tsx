@@ -1,22 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { Container } from "reactstrap";
-import CreateCatchForm from "../../components/catch/CreateCatchForm";
+import CatchCreateForm from "../../components/catch/CatchCreateForm";
+import PageHeader from "../../components/common/PageHeader";
 
-type CreatePageProps = {};
-
-export const CreatePage = ({}: CreatePageProps) => {
+export const CreatePage = () => {
   const navigate = useNavigate();
   return (
-    <Container fluid>
-      <div className="my-3">
-        <CreateCatchForm
-          onSuccess={(value) => navigate(`/catches/${value.id}`)}
-        />
-      </div>
-    </Container>
+    <div>
+      <PageHeader title="漁獲登録" />
+      <main>
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <CatchCreateForm
+            onSuccess={(value) => navigate(`/catches/${value.id}`)}
+          />
+        </div>
+      </main>
+    </div>
   );
 };
 
-export default function () {
-  return <CreatePage />;
-}
+export default CreatePage;

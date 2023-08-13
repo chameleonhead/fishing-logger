@@ -7,7 +7,7 @@ import {
   detachCertificateFromThing,
 } from "../lib/iot-utils";
 
-export const unregisterIot: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const dynamoDb = new DynamoDB({
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: process.env.AWS_REGION,
@@ -32,7 +32,7 @@ export const unregisterIot: APIGatewayProxyHandlerV2 = async (event) => {
   }
 
   const item = unmarshall(result.Item);
-  if (typeof item.iot_config === 'undefined') {
+  if (typeof item.iot_config === "undefined") {
     return {
       statusCode: 400,
       body: JSON.stringify({

@@ -1,6 +1,6 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { create } from "../src/functions/create";
 import { apiEvent, callLambda, ensureTableNoData } from "./utils";
+import { handler as createHandler } from "../src/functions/create";
 
 describe("create catches", () => {
   const OLD_ENV = process.env;
@@ -21,29 +21,32 @@ describe("create catches", () => {
       region: process.env.AWS_REGION,
     });
     await ensureTableNoData(dynamoDb, process.env.DYNAMODB_TABLE!);
-    const result = await callLambda(create, apiEvent({
-      body: {
-        catched_at: "2022-09-04T18:05:02Z",
-        place: {
-          latitude: 35.65809922,
-          longitude: 139.74135747,
-        },
-        fishes: [
-          {
-            species: "オオモンハタ",
-            size_text: "20cm",
-            count: 1,
+    const result = await callLambda(
+      createHandler,
+      apiEvent({
+        body: {
+          catched_at: "2022-09-04T18:05:02Z",
+          place: {
+            latitude: 35.65809922,
+            longitude: 139.74135747,
           },
-        ],
-        method: {
-          type: "釣",
-          details: "餌釣り（ゴカイ）",
+          fishes: [
+            {
+              species: "オオモンハタ",
+              size_text: "20cm",
+              count: 1,
+            },
+          ],
+          method: {
+            type: "釣",
+            details: "餌釣り（ゴカイ）",
+          },
         },
-      },
-    }));
+      }),
+    );
 
     if (typeof result !== "object") {
-      fail("result is not an object")
+      fail("result is not an object");
     }
     expect(result.statusCode).toBe(200);
     expect(JSON.parse(result.body!)).toEqual({
