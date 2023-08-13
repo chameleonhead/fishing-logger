@@ -210,7 +210,10 @@ resources:
                   Resource: !GetAtt shipsDynamoDbTable.Arn
                 - Effect: Allow
                   Action: s3:PutObject
-                  Resource: !Sub ${shipsS3Bucket.Arn}/*
+                  Resource: !Join
+                    - ""
+                    - - !GetAtt shipsS3Bucket.Arn
+                      - "/*"
                 - Effect: Allow
                   Action: timestream:WriteRecords
                   Resource: !GetAtt shipsTimestreamTableShipsPosition.Arn
@@ -235,16 +238,10 @@ resources:
               RoleArn: !GetAtt shipsIotTopicRuleRole.Arn
               BucketName: ${self:provider.environment.S3_BUCKET}
               Key: !Join
-                - "/"
-                - - "iot/rule2/error"
-                  - !Join [
-                      "",
-                      [
-                        "$",
-                        "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}/$",
-                        "{timestamp()}.json",
-                      ],
-                    ]
+                - ""
+                - - "iot/rule1/error/$"
+                  - "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}/$"
+                  - "{timestamp()}.json"
     shipsIotTopicRule2:
       Type: AWS::IoT::TopicRule
       Properties:
@@ -255,7 +252,12 @@ resources:
           Sql: |
             SELECT navigation.position
               FROM '${self:provider.environment.IOT_THING_GROUP_NAME}/ships/+/state'
-             WHERE NOT isNull(navigation.datetime) AND NOT isUndefined(navigation.datetime)
+             WHERE NOT isNull(navigation.datetime)
+               AND NOT isUndefined(navigation.datetime)
+               AND NOT isNull(navigation.position.latitude)
+               AND NOT isUndefined(navigation.position.latitude)
+               AND NOT isNull(navigation.position.longitude)
+               AND NOT isUndefined(navigation.position.longitude)
           Actions:
             - Timestream:
                 RoleArn: !GetAtt shipsIotTopicRuleRole.Arn
@@ -263,24 +265,27 @@ resources:
                 TableName: ships_position
                 Dimensions:
                   - Name: id
-                    Value: "${regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}"
+                    Value: !Join
+                      - ""
+                      - - "$"
+                        - "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}"
                   - Name: accurary
-                    Value: "${navigation.gnss.horizontalDilution}"
+                    Value: !Join
+                      - ""
+                      - - "$"
+                        - "{navigation.gnss.horizontalDilution}"
                 Timestamp:
                   Unit: MILLISECONDS
-                  Value: ${time_to_epoch(navigation.datetime, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")}
+                  Value: !Join
+                    - ""
+                    - - "$"
+                      - "{time_to_epoch(navigation.datetime, \"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\")}"
           ErrorAction:
             S3:
               RoleArn: !GetAtt shipsIotTopicRuleRole.Arn
               BucketName: ${self:provider.environment.S3_BUCKET}
               Key: !Join
-                - "/"
-                - - "iot/rule2/error"
-                  - !Join [
-                      "",
-                      [
-                        "$",
-                        "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}/$",
-                        "{timestamp()}.json",
-                      ],
-                    ]
+                - ""
+                - - "iot/rule2/error/$"
+                  - "{regexp_replace(clientid(), '^${self:provider.environment.IOT_THING_GROUP_NAME}-', '')}/$"
+                  - "{timestamp()}.json"
