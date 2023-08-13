@@ -1,11 +1,5 @@
 import { useState } from "react";
 import { Link as RouterLink, NavLink as RouterNavLink } from "react-router-dom";
-import {
-  Collapse,
-  IconButton,
-  Navbar,
-  Typography,
-} from "@material-tailwind/react";
 
 type AppBarProps = {
   menuOpen: boolean;
@@ -31,9 +25,7 @@ const NavItem = ({
           : "block py-1 px-3 rounded-md cursor-pointer transition-all hover:bg-blue-gray-50 hover:bg-opacity-80 focus:bg-blue-gray-50 focus:bg-opacity-80 active:bg-blue-gray-50 active:bg-opacity-80 hover:text-blue-gray-900 focus:text-blue-gray-900 active:text-blue-gray-900 outline-none"
       }
     >
-      <Typography as="span" className="font-medium">
-        {children}
-      </Typography>
+      <span className="font-medium">{children}</span>
     </RouterNavLink>
   );
 };
@@ -48,13 +40,9 @@ export const AppBar = ({ menuOpen, onMenuOpen, onMenuClose }: AppBarProps) => {
   return (
     <Navbar variant="filled" fullWidth className="bg-blue-500 px-0">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between md:justify-start text-white">
-        <Typography
-          as={RouterLink}
-          to="/"
-          className="cursor-pointer py-1.5 text-lg font-bold"
-        >
+        <RouterLink to="/" className="cursor-pointer py-1.5 text-lg font-bold">
           Fishing Logger
-        </Typography>
+        </RouterLink>
         <div className="hidden md:block ml-9">{navList}</div>
         <IconButton
           variant="text"

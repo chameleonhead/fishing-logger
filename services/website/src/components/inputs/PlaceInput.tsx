@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Map from "../map/Map";
-import { Button, Input } from "@material-tailwind/react";
+import InputField from "../common/InputField";
+import Button from "../common/Button";
 
 const PRECISION = 8;
 
@@ -160,11 +161,8 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         />
       </div>
       <div className="flex my-3 space-x-1">
-        <Input
-          variant="static"
-          containerProps={{ className: "min-w-[72px]" }}
+        <InputField
           className="grow px-2"
-          id="place_latitude"
           name="place_latitude"
           label="緯度"
           placeholder="例) 35.65809922N"
@@ -183,11 +181,8 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
             }
           }}
         />
-        <Input
-          variant="static"
-          containerProps={{ className: "min-w-[72px]" }}
+        <InputField
           className="grow px-2"
-          id="place_longitude"
           name="place_longitude"
           label="経度"
           placeholder="例) 139.74135747E"
@@ -211,7 +206,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         <Button
           className="w-full"
           type="button"
-          color="blue"
+          color="primary"
           disabled={isFetchingCurrentLocation}
           onClick={handleFetchCurrentLocation}
         >

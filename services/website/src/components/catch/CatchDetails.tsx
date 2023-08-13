@@ -1,8 +1,8 @@
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
-import { Chip, Typography } from "@material-tailwind/react";
 import Map from "../map/Map";
 import { Catch } from "./models";
 import { MediaList } from "../media/MediaList";
+import { Chip } from "../common/Chip";
 
 type CatchDetailsProps = {
   data: Catch;
@@ -14,12 +14,14 @@ export const CatchDetails = ({ data }: CatchDetailsProps) => {
   return (
     <div>
       <div className="flex justify-between">
-        <Chip color="blue" className="me-2 mb-2" value={data.method.type} />
-        <Typography className="text-xs leading-5 text-gray-600">
+        <Chip color="blue" className="me-2 mb-2">
+          {data.method.type}
+        </Chip>
+        <small className="text-xs leading-5 text-gray-600">
           {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
             Instant.parse(data.catched_at).atZone(ZoneId.systemDefault()),
           )}
-        </Typography>
+        </small>
       </div>
       {data.place && (
         <div className="mb-3">
@@ -31,18 +33,16 @@ export const CatchDetails = ({ data }: CatchDetailsProps) => {
         </div>
       )}
       <div className="mb-3">
-        <Typography as="h2" className="mb-2 text-xl font-bold">
-          魚種
-        </Typography>
+        <h2>魚種</h2>
         {data.fishes.map((fish, i) => {
           return (
             <div key={i} className="flex justify-between">
               <div>
                 {fish.species}
                 {!fish.size_text ? null : (
-                  <Typography as="span" className="inline ms-3 text-gray-600">
+                  <span className="inline ms-3 text-gray-600">
                     {fish.size_text}
-                  </Typography>
+                  </span>
                 )}
               </div>
               <div>{fish.count}匹</div>
@@ -52,17 +52,13 @@ export const CatchDetails = ({ data }: CatchDetailsProps) => {
       </div>
       {data.method.details && (
         <div className="mb-3">
-          <Typography as="h2" className="mb-2 text-xl font-bold">
-            詳細
-          </Typography>
+          <h2>詳細</h2>
           <div>{data.method.details}</div>
         </div>
       )}
       {data.media && data.media.length > 0 && (
         <div className="mb-3">
-          <Typography as="h2" className="mb-2 text-xl font-bold">
-            添付ファイル
-          </Typography>
+          <h2>添付ファイル</h2>
           <MediaList data={data.media} />
         </div>
       )}

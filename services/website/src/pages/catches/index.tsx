@@ -1,5 +1,4 @@
 import { Link as RouterLink } from "react-router-dom";
-import { Button } from "@material-tailwind/react";
 import CatchList from "../../components/catch/CatchList";
 import PageHeader from "../../components/common/PageHeader";
 

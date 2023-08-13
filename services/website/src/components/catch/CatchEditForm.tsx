@@ -1,20 +1,12 @@
-import { ChronoUnit, Instant, LocalDateTime, ZoneId } from "@js-joda/core";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Fragment, useEffect, useState } from "react";
-import {
-  Badge,
-  Button,
-  ButtonGroup,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-} from "reactstrap";
-import { DateTimeInput } from "../inputs/DateTimeInput";
+import { useEffect, useState } from "react";
 import { PlaceInput } from "../inputs/PlaceInput";
 import { Catch } from "./models";
+import Button from "../common/Button";
+import InputField from "../common/InputField";
+import DateTimeInputField from "../common/DateTimeInputField";
+import Selection from "../common/Selection";
 
 type CatchEditFormProps = {
   data: Catch;
@@ -24,9 +16,7 @@ type CatchEditFormProps = {
 export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
   const formik = useFormik({
     initialValues: {
-      catched_at: LocalDateTime.from(
-        Instant.parse(data.catched_at).atZone(ZoneId.SYSTEM),
-      ) as LocalDateTime | null | undefined,
+      catched_at: data.catched_at as string | null | undefined,
       place: data.place as
         | {
             latitude: number;
@@ -55,10 +45,7 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
       onSubmit({
         ...data,
         id: data.id,
-        catched_at: values
-          .catched_at!.atZone(ZoneId.SYSTEM)
-          .toInstant()
-          .toString(),
+        catched_at: values.catched_at!,
         place: values.place,
         fishes: values.fishes_species
           .filter((value) => !!value)
@@ -75,121 +62,76 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
     },
   });
   return (
-    <Form onSubmit={formik.handleSubmit}>
-      <FormGroup>
-        <div>
-          <Label for="catched_at">日時</Label>{" "}
-          <Badge
-            color="primary"
-            onClick={() =>
-              formik.setValues({
-                ...formik.values,
-                catched_at: LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-              })
-            }
-          >
-            現在
-          </Badge>
-        </div>
-        <DateTimeInput
-          id="catched_at"
-          value={formik.values.catched_at}
-          onChange={(value) =>
-            formik.setValues({ ...formik.values, catched_at: value })
+    <form onSubmit={formik.handleSubmit}>
+      <div className="flex gap-2 my-3 justify-start">
+        <DateTimeInputField
+          label="日時"
+          name="catched_at"
+          className="grow"
+          value={formik.values.catched_at?.toString() || ""}
+          onChange={(e) => {
+            formik.setValues({
+              ...formik.values,
+              catched_at: e.target.value,
+            });
+          }}
+          error={
+            formik.touched.catched_at ? formik.errors.catched_at : undefined
           }
-          invalid={!!formik.errors.catched_at}
         />
-        {formik.errors.catched_at && (
-          <FormFeedback className="d-block">
-            {formik.errors.catched_at}
-          </FormFeedback>
-        )}
-      </FormGroup>
-      <PlaceInput
-        value={formik.values.place}
-        onChange={(value) => {
-          formik.setValues({ ...formik.values, place: value });
-        }}
-      />
-      <FormGroup>
-        <Label for="fishes_species0">魚種</Label>
-        <Input
-          id="fishes_species0"
+      </div>
+      <div className="my-4">
+        <PlaceInput
+          value={formik.values.place}
+          onChange={(value) => {
+            formik.setValues({ ...formik.values, place: value });
+          }}
+        />
+      </div>
+      <div className="my-4">
+        <InputField
+          label="魚種"
           name="fishes_species[0]"
           placeholder="例) オオモンハタ"
           type="text"
           value={formik.values.fishes_species[0]}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          invalid={
-            !!formik.errors.fishes_species &&
-            !!formik.errors.fishes_species[0] &&
-            !!formik.touched.fishes_species &&
-            (formik.touched.fishes_species as unknown as boolean[])[0]
+          error={
+            formik.touched.fishes_species && formik.errors.fishes_species
+              ? formik.errors.fishes_species[0]
+              : undefined
           }
         />
-        {formik.errors.fishes_species &&
-          formik.errors.fishes_species[0] &&
-          formik.touched.fishes_species &&
-          (formik.touched.fishes_species as unknown as boolean[])[0] && (
-            <FormFeedback>{formik.errors.fishes_species[0]}</FormFeedback>
-          )}
-      </FormGroup>
-      <FormGroup>
-        <Label for="fishes_size_text0">サイズ</Label>
-        <Input
-          id="fishes_size_text0"
+      </div>
+      <div className="my-4">
+        <InputField
+          label="サイズ"
           name="fishes_size_text[0]"
           placeholder="例) 50cm"
           type="text"
           value={formik.values.fishes_size_text[0]}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          error={formik.errors.fishes_size_text}
         />
-      </FormGroup>
-      <FormGroup>
-        <Label>仕掛け</Label>
-        <div>
-          <ButtonGroup className="w-100">
-            {["徒手", "刺突", "網", "釣", "その他"].map((item, i) => {
-              return (
-                <Fragment key={i}>
-                  <Input
-                    type="radio"
-                    id={"method_type" + i}
-                    className="btn-check"
-                    name="method_type"
-                    value={item}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    invalid={!!formik.errors.method_type}
-                    checked={formik.values.method_type === item}
-                  />
-                  <Label
-                    for={"method_type" + i}
-                    className={
-                      formik.errors.method_type && formik.touched.method_type
-                        ? "btn btn-outline-danger"
-                        : "btn btn-outline-primary"
-                    }
-                  >
-                    {item}
-                  </Label>
-                </Fragment>
-              );
-            })}
-          </ButtonGroup>
-          {formik.errors.method_type && formik.touched.method_type && (
-            <FormFeedback className="d-block">
-              {formik.errors.method_type}
-            </FormFeedback>
-          )}
-        </div>
-      </FormGroup>
-      <FormGroup>
-        <Label for="method_details">備考</Label>
-        <Input
-          id="method_details"
+      </div>
+      <div className="my-4">
+        <Selection
+          label="仕掛け"
+          name="method_type"
+          options={["徒手", "刺突", "網", "釣", "その他"].map((item) => {
+            return { value: item, label: item };
+          })}
+          value={formik.values.method_type}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.errors.method_type}
+        />
+      </div>
+      <div className="my-4">
+        <InputField
+          label="備考"
           name="method_details"
           placeholder="仕掛けの詳細を記載"
           type="text"
@@ -197,11 +139,13 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
-      </FormGroup>
-      <Button type="submit" color="primary" block>
-        登録
-      </Button>
-    </Form>
+      </div>
+      <div className="my-4">
+        <Button type="submit" color="primary">
+          登録
+        </Button>
+      </div>
+    </form>
   );
 };
 

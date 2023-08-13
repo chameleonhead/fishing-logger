@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link as RouterLink, Navigate } from "react-router-dom";
 import { Ship } from "./models";
-import { List, ListItem } from "@material-tailwind/react";
 
 type ShipListProps = {
   data: Ship[];

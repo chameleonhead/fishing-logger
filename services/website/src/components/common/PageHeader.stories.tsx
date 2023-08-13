@@ -3,7 +3,6 @@ import { Meta, StoryObj } from "@storybook/react";
 import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
 
 import { PageHeader } from "./PageHeader";
-import { Button } from "@material-tailwind/react";
 
 const meta = {
   title: "components/common/PageHeader",

@@ -1,5 +1,4 @@
 import { useEffect, useReducer } from "react";
-import { Button, Input, ListGroup, ListGroupItem, Progress } from "reactstrap";
 
 type FileUploadState = {
   id: number;
@@ -114,7 +113,6 @@ const reducer = function (
   state: typeof initialValue,
   action: Actions,
 ): typeof initialValue {
-  console.log(action);
   switch (action.type) {
     case "QUEUE_FILE":
       return {

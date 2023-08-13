@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Badge, Button, Col, Row } from "reactstrap";
 import { Ship } from "./models";
 
 type ShipDetailsProps = {

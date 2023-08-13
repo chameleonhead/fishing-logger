@@ -1,4 +1,3 @@
-import { Col, Row } from "reactstrap";
 import MediaThumbnail from "./MediaThumbnail";
 
 type MediaListProps = {
@@ -7,15 +6,15 @@ type MediaListProps = {
 
 export const MediaList = ({ data }: MediaListProps) => {
   return (
-    <Row>
+    <div className="grid grid-col-2 md:grid-col-4 gap-2">
       {data.map((media) => {
         return (
-          <Col key={media.id} xs="12" sm="6" md="4" className="mb-2">
+          <div key={media.id}>
             <MediaThumbnail id={media.id} />
-          </Col>
+          </div>
         );
       })}
-    </Row>
+    </div>
   );
 };
 

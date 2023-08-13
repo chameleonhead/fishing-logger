@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link as RouterLink, Navigate } from "react-router-dom";
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import { Catch } from "./models";
-import { Chip, List, ListItem, Typography } from "@material-tailwind/react";
 
 type CatchListProps = {
   data: Catch[];

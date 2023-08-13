@@ -1,20 +1,12 @@
-import { ChronoUnit, LocalDateTime, ZoneId } from "@js-joda/core";
+import { ChronoUnit, Instant } from "@js-joda/core";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Fragment } from "react";
-import {
-  Badge,
-  Button,
-  ButtonGroup,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-} from "reactstrap";
-import { DateTimeInput } from "../inputs/DateTimeInput";
 import { PlaceInput } from "../inputs/PlaceInput";
 import { Catch } from "./models";
+import { Button } from "../common/Button";
+import { DateTimeInputField } from "../common/DateTimeInputField";
+import { InputField } from "../common/InputField";
+import { Selection } from "../common/Selection";
 
 type CatchCreateFormProps = {
   onSubmit: (value: Catch) => void;
@@ -23,8 +15,8 @@ type CatchCreateFormProps = {
 export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
   const formik = useFormik({
     initialValues: {
-      catched_at: LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES) as
-        | LocalDateTime
+      catched_at: Instant.now().truncatedTo(ChronoUnit.MINUTES).toString() as
+        | string
         | null
         | undefined,
       place: undefined as
@@ -41,7 +33,11 @@ export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
       method_details: "",
     },
     validationSchema: Yup.object({
-      catched_at: Yup.object()
+      catched_at: Yup.string()
+        .matches(
+          /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2}(.[0-9]+)?)?Z$/,
+          "日付の形式が間違っています。",
+        )
         .nullable()
         .test("null-check", "不正な値です。", (value) => value !== null)
         .required("必ず入力してください。"),
@@ -53,10 +49,7 @@ export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
     }),
     onSubmit: (values) => {
       onSubmit({
-        catched_at: values
-          .catched_at!.atZone(ZoneId.SYSTEM)
-          .toInstant()
-          .toString(),
+        catched_at: values.catched_at!,
         place: values.place,
         fishes: values.fishes_species
           .filter((value) => !!value)
@@ -75,136 +68,105 @@ export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
     },
   });
   return (
-    <Form onSubmit={formik.handleSubmit}>
-      <FormGroup>
-        <div>
-          <Label for="catched_at">日時</Label>{" "}
-          <Badge
-            color="primary"
-            onClick={() =>
-              formik.setValues({
-                ...formik.values,
-                catched_at: LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-              })
-            }
-          >
-            現在
-          </Badge>
-        </div>
-        <DateTimeInput
-          id="catched_at"
-          value={formik.values.catched_at}
-          onChange={(value) =>
-            formik.setValues({ ...formik.values, catched_at: value })
+    <form onSubmit={formik.handleSubmit}>
+      <div className="my-3 grid grid-cols-1 sm:grid-cols-7">
+        <DateTimeInputField
+          label="日時"
+          name="catched_at"
+          className="sm:col-span-5 md:col-span-4 lg:col-span-3"
+          value={formik.values.catched_at?.toString() || ""}
+          onChange={(e) => {
+            formik.setValues({
+              ...formik.values,
+              catched_at: e.target.value,
+            });
+          }}
+          error={
+            formik.touched.catched_at ? formik.errors.catched_at : undefined
           }
-          invalid={!!formik.errors.catched_at}
         />
-        {formik.errors.catched_at && (
-          <FormFeedback className="d-block">
-            {formik.errors.catched_at}
-          </FormFeedback>
-        )}
-      </FormGroup>
-      <PlaceInput
-        value={formik.values.place}
-        onChange={(value) => {
-          formik.setValues({ ...formik.values, place: value });
-        }}
-      />
-      <FormGroup>
-        <Label for="fishes_species0">魚種</Label>
-        <Input
-          id="fishes_species0"
+      </div>
+      <div className="my-4">
+        <PlaceInput
+          value={formik.values.place}
+          onChange={(value) => {
+            formik.setValues({ ...formik.values, place: value });
+          }}
+        />
+      </div>
+      <div className="my-4">
+        <InputField
+          label="魚種"
           name="fishes_species[0]"
           placeholder="例) オオモンハタ"
           type="text"
           value={formik.values.fishes_species[0]}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          invalid={
-            !!formik.errors.fishes_species &&
-            !!formik.errors.fishes_species[0] &&
-            !!formik.touched.fishes_species &&
-            (formik.touched.fishes_species as unknown as boolean[])[0]
+          error={
+            formik.touched.fishes_species && formik.errors.fishes_species
+              ? formik.errors.fishes_species[0]
+              : undefined
           }
         />
-        {formik.errors.fishes_species &&
-          formik.errors.fishes_species[0] &&
-          formik.touched.fishes_species &&
-          (formik.touched.fishes_species as unknown as boolean[])[0] && (
-            <FormFeedback>{formik.errors.fishes_species[0]}</FormFeedback>
-          )}
-      </FormGroup>
-      <FormGroup>
-        <Label for="fishes_size_text0">サイズ</Label>
-        <Input
-          id="fishes_size_text0"
+      </div>
+      <div className="my-4">
+        <InputField
+          label="サイズ"
           name="fishes_size_text[0]"
           placeholder="例) 50cm"
           type="text"
           value={formik.values.fishes_size_text[0]}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          error={formik.errors.fishes_size_text}
         />
-      </FormGroup>
-      <FormGroup>
-        <Label>仕掛け</Label>
-        <div>
-          <ButtonGroup className="w-100">
-            {["徒手", "刺突", "網", "釣", "その他"].map((item, i) => {
-              return (
-                <Fragment key={i}>
-                  <Input
-                    type="radio"
-                    id={"method_type" + i}
-                    className="btn-check"
-                    name="method_type"
-                    value={item}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    invalid={!!formik.errors.method_type}
-                  />
-                  <Label
-                    for={"method_type" + i}
-                    className={
-                      formik.errors.method_type && formik.touched.method_type
-                        ? "btn btn-outline-danger"
-                        : "btn btn-outline-primary"
-                    }
-                  >
-                    {item}
-                  </Label>
-                </Fragment>
-              );
-            })}
-          </ButtonGroup>
-          {formik.errors.method_type && formik.touched.method_type && (
-            <FormFeedback className="d-block">
-              {formik.errors.method_type}
-            </FormFeedback>
-          )}
-        </div>
-      </FormGroup>
-      <FormGroup>
-        <Label for="method_details">備考</Label>
-        <Input
-          id="method_details"
+      </div>
+      <div className="my-4">
+        <Selection
+          label="仕掛け"
+          name="method_type"
+          options={["徒手", "刺突", "網", "釣", "その他"].map((item) => {
+            return { value: item, label: item };
+          })}
+          value={formik.values.method_type}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={
+            formik.touched.method_type ? formik.errors.method_type : undefined
+          }
+        />
+      </div>
+      <div className="my-4">
+        <InputField
+          label="備考"
           name="method_details"
           placeholder="仕掛けの詳細を記載"
           type="text"
           value={formik.values.method_details}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          error={
+            formik.touched.method_details
+              ? formik.errors.method_details
+              : undefined
+          }
         />
-      </FormGroup>
-      <Button type="submit" color="primary" block>
-        登録
-      </Button>
-    </Form>
+      </div>
+      <div className="my-4">
+        <Button type="submit" color="primary">
+          登録
+        </Button>
+      </div>
+    </form>
   );
 };
 
-const CatchCreateFormWithState = function({ onSuccess }: { onSuccess: (value: Catch) => void }) {
+const CatchCreateFormWithState = function ({
+  onSuccess,
+}: {
+  onSuccess: (value: Catch) => void;
+}) {
   return (
     <CatchCreateForm
       onSubmit={async (value) => {
@@ -224,6 +186,6 @@ const CatchCreateFormWithState = function({ onSuccess }: { onSuccess: (value: Ca
       }}
     />
   );
-}
+};
 
 export default CatchCreateFormWithState;

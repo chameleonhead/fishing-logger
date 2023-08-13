@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button } from "@material-tailwind/react";
-import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import CatchDetails from "../../components/catch/CatchDetails";
 import CatchEditForm from "../../components/catch/CatchEditForm";
 import PageHeader from "../../components/common/PageHeader";

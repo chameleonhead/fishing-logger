@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import ShipDetails from "../../components/ships/ShipDetails";
 import ShipEditForm from "../../components/ships/ShipEditForm";
 import PageHeader from "../../components/common/PageHeader";

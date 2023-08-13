@@ -1,14 +1,4 @@
 import { useEffect, useReducer, useState } from "react";
-import {
-  Button,
-  Card,
-  CardText,
-  Col,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-} from "reactstrap";
 
 type Media = {
   id: string;
