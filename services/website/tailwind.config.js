@@ -1,4 +1,4 @@
-import headlessui from '@headlessui/tailwindcss'
+import headlessui from "@headlessui/tailwindcss";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -7,7 +7,5 @@ export default {
     extend: {},
   },
   darkMode: "class",
-  plugins: [
-    headlessui,
-  ],
+  plugins: [headlessui],
 };

@@ -11,16 +11,16 @@ export type ShipState = {
       position: {
         latitude: number | null;
         longitude: number | null;
-      },
+      };
       datetime: string | null;
-    }
-  }
-}
+    };
+  };
+};
 
 export type ShipLog = {
-  time: string
+  time: string;
   position: {
     latitude: number;
     longitude: number;
-  }
-}
+  };
+};

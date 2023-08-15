@@ -4,7 +4,9 @@ export type ProgressProps = {
 };
 
 export const Progress = ({ animated, value }: ProgressProps) => {
-  const classList = ["transition-all relative w-full h-2 overflow-hidden bg-gray-200 rounded"];
+  const classList = [
+    "transition-all relative w-full h-2 overflow-hidden bg-gray-200 rounded",
+  ];
   if (animated) {
     classList.push("progress-animated");
   }
