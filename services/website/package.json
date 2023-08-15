@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.16",
+    "@headlessui/tailwindcss": "^0.2.0",
     "@heroicons/react": "^2.0.18",
     "@js-joda/core": "^5.5.3",
     "formik": "^2.4.2",

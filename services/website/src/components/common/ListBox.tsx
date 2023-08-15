@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Listbox, ListboxProps, Transition } from "@headlessui/react";
+import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 type OptionValue = {
@@ -11,8 +11,8 @@ export type ListBoxProps = {
   id?: string;
   name?: string;
   className?: string;
-  value?: ListboxProps<"div", OptionValue, OptionValue>["value"];
-  onChange?: ListboxProps<"div", OptionValue, OptionValue>["onChange"];
+  value?: OptionValue;
+  onChange?: (value: OptionValue) => void;
   options?: OptionValue[];
   disabled?: boolean;
   onBlur?: React.FocusEventHandler<any>;

@@ -122,6 +122,7 @@ export const CatchEditForm = ({ data, onSubmit }: CatchEditFormProps) => {
       </div>
       <div className="my-4">
         <Selection
+          type="toggle-button"
           label="仕掛け"
           name="method_type"
           options={["徒手", "刺突", "網", "釣", "その他"].map((item) => {

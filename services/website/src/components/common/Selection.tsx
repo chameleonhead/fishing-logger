@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import ListBox from "./ListBox";
+import ToggleButtonSelection from "./ToggleButtonSelection";
 
 export type SelectionProps = {
   name: string;
@@ -75,6 +76,17 @@ export const Selection = ({
           onChange={(value) =>
             onChange?.({ target: { name: name, value: value.value } } as any)
           }
+          onBlur={onBlur}
+          disabled={disabled}
+          options={options}
+        />
+      ) : type === "toggle-button" ? (
+        <ToggleButtonSelection
+          id={name}
+          name={name}
+          className={classList.join(" ")}
+          value={options.find((v) => v.value === value)}
+          onChange={onChange}
           onBlur={onBlur}
           disabled={disabled}
           options={options}

@@ -4,7 +4,7 @@ export type ButtonProps<T extends React.ElementType> =
   React.ComponentProps<T> & {
     as: React.ElementType;
     color?: "primary" | "secondary" | "danger" | "default";
-    variant?: "outline" | "filled";
+    variant?: "outline" | "fill";
     size?: "sm" | "md" | "lg";
     className?: string;
   };
@@ -13,7 +13,7 @@ export const Button = <T extends React.ElementType>({
   as: As = "button",
   type = "button",
   color = "default",
-  variant = "filled",
+  variant = "fill",
   size = "md",
   className,
   ...props

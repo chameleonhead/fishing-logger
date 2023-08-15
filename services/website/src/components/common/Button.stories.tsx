@@ -24,7 +24,7 @@ const render = (args: Story["args"]) => (
 export const Default: Story = {
   args: {
     children: "Button",
-    variant: "filled",
+    variant: "fill",
   },
   render,
 };
