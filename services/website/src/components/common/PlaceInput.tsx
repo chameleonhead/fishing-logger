@@ -158,9 +158,9 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
           }}
         />
       </div>
-      <div className="flex my-3 space-x-1">
+      <div className="flex my-3 gap-1">
         <InputField
-          className="grow px-2"
+          className="grow"
           name="place_latitude"
           label="緯度"
           placeholder="例) 35.65809922N"
@@ -180,7 +180,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
           }}
         />
         <InputField
-          className="grow px-2"
+          className="grow"
           name="place_longitude"
           label="経度"
           placeholder="例) 139.74135747E"
@@ -204,7 +204,8 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         <Button
           className="w-full"
           type="button"
-          color="primary"
+          color="default"
+          variant="outline"
           disabled={isFetchingCurrentLocation}
           onClick={handleFetchCurrentLocation}
         >
