@@ -42,7 +42,11 @@ input[type="url"],
 input[type="date"],
 input[type="time"],
 input[type="datetime-local"] {
-  @apply block w-full shadow-sm !ring-0 !outline-none px-0 py-1 rounded-none border-b-2 border-t-0 border-x-0 disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply block w-full shadow-sm !ring-0 !outline-none px-0 h-7 rounded-none border border-b border-t-0 border-x-0 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+textarea {
+  @apply block w-full shadow-sm !ring-0 !outline-none px-0 rounded-none border border-b border-t-0 border-x-0 disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
 .icon-button > svg {

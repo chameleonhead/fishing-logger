@@ -151,7 +151,7 @@ export const DateTimeInputField = ({
           size="sm"
           variant="outline"
           color="default"
-          className="self-end py-2 min-w-fit"
+          className="self-end h-7 min-w-fit"
           onClick={() =>
             setState(
               valueToState(

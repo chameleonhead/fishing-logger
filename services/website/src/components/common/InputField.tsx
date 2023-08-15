@@ -43,7 +43,7 @@ export const InputField = ({
   if (!!error) {
     classList.push("text-red-500 border-red-500");
   } else {
-    classList.push("focus:border-blue-600");
+    classList.push("focus:text-blue-900 focus:border-blue-600");
   }
   return (
     <div className={className}>

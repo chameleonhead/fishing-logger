@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import ListBox from "./ListBox";
 
 export type SelectionProps = {
   name: string;
@@ -48,10 +49,7 @@ export const Selection = ({
       } as any);
     }
   }, [selectedValue, value, readOnly, onChange]);
-  const classList = [
-    "block w-full shadow-sm ring-0 outline-0 border-0 -mx-1 px-1 py-2 rounded border-2 focus:ring-1 disabled:opacity-50 disabled:cursor-not-allowed",
-    "bg-white focus:ring-blue-500",
-  ];
+  const classList = ["bg-white focus:ring-blue-500"];
   if (className) {
     classList.push(className);
   }
@@ -69,27 +67,18 @@ export const Selection = ({
         </label>
       ) : null}
       {type === "select" ? (
-        <select
+        <ListBox
           id={name}
           name={name}
           className={classList.join(" ")}
-          value={value}
-          onChange={(e) => onChange?.(e)}
+          value={options.find((v) => v.value === value)}
+          onChange={(value) =>
+            onChange?.({ target: { name: name, value: value.value } } as any)
+          }
           onBlur={onBlur}
           disabled={disabled}
-        >
-          {readOnly ? (
-            <option value={value}>
-              {options.filter((option) => option.value === value)[0]?.label}
-            </option>
-          ) : (
-            options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))
-          )}
-        </select>
+          options={options}
+        />
       ) : null}
       {!!error && <div className="text-red-500">{error}</div>}
     </div>
