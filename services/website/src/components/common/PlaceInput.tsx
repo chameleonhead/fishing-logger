@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import Map from "../map/Map";
+import MapWithMarker from "../map/MapWithMarker";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
 
@@ -136,22 +136,20 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
   return (
     <div>
       <div className="mb-1">
-        <Map
-          style={{ height: "300px" }}
-          position={
-            typeof value === "undefined" || value === null
-              ? undefined
-              : { lat: value.latitude!, lng: value.longitude! }
-          }
-          onPositionChange={(position) => {
+        <MapWithMarker
+          className="h-96"
+          position={value || undefined}
+          onMapClick={(position) => {
             if (isFetchingCurrentLocation) {
               return;
             }
             const newValue = {
               latitude:
-                Math.round(position.lat * 10 ** PRECISION) / 10 ** PRECISION,
+                Math.round(position.latitude * 10 ** PRECISION) /
+                10 ** PRECISION,
               longitude:
-                Math.round(position.lng * 10 ** PRECISION) / 10 ** PRECISION,
+                Math.round(position.longitude * 10 ** PRECISION) /
+                10 ** PRECISION,
             };
             setState(valueToState(newValue));
             if (onChange) {

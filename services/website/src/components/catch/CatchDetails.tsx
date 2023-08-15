@@ -1,8 +1,8 @@
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
-import Map from "../map/Map";
 import { Catch } from "./models";
-import { MediaList } from "../media/MediaList";
-import { Chip } from "../common/Chip";
+import Chip from "../common/Chip";
+import MediaList from "../media/MediaList";
+import MapWithMarker from "../map/MapWithMarker";
 
 type CatchDetailsProps = {
   data: Catch;
@@ -23,10 +23,10 @@ export const CatchDetails = ({ data }: CatchDetailsProps) => {
       </div>
       {data.place && (
         <div className="my-3">
-          <Map
-            style={{ height: "200px" }}
-            position={{ lat: data.place.latitude, lng: data.place.longitude }}
-            currentLocationControl={false}
+          <MapWithMarker
+            className="h-72"
+            position={data.place}
+            currentLocationControl={true}
           />
         </div>
       )}

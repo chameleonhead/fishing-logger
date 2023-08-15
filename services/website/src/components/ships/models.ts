@@ -16,3 +16,11 @@ export type ShipState = {
     }
   }
 }
+
+export type ShipLog = {
+  time: string
+  position: {
+    latitude: number;
+    longitude: number;
+  }
+}
