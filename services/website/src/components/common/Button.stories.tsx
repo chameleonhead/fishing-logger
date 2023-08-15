@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from "@storybook/react";
 
 import { Button } from "./Button";
+import { Link as RouterLink } from "react-router-dom";
 
 const meta = {
   title: "components/common/Button",
@@ -65,6 +66,15 @@ export const SizeLg: Story = {
   args: {
     ...Default.args,
     size: "lg",
+  },
+  render,
+};
+
+export const AsRouterLink: Story = {
+  args: {
+    ...Default.args,
+    as: RouterLink,
+    to: "#",
   },
   render,
 };

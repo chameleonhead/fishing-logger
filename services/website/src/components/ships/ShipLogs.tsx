@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link as RouterLink, createSearchParams } from "react-router-dom";
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import L from "leaflet";
 import { Marker, Polyline } from "react-leaflet";
 import { ShipLog } from "./models";
 import MapWithMarker from "../map/MapWithMarker";
+import Button from "../common/Button";
 
 export type ShipLogsProps = {
   logs: ShipLog[];
@@ -59,6 +61,23 @@ export const ShipLogs = ({ logs }: ShipLogsProps) => {
                 {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
                   Instant.parse(selectLog.time).atZone(ZoneId.SYSTEM),
                 )}
+              </div>
+              <div>
+                <Button
+                  as={RouterLink}
+                  to={
+                    "/catches/create?" +
+                    createSearchParams({
+                      catched_at: selectLog.time,
+                      place_latitude: String(selectLog.position.latitude),
+                      place_longitude: String(selectLog.position.longitude),
+                    }).toString()
+                  }
+                  color="primary"
+                  className="!text-white"
+                >
+                  漁獲登録
+                </Button>
               </div>
             </div>
           ) : null

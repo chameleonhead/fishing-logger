@@ -9,17 +9,26 @@ import { InputField } from "../common/InputField";
 import { Selection } from "../common/Selection";
 
 type CatchCreateFormProps = {
+  initialValues: {
+    catched_at?: string;
+    place?: {
+      latitude: Number;
+      longitude: Number;
+    };
+  };
   onSubmit: (value: Catch) => void;
 };
 
-export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
+export const CatchCreateForm = ({
+  initialValues,
+  onSubmit,
+}: CatchCreateFormProps) => {
   const formik = useFormik({
     initialValues: {
-      catched_at: Instant.now().truncatedTo(ChronoUnit.MINUTES).toString() as
-        | string
-        | null
-        | undefined,
-      place: undefined as
+      catched_at:
+        initialValues.catched_at ||
+        Instant.now().truncatedTo(ChronoUnit.MINUTES).toString(),
+      place: initialValues.place as
         | {
             latitude: number;
             longitude: number;
@@ -163,12 +172,21 @@ export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
 };
 
 const CatchCreateFormWithState = function ({
+  initialValues,
   onSuccess,
 }: {
+  initialValues: {
+    catched_at?: string;
+    place?: {
+      latitude: Number;
+      longitude: Number;
+    };
+  };
   onSuccess: (value: Catch) => void;
 }) {
   return (
     <CatchCreateForm
+      initialValues={initialValues}
       onSubmit={async (value) => {
         try {
           const result = await fetch("/api/catches", {
