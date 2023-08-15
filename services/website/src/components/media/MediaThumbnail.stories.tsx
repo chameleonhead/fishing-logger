@@ -6,7 +6,7 @@ import sample from "./sample.json";
 const meta = {
   title: "components/media/MediaThumbnail",
   component: MediaThumbnail,
-  render: (args: any) => (
+  render: (args: React.ComponentProps<typeof MediaThumbnail>) => (
     <div className="h-screen">
       <MediaThumbnail {...args} />
     </div>

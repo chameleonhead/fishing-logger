@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const paramsSignalKState = {
     TableName: process.env.DYNAMODB_TABLE!,
     Key: {
-      id: convertToAttr("signalk:" + event.pathParameters!.id),
+      id: convertToAttr("signalk:" + ship.id),
     },
   };
   const resultData = {} as { signalk?: object & { id?: string }; iot?: object };

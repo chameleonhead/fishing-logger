@@ -18,7 +18,7 @@ export const Default: Story = {
     title: "Modal Title",
     children: "Modal Content",
   },
-  render: (args) => {
+  render: function Render(args) {
     const [open, setOpen] = useState(args.open);
     return (
       <div>

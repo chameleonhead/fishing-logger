@@ -10,10 +10,10 @@ export type ToggleButtonSelectionProps = {
   name?: string;
   className?: string;
   value?: OptionValue;
-  onChange?: React.ChangeEventHandler<any>;
+  onChange?: React.ChangeEventHandler;
   options?: OptionValue[];
   disabled?: boolean;
-  onBlur?: React.FocusEventHandler<any>;
+  onBlur?: React.FocusEventHandler;
   readonly?: boolean;
 };
 
@@ -28,17 +28,20 @@ export const ToggleButtonSelection = ({
   disabled = false,
   readonly = false,
 }: ToggleButtonSelectionProps) => {
-  if (typeof options === "undefined" || options.length === 0) {
-    return null;
-  }
   const selectedValue = useMemo(() => {
+    if (typeof options === "undefined" || options.length === 0) {
+      return undefined;
+    }
     return (
       options.find((v) => v.value === value?.value || "") ||
       options[0] ||
       null
     )?.value;
   }, [value, options]);
-  console.log(selectedValue);
+
+  if (typeof options === "undefined" || options.length === 0) {
+    return null;
+  }
   const classList = ["flex h-7"] as string[];
   if (className) {
     classList.push(className);
@@ -74,7 +77,7 @@ export const ToggleButtonSelection = ({
                   if (onChange && e.target.checked) {
                     onChange({
                       target: { name, value: e.target.value },
-                    } as ChangeEvent<any>);
+                    } as ChangeEvent<HTMLInputElement>);
                   }
                 }}
                 onBlur={onBlur}

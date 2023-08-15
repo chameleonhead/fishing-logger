@@ -15,7 +15,7 @@ export type ListBoxProps = {
   onChange?: (value: OptionValue) => void;
   options?: OptionValue[];
   disabled?: boolean;
-  onBlur?: React.FocusEventHandler<any>;
+  onBlur?: React.FocusEventHandler;
   readonly?: boolean;
 };
 

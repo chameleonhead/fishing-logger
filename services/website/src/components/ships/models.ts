@@ -7,7 +7,7 @@ export type Ship = {
 
 export type ShipState = {
   signalk: {
-    navigation: Record<string, any> & {
+    navigation: Record<string, string | number | object | undefined | null> & {
       position: {
         latitude: number | null;
         longitude: number | null;

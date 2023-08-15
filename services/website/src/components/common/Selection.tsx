@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { ChangeEvent, useEffect, useMemo } from "react";
 import ListBox from "./ListBox";
 import ToggleButtonSelection from "./ToggleButtonSelection";
 
@@ -12,8 +12,8 @@ export type SelectionProps = {
   readOnly?: boolean;
   disabled?: boolean;
   error?: string;
-  onChange?: React.ChangeEventHandler<any>;
-  onBlur?: React.FocusEventHandler<any>;
+  onChange?: React.ChangeEventHandler;
+  onBlur?: React.FocusEventHandler;
 };
 
 export const Selection = ({
@@ -29,7 +29,7 @@ export const Selection = ({
   error,
   onBlur,
 }: SelectionProps) => {
-  let selectedValue = useMemo(() => {
+  const selectedValue = useMemo(() => {
     const selectedValue = options.filter((option) => option.value === value)[0];
     if (typeof selectedValue == "undefined") {
       return options[0];
@@ -47,14 +47,14 @@ export const Selection = ({
           name,
           value: selectedValue.value,
         },
-      } as any);
+      } as ChangeEvent<HTMLInputElement>);
     }
-  }, [selectedValue, value, readOnly, onChange]);
+  }, [selectedValue, name, value, readOnly, onChange]);
   const classList = ["bg-white focus:ring-blue-500"];
   if (className) {
     classList.push(className);
   }
-  if (!!error) {
+  if (error) {
     classList.push("text-red-500 border-red-500");
   }
   return (
@@ -74,7 +74,9 @@ export const Selection = ({
           className={classList.join(" ")}
           value={options.find((v) => v.value === value)}
           onChange={(value) =>
-            onChange?.({ target: { name: name, value: value.value } } as any)
+            onChange?.({
+              target: { name: name, value: value.value },
+            } as ChangeEvent<HTMLInputElement>)
           }
           onBlur={onBlur}
           disabled={disabled}
@@ -92,7 +94,7 @@ export const Selection = ({
           options={options}
         />
       ) : null}
-      {!!error && <div className="text-red-500">{error}</div>}
+      {error && <div className="text-red-500">{error}</div>}
     </div>
   );
 };

@@ -12,8 +12,8 @@ type CatchCreateFormProps = {
   initialValues: {
     catched_at?: string;
     place?: {
-      latitude: Number;
-      longitude: Number;
+      latitude: number;
+      longitude: number;
     };
   };
   onSubmit: (value: Catch) => void;
@@ -179,8 +179,8 @@ const CatchCreateFormWithState = function ({
   initialValues: {
     catched_at?: string;
     place?: {
-      latitude: Number;
-      longitude: Number;
+      latitude: number;
+      longitude: number;
     };
   };
   onSuccess: (value: Catch) => void;

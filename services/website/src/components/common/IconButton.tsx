@@ -37,10 +37,17 @@ export const IconButton = <T extends React.ElementType>({
   if (className) {
     classList.push(className);
   }
+  if (Component !== "button") {
+    return (
+      <Component className={classList.join(" ")} {...props}>
+        {children}
+      </Component>
+    );
+  }
   return (
-    <button className={classList.join(" ")} {...props}>
+    <Component className={classList.join(" ")} {...props} type={type}>
       {children}
-    </button>
+    </Component>
   );
 };
 

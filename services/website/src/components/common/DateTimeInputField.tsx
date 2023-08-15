@@ -6,7 +6,7 @@ import {
   LocalTime,
   ZoneId,
 } from "@js-joda/core";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 
 type InvalidValue = null;
@@ -92,10 +92,10 @@ export const DateTimeInputField = ({
     onChange &&
       onChange({
         target: { name, value: tryParse(state) },
-      } as any);
-  }, [name, state]);
+      } as React.ChangeEvent<HTMLInputElement>);
+  }, [name, state, onChange]);
   const classList = ["grow shrink w-auto min-w-fit sm:w-full"];
-  if (!!error) {
+  if (error) {
     classList.push("text-red-500 border-red-500");
   } else {
     classList.push("focus:border-blue-600");
@@ -163,7 +163,7 @@ export const DateTimeInputField = ({
           現在時刻
         </Button>
       </div>
-      {!!error && (
+      {error && (
         <div className="text-sm font-medium text-red-500">{error}</div>
       )}
     </div>
