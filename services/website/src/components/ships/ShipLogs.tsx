@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { DateTimeFormatter, Instant, ZoneId } from "@js-joda/core";
 import L from "leaflet";
-import { Marker, Polyline, Popup } from "react-leaflet";
-import Map, { Location } from "../map/Map";
+import { Marker, Polyline } from "react-leaflet";
 import { ShipLog } from "./models";
+import MapWithMarker from "../map/MapWithMarker";
 
 export type ShipLogsProps = {
   logs: ShipLog[];
@@ -31,13 +31,8 @@ export const ShipLogs = ({ logs }: ShipLogsProps) => {
   if (lastLog === null) {
     return <div>位置情報がありません</div>;
   }
-  const lastLogInstant = DateTimeFormatter.ISO_INSTANT.parse(
-    lastLog.time,
-    Instant.FROM,
-  );
-  const zonedLastLogTime = lastLogInstant.atZone(ZoneId.SYSTEM);
 
-  function handleMapClick(location: Location) {
+  function handleMapClick(location: ShipLog["position"]) {
     const filtered = validLogs
       ?.map((log) => ({
         distance: Math.sqrt(
@@ -54,30 +49,24 @@ export const ShipLogs = ({ logs }: ShipLogsProps) => {
 
   return (
     <div style={{ minHeight: "300px", height: "300px" }}>
-      <Map
+      <MapWithMarker
+        position={selectLog ? selectLog.position : undefined}
+        popup={
+          selectLog ? (
+            <div>
+              <strong className="font-bold">時刻</strong>
+              <div>
+                {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
+                  Instant.parse(selectLog.time).atZone(ZoneId.SYSTEM),
+                )}
+              </div>
+            </div>
+          ) : null
+        }
         className="h-96"
         center={lastLog.position}
         onMapClick={handleMapClick}
       >
-        {selectLog ? (
-          <Marker
-            position={{
-              lat: selectLog.position.latitude,
-              lng: selectLog.position.longitude,
-            }}
-          >
-            <Popup autoPan>
-              <div>
-                <strong className="font-bold">時刻</strong>
-                <div>
-                  {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
-                    Instant.parse(selectLog.time).atZone(ZoneId.SYSTEM),
-                  )}
-                </div>
-              </div>
-            </Popup>
-          </Marker>
-        ) : null}
         <Marker
           icon={
             new L.DivIcon({
@@ -89,13 +78,7 @@ export const ShipLogs = ({ logs }: ShipLogsProps) => {
             lat: lastLog.position.latitude,
             lng: lastLog.position.longitude,
           }}
-        >
-          <Popup>
-            {DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(
-              zonedLastLogTime,
-            )}
-          </Popup>
-        </Marker>
+        />
         {logs.length > 1 ? (
           <Polyline
             className="text-blue-700"
@@ -103,7 +86,7 @@ export const ShipLogs = ({ logs }: ShipLogsProps) => {
             color="currentColor"
           />
         ) : null}
-      </Map>
+      </MapWithMarker>
     </div>
   );
 };

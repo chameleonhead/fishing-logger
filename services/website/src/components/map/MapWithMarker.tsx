@@ -1,6 +1,6 @@
-import { Marker, useMap } from "react-leaflet";
+import { Marker, Popup, useMap } from "react-leaflet";
 import Map, { Location } from "./Map";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export type { Location };
 
@@ -9,7 +9,7 @@ export type MapWithMarkerProps = Exclude<
   { center: Location }
 > & {
   position?: Location;
-  popup?: string;
+  popup?: React.ReactNode;
 };
 
 const PositionChangeDetector = ({ position }: { position?: Location }) => {
@@ -36,18 +36,36 @@ const PositionChangeDetector = ({ position }: { position?: Location }) => {
 export const MapWithMarker = ({
   position,
   popup,
+  children,
   ...props
 }: MapWithMarkerProps) => {
+  const markerRef = useRef<L.Marker>(null);
+  const mapProps = props;
+  if (!mapProps.center && position) {
+    mapProps.center = position;
+  }
+  useEffect(() => {
+    if (position && popup) {
+      setTimeout(() => {
+        markerRef.current!.openPopup();
+      });
+    }
+  }, [position, popup]);
+
   return (
-    <Map {...props} center={position}>
+    <Map {...mapProps}>
       <PositionChangeDetector position={position} />
       {position && (
         <>
           <Marker
+            ref={markerRef}
             position={{ lat: position.latitude, lng: position.longitude }}
-          />
+          >
+            {popup ? <Popup>{popup}</Popup> : null}
+          </Marker>
         </>
       )}
+      {children}
     </Map>
   );
 };

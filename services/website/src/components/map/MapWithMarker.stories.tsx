@@ -15,3 +15,16 @@ export const Default: Story = {
     position: { latitude: 35.65809922, longitude: 139.74135747 },
   },
 };
+
+export const WithPopup: Story = {
+  args: {
+    position: { latitude: 35.65809922, longitude: 139.74135747 },
+    popup: "Hello!",
+  },
+};
+
+export const WithPopupOnly: Story = {
+  args: {
+    popup: "Hello!",
+  },
+};
