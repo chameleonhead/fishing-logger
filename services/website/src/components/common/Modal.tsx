@@ -27,17 +27,17 @@ export const Modal = ({
     secondary: "bg-orange-500 text-white",
   };
   const sizes = {
-    sm: "max-w-1/3 w-1/3 rounded shadow-lg my-8",
-    md: "max-w-1/2 w-1/2 rounded shadow-lg my-8",
-    lg: "max-w-3/4 w-3/4 rounded shadow-lg my-8",
-    full: "max-w-full w-full",
+    sm: "w-10/12 md:max-w-1/3 md:w-1/3 rounded shadow-lg my-8",
+    md: "w-10/12 md:max-w-1/2 md:w-1/2 rounded shadow-lg my-8",
+    lg: "w-full min-h-screen md:max-w-3/4 md:w-3/4 md:my-8 md:rounded md:shadow-lg",
+    full: "w-full min-h-screen overflow-auto",
   };
   const titleClassList = [
     "p-4 flex items-center justify-between border-b border-gray-200",
     colors[color || "default"],
   ];
   const panelClassList = [
-    "mx-auto bg-white overflow-clip shadow",
+    "mx-auto bg-white shadow",
     sizes[size || "md"],
   ];
   if (className) {
@@ -60,9 +60,7 @@ export const Modal = ({
               </IconButton>
             ) : null}
           </div>
-          <div className="overflow-auto max-h-full">
-            <div className="p-4">{children}</div>
-          </div>
+          <div className="p-4">{children}</div>
         </Dialog.Panel>
       </div>
     </Dialog>

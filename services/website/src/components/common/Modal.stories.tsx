@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Meta, StoryObj } from "@storybook/react";
 
+import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
+
 import { Modal } from "./Modal";
 import Button from "./Button";
 
@@ -26,5 +28,96 @@ export const Default: Story = {
         <Modal {...args} open={open} onClose={() => setOpen(false)} />
       </div>
     );
+  },
+};
+
+export const Sm: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    size: "sm",
+  },
+};
+
+export const Md: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    size: "md",
+  },
+};
+
+export const Lg: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    size: "lg",
+  },
+};
+
+
+export const Full: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    size: "full",
+  },
+};
+
+
+export const SmallScreenSm: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    size: "sm",
+  },
+  parameters: {
+    viewport: {
+      viewports: INITIAL_VIEWPORTS,
+      defaultViewport: "iphone5",
+    },
+  },
+};
+
+export const SmallScreenMd: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    size: "md",
+  },
+  parameters: {
+    viewport: {
+      viewports: INITIAL_VIEWPORTS,
+      defaultViewport: "iphone5",
+    },
+  },
+};
+
+export const SmallScreenLg: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    size: "lg",
+  },
+  parameters: {
+    viewport: {
+      viewports: INITIAL_VIEWPORTS,
+      defaultViewport: "iphone5",
+    },
+  },
+};
+
+
+export const SmallScreenFull: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    size: "full",
+  },
+  parameters: {
+    viewport: {
+      viewports: INITIAL_VIEWPORTS,
+      defaultViewport: "iphone5",
+    },
   },
 };
