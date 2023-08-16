@@ -23,11 +23,7 @@ export const CatchDetails = ({ data }: CatchDetailsProps) => {
       </div>
       {data.place && (
         <div className="my-3">
-          <MapWithMarker
-            className="h-72"
-            position={data.place}
-            currentLocationControl={true}
-          />
+          <MapWithMarker className="h-72" position={data.place} />
         </div>
       )}
       <div className="my-3">

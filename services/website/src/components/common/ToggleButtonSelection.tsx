@@ -53,7 +53,7 @@ export const ToggleButtonSelection = ({
           <div
             key={i}
             aria-checked={selectedValue === option.value}
-            className={`group grow shrink basis-0 first:border-l border-t border-r border-b h-full hover:bg-opacity-80 ${
+            className={`ring-blue-600 group grow shrink basis-0 ring-0 ring-offset-0 first:border-l border-t border-r border-b h-full hover:bg-opacity-80 focus-within:ring-1 ${
               selectedValue === option.value
                 ? "text-white bg-blue-500"
                 : "text-dark bg-transparent hover:bg-blue-100 hover:text-blue-900"

@@ -36,6 +36,7 @@ const PositionChangeDetector = ({ position }: { position?: Location }) => {
 export const MapWithMarker = ({
   position,
   popup,
+  currentLocationControl = true,
   children,
   ...props
 }: MapWithMarkerProps) => {
@@ -53,7 +54,7 @@ export const MapWithMarker = ({
   }, [position, popup]);
 
   return (
-    <Map {...mapProps}>
+    <Map {...mapProps} currentLocationControl={currentLocationControl}>
       <PositionChangeDetector position={position} />
       {position && (
         <>
