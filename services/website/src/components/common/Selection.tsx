@@ -12,7 +12,7 @@ export type SelectionProps = {
   readOnly?: boolean;
   disabled?: boolean;
   error?: string;
-  onChange?: React.ChangeEventHandler;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler;
 };
 
@@ -23,7 +23,7 @@ export const Selection = ({
   options,
   className,
   value = "",
-  onChange: onChange,
+  onChange,
   readOnly = false,
   disabled = false,
   error,

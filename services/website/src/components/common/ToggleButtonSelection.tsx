@@ -10,7 +10,7 @@ export type ToggleButtonSelectionProps = {
   name?: string;
   className?: string;
   value?: OptionValue;
-  onChange?: React.ChangeEventHandler;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
   options?: OptionValue[];
   disabled?: boolean;
   onBlur?: React.FocusEventHandler;
@@ -37,7 +37,7 @@ export const ToggleButtonSelection = ({
       options[0] ||
       null
     )?.value;
-  }, [value, options]);
+  }, [value?.value, options]);
 
   if (typeof options === "undefined" || options.length === 0) {
     return null;

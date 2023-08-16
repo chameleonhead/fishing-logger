@@ -163,9 +163,7 @@ export const DateTimeInputField = ({
           現在時刻
         </Button>
       </div>
-      {error && (
-        <div className="text-sm font-medium text-red-500">{error}</div>
-      )}
+      {error && <div className="text-sm font-medium text-red-500">{error}</div>}
     </div>
   );
 };

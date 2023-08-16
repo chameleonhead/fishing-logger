@@ -3,10 +3,10 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { PlaceInput } from "../common/PlaceInput";
 import { Catch } from "./models";
-import { Button } from "../common/Button";
-import { DateTimeInputField } from "../common/DateTimeInputField";
-import { InputField } from "../common/InputField";
-import { Selection } from "../common/Selection";
+import Button from "../common/Button";
+import DateTimeInputField from "../common/DateTimeInputField";
+import InputField from "../common/InputField";
+import Selection from "../common/Selection";
 
 type CatchCreateFormProps = {
   initialValues: {
@@ -84,12 +84,8 @@ export const CatchCreateForm = ({
           name="catched_at"
           className="sm:col-span-5 md:col-span-4 lg:col-span-3"
           value={formik.values.catched_at?.toString() || ""}
-          onChange={(e) => {
-            formik.setValues({
-              ...formik.values,
-              catched_at: e.target.value,
-            });
-          }}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           error={
             formik.touched.catched_at ? formik.errors.catched_at : undefined
           }
