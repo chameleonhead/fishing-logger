@@ -21,8 +21,8 @@ export type InputFieldProps = {
   readOnly?: boolean;
   disabled?: boolean;
   error?: string | string[];
-  onChange?: React.ChangeEventHandler<any>;
-  onBlur?: React.FocusEventHandler<any>;
+  onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  onBlur?: React.FocusEventHandler;
 };
 
 export const InputField = ({
@@ -40,10 +40,10 @@ export const InputField = ({
   ...props
 }: InputFieldProps) => {
   const classList = [];
-  if (!!error) {
+  if (error) {
     classList.push("text-red-500 border-red-500");
   } else {
-    classList.push("focus:border-blue-600");
+    classList.push("focus:text-blue-900 focus:border-blue-600");
   }
   return (
     <div className={className}>

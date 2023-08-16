@@ -47,6 +47,20 @@ export const Error: Story = {
 export const Select: Story = {
   args: {
     ...Default.args,
+    type: "select",
+    value: "1",
+    options: [
+      { value: "1", label: "Option 1" },
+      { value: "2", label: "Option 2" },
+    ],
+  },
+};
+
+export const ToggleButton: Story = {
+  args: {
+    ...Default.args,
+    type: "toggle-button",
+    value: "1",
     options: [
       { value: "1", label: "Option 1" },
       { value: "2", label: "Option 2" },

@@ -11,7 +11,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const render = (args: Story["args"]) => {
+const Render = (args: Story["args"]) => {
   const [value, setValue] = useState(args?.value || "");
   return (
     <InputField
@@ -31,7 +31,7 @@ export const Default: Story = {
     placeholder: "Placeholder",
     value: "value",
   },
-  render,
+  render: Render,
 };
 
 export const TextArea: Story = {
@@ -42,7 +42,7 @@ export const TextArea: Story = {
     placeholder: "Placeholder",
     value: "value1\nvalue2",
   },
-  render,
+  render: Render,
 };
 
 export const Number: Story = {
@@ -53,7 +53,7 @@ export const Number: Story = {
     placeholder: "Placeholder",
     value: "123",
   },
-  render,
+  render: Render,
 };
 
 export const Date: Story = {
@@ -64,7 +64,7 @@ export const Date: Story = {
     placeholder: "Placeholder",
     value: "2023-08-13",
   },
-  render,
+  render: Render,
 };
 
 export const Time: Story = {
@@ -75,7 +75,7 @@ export const Time: Story = {
     placeholder: "Placeholder",
     value: "10:20:30",
   },
-  render,
+  render: Render,
 };
 
 export const DateTime: Story = {
@@ -86,7 +86,7 @@ export const DateTime: Story = {
     placeholder: "Placeholder",
     value: "2023-08-13T10:20:23.000Z",
   },
-  render,
+  render: Render,
 };
 
 export const ReadOnly: Story = {

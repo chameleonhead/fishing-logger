@@ -13,6 +13,9 @@ export const Chip = <T extends React.ElementType>({
   const classList = [
     "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800",
   ];
+  if (className) {
+    classList.push(className);
+  }
   return <As className={classList.join(" ")} {...props} />;
 };
 

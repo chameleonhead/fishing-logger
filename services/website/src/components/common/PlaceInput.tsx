@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import Map from "../map/Map";
+import MapWithMarker from "../map/MapWithMarker";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
 
@@ -136,22 +136,20 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
   return (
     <div>
       <div className="mb-1">
-        <Map
-          style={{ height: "300px" }}
-          position={
-            typeof value === "undefined" || value === null
-              ? undefined
-              : { lat: value.latitude!, lng: value.longitude! }
-          }
-          onPositionChange={(position) => {
+        <MapWithMarker
+          className="h-96"
+          position={value || undefined}
+          onMapClick={(position) => {
             if (isFetchingCurrentLocation) {
               return;
             }
             const newValue = {
               latitude:
-                Math.round(position.lat * 10 ** PRECISION) / 10 ** PRECISION,
+                Math.round(position.latitude * 10 ** PRECISION) /
+                10 ** PRECISION,
               longitude:
-                Math.round(position.lng * 10 ** PRECISION) / 10 ** PRECISION,
+                Math.round(position.longitude * 10 ** PRECISION) /
+                10 ** PRECISION,
             };
             setState(valueToState(newValue));
             if (onChange) {
@@ -160,9 +158,9 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
           }}
         />
       </div>
-      <div className="flex my-3 space-x-1">
+      <div className="flex my-3 gap-1">
         <InputField
-          className="grow px-2"
+          className="grow"
           name="place_latitude"
           label="緯度"
           placeholder="例) 35.65809922N"
@@ -182,7 +180,7 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
           }}
         />
         <InputField
-          className="grow px-2"
+          className="grow"
           name="place_longitude"
           label="経度"
           placeholder="例) 139.74135747E"
@@ -206,7 +204,8 @@ export const PlaceInput = ({ value, onChange }: PlaceInputProps) => {
         <Button
           className="w-full"
           type="button"
-          color="primary"
+          color="default"
+          variant="outline"
           disabled={isFetchingCurrentLocation}
           onClick={handleFetchCurrentLocation}
         >

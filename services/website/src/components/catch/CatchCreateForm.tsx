@@ -3,23 +3,32 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { PlaceInput } from "../common/PlaceInput";
 import { Catch } from "./models";
-import { Button } from "../common/Button";
-import { DateTimeInputField } from "../common/DateTimeInputField";
-import { InputField } from "../common/InputField";
-import { Selection } from "../common/Selection";
+import Button from "../common/Button";
+import DateTimeInputField from "../common/DateTimeInputField";
+import InputField from "../common/InputField";
+import Selection from "../common/Selection";
 
 type CatchCreateFormProps = {
+  initialValues: {
+    catched_at?: string;
+    place?: {
+      latitude: number;
+      longitude: number;
+    };
+  };
   onSubmit: (value: Catch) => void;
 };
 
-export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
+export const CatchCreateForm = ({
+  initialValues,
+  onSubmit,
+}: CatchCreateFormProps) => {
   const formik = useFormik({
     initialValues: {
-      catched_at: Instant.now().truncatedTo(ChronoUnit.MINUTES).toString() as
-        | string
-        | null
-        | undefined,
-      place: undefined as
+      catched_at:
+        initialValues.catched_at ||
+        Instant.now().truncatedTo(ChronoUnit.MINUTES).toString(),
+      place: initialValues.place as
         | {
             latitude: number;
             longitude: number;
@@ -75,12 +84,8 @@ export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
           name="catched_at"
           className="sm:col-span-5 md:col-span-4 lg:col-span-3"
           value={formik.values.catched_at?.toString() || ""}
-          onChange={(e) => {
-            formik.setValues({
-              ...formik.values,
-              catched_at: e.target.value,
-            });
-          }}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           error={
             formik.touched.catched_at ? formik.errors.catched_at : undefined
           }
@@ -124,6 +129,7 @@ export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
       </div>
       <div className="my-4">
         <Selection
+          type="toggle-button"
           label="仕掛け"
           name="method_type"
           options={["徒手", "刺突", "網", "釣", "その他"].map((item) => {
@@ -163,12 +169,21 @@ export const CatchCreateForm = ({ onSubmit }: CatchCreateFormProps) => {
 };
 
 const CatchCreateFormWithState = function ({
+  initialValues,
   onSuccess,
 }: {
+  initialValues: {
+    catched_at?: string;
+    place?: {
+      latitude: number;
+      longitude: number;
+    };
+  };
   onSuccess: (value: Catch) => void;
 }) {
   return (
     <CatchCreateForm
+      initialValues={initialValues}
       onSubmit={async (value) => {
         try {
           const result = await fetch("/api/catches", {

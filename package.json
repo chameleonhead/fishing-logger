@@ -2,6 +2,12 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "lint": "npm run lint:apigw && npm run lint:catches-api && npm run lint:media-api && npm run lint:ships-api && npm run lint:website",
+    "lint:apigw": "cd services/apigw && npm run lint",
+    "lint:catches-api": "cd services/catches-api && npm run lint",
+    "lint:media-api": "cd services/media-api && npm run lint",
+    "lint:ships-api": "cd services/ships-api && npm run lint",
+    "lint:website": "cd services/website && npm run lint",
     "test": "npm run test:apigw && npm run test:catches-api && npm run test:media-api && npm run test:ships-api && npm run test:website",
     "test:apigw": "cd services/apigw && npm test",
     "test:catches-api": "cd services/catches-api && npm test",

@@ -6,7 +6,7 @@ import sample from "./sample.json";
 const meta = {
   title: "components/media/MediaThumbnail",
   component: MediaThumbnail,
-  render: (args: any) => (
+  render: (args: React.ComponentProps<typeof MediaThumbnail>) => (
     <div className="h-screen">
       <MediaThumbnail {...args} />
     </div>
@@ -21,6 +21,19 @@ export const Default: Story = {
     data: {
       id: "id",
       name: "Filename",
+      content_type: "application/octet-stream",
+      last_modified: "2022-09-09T12:10:13Z",
+      size: 200,
+      url: sample.image,
+    },
+  },
+};
+
+export const DefaultWithLongName: Story = {
+  args: {
+    data: {
+      id: "id",
+      name: "Filename with long long long name",
       content_type: "application/octet-stream",
       last_modified: "2022-09-09T12:10:13Z",
       size: 200,
